@@ -232,3 +232,27 @@ create trigger facilities_review_guard
 
 create policy routes_public_read on routes for select using (true);
 create policy stages_public_read on route_stages for select using (true);
+
+-- ------------------------------------------------------------
+-- Public read view for the pilgrim client (M3)
+--
+-- `location` is a PostGIS `geography` column — queried directly through
+-- PostgREST it comes back as opaque WKB hex, not {lat, lng}. This view
+-- extracts plain numeric lat/lng so the client can read it with an ordinary
+-- .select(), and re-applies the "approved only" filter itself (rather than
+-- relying on the underlying table's RLS being re-evaluated through the
+-- view, which Postgres does not guarantee by default) so it is safe to
+-- expose regardless of that nuance.
+-- ------------------------------------------------------------
+
+create or replace view facilities_public as
+  select
+    id, route_id, kind, name,
+    ST_Y(location::geometry) as lat,
+    ST_X(location::geometry) as lng,
+    chainage_km, offset_m, status, source,
+    contact_phone, capacity, opens_at, closes_at, amenities
+  from facilities
+  where review = 'approved';
+
+grant select on facilities_public to anon, authenticated;

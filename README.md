@@ -10,8 +10,8 @@ Modules M1–M4 are in scope. Crowd detection (M5) is not.
 |---|---|---|
 | **M1** | Home screen — distance to temple, ETA, on/off-route status | ✅ built |
 | **M2** | Route map + mukkam (day-stage) schedule | ✅ built |
-| **M3** | Nearest medical/food/rest/stay finder | 🚧 stub |
-| **M4** | Camp admin app — register &amp; manage a health/food/rest camp | 🚧 stub |
+| **M3** | Nearest medical/food/rest/stay finder (SOS) | ✅ built |
+| **M4** | Camp admin app — register &amp; manage a health/food/rest camp | ✅ built |
 | **Palki** | **Live Palki location + offline forecast packet** | ✅ built |
 
 ---
@@ -76,6 +76,54 @@ Measured against the simulator (which the estimator cannot see): MAE ≈ 0.24 km
 at +1h, 0.49 km at +2h, 0.73 km at +3h, 1.13 km at +5h, on a 285 km route.
 There is **no** historical validation — `sim/backtest.mjs` refuses to print a
 number until real 2025 arrival times are supplied.
+
+## M3 / M4 — facility finder and camp admin
+
+`/help` is the pilgrim-facing finder, `/admin` the camp registration form.
+Both run off the chainage engine, so "how far is it" is arithmetic on two
+numbers and works offline.
+
+**`/help`** leads with a red **SOS** button that calls
+[`findNearestEmergency()`](lib/chainage.ts) — not `findNearestAhead()`.
+In an emergency direction of travel stops mattering, so that variant widens
+the corridor (15 km lookback, 8 km off-road) and drops the ahead-first bias,
+then jumps straight to the single nearest medical facility. Below it are four
+category targets (Medical / Food / Rest / Stay → `KIND_GROUPS`), each opening
+a ranked list, each row opening a detail view with distance, walking ETA,
+`tel:` call button, and a map drawing a **straight line** to the facility —
+deliberately not a routed path, since there is no routing API anywhere here.
+
+**`/admin`** uses [`sampleStablePosition()`](lib/geolocation.ts), which
+collects up to 10 fixes ≤25 m accuracy and takes the median, with live
+"8 of 10 good fixes, best ±12 m" progress. A single fix routinely lands a pin
+40 m into the next field, and unlike a walking pilgrim's transient error that
+one is permanent. Submissions that fail (or are made offline) queue in Dexie
+and flush on reconnect.
+
+### Two honest limitations
+
+**No admin login.** `POST /api/v1/facilities` is unauthenticated, and
+`PATCH /api/v1/facilities/[id]` has no ownership check — anyone who can reach
+the URL can add a camp or toggle one's status. This was a deliberate
+simplification. `db/schema.sql` already contains the real owner-gated RLS
+policies; the API bypasses them with the service-role client, so switching
+to real auth later is a change to the route handlers, not the schema.
+"My submissions" on `/admin` therefore means "submitted from this browser"
+(localStorage), not a real account.
+
+**Chainage must come from one engine.** The `compute_chainage` trigger
+derived chainage from `ST_LineLocatePoint`, which measures in planar degrees
+and then gets multiplied by a geodesic length — two different measures. At
+this latitude that ran **0.5 km short on average and 1.2 km at worst**, in
+the same direction every time, against the turf engine the browser uses.
+Since a pilgrim's chainage comes from turf and `findNearestAhead()` subtracts
+one from the other, that error landed directly in every distance shown.
+Chainage is now computed in TypeScript by the same `RouteIndex` the client
+uses ([lib/facilities/chainage-server.ts](lib/facilities/chainage-server.ts))
+and written explicitly; the trigger keeps its approximation only as a
+fallback for hand-written SQL. See
+[db/fix_chainage_trigger.sql](db/fix_chainage_trigger.sql). `offset_m` was
+never affected — `ST_Distance` on `geography` is genuinely geodesic.
 
 ## The core idea: chainage, not routing
 
@@ -432,10 +480,10 @@ Turf functions are imported individually
 - **M2** — Leaflet map with the route polyline, user marker, auto-follow
   toggle, mukkam schedule list highlighting `route.stageAt()`'s current
   stage, days remaining.
-- **M3** — Medical / Food / Rest / Stay tap targets (≥64px, one-handed use)
-  mapped to `KIND_GROUPS`, ranked nearest-ahead list with ETA/status/call
-  button, map view with a straight line to the selected facility.
-- **M4** — Supabase phone-OTP auth, camp registration form using
-  `sampleStablePosition()` with a live "8 of 10 good fixes, best ±12 m"
-  progress indicator, open/full/closed toggle post-approval, offline queue
-  with a pending-sync badge.
+- **M4 auth** — the camp admin currently has **no login** (see below).
+  Adding Supabase phone/email OTP would let `/admin` use the public client
+  and the owner-gated RLS that `db/schema.sql` already defines, instead of
+  the service-role bypass it uses today.
+- **Approval flow** — `review` is set to `'approved'` on insert. The
+  `pending`/`rejected` states and the organizer-only `guard_review_state`
+  trigger already exist in the schema, unused.

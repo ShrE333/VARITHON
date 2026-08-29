@@ -33,7 +33,13 @@ export interface NewCampPayload {
   capacity?: number;
   opensAt?: string;
   closesAt?: string;
-  ownerId: string;
+  /**
+   * Optional, and NOT a Supabase auth id — there is no admin login yet.
+   * Left undefined for now; the API writes owner_id: null regardless of
+   * what's sent here. Reserved so a real auth id can be threaded through
+   * without a payload shape change once login exists.
+   */
+  ownerId?: string;
 }
 
 export interface PendingCampSubmission {

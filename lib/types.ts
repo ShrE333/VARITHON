@@ -13,8 +13,9 @@ export type FacilityStatus = 'open' | 'full' | 'closed';
 /** Category buttons in the pilgrim UI map to groups of kinds. */
 export const KIND_GROUPS: Record<string, FacilityKind[]> = {
   medical: ['health_camp', 'hospital', 'phc', 'pharmacy'],
-  food: ['refreshment_camp', 'hotel'],
-  rest: ['rest_stop', 'night_stay'],
+  food: ['refreshment_camp'],
+  rest: ['rest_stop'],
+  stay: ['night_stay', 'hotel'],
 };
 
 export interface Facility {
