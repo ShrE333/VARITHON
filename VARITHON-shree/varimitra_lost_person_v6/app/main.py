@@ -2,7 +2,7 @@ from pathlib import Path
 import asyncio,cv2,numpy as np
 from fastapi import FastAPI,File,Form,HTTPException,UploadFile
 from fastapi.responses import HTMLResponse,FileResponse,StreamingResponse
-from .config import DATA_DIR,TRITON_URL
+from .config import DATA_DIR
 from .db import init_db,list_alerts,review_alert,get_alert,list_sightings,list_cameras
 from .face_engine import FaceEngine
 from .registry import CaseRegistry
@@ -17,9 +17,9 @@ def get_engine():
 
 @app.get('/health')
 def health():
-    try:e=get_engine();triton=e.client.is_server_ready()
-    except Exception as ex:return {'status':'degraded','version':'0.6.0','triton_url':TRITON_URL,'triton_ready':False,'error':str(ex)}
-    return {'status':'ok','version':'0.6.0','triton_url':TRITON_URL,'triton_ready':bool(triton)}
+    try:e=get_engine();ready=bool(getattr(e,'ready',False))
+    except Exception as ex:return {'status':'degraded','version':'0.6.0','engine':'insightface-local','engine_ready':False,'error':str(ex)}
+    return {'status':'ok','version':'0.6.0','engine':'insightface-local','engine_ready':ready}
 @app.get('/cases')
 def cases():return registry.public_cases()
 @app.post('/cases')
