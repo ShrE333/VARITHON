@@ -9,3 +9,9 @@ __pycache__/
 *.db
 data/alerts/
 **/data/alerts/
+**/data/live/*.jpg
+**/data/live/*.tmp.jpg
+
+**/data/live/
+**/data/live/*.jpg
+**/data/live/*.tmp.jpg
