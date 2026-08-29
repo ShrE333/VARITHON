@@ -1,0 +1,368 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --maroon: #8B1B1B;
+  --maroon-dark: #5C1010;
+  --orange: #E8630C;
+  --orange-dark: #C94F06;
+  --cream: #FBF6EE;
+  --card-border: #ECE4D8;
+  --text-dark: #2B2320;
+  --text-muted: #7A7068;
+  --green: #1F9D55;
+  --amber: #E0A825;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Decorative background shapes */
+body::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 50%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(232, 99, 12, 0.08) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 50%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(139, 27, 27, 0.08) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(43, 35, 32, 0.08);
+  padding: 40px 32px;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.brand-section {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.brand-logo {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--orange), var(--maroon));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 24px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 15px rgba(232, 99, 12, 0.25);
+}
+
+.brand-name {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--maroon);
+  line-height: 1.1;
+}
+
+.brand-tagline {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Pilgrim default hint */
+.login-role-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(232, 99, 12, 0.08);
+  border: 1px solid rgba(232, 99, 12, 0.18);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--maroon);
+}
+
+.login-role-hint i {
+  font-size: 15px;
+  color: var(--orange);
+}
+
+.login-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--card-border);
+}
+
+.btn-admin-access {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--cream);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-admin-access i {
+  font-size: 11px;
+}
+
+.btn-admin-access:hover {
+  border-color: var(--maroon);
+  color: var(--maroon);
+  background: rgba(139, 27, 27, 0.04);
+}
+
+.btn-admin-access.active {
+  border-color: var(--maroon);
+  background: rgba(139, 27, 27, 0.08);
+  color: var(--maroon);
+  font-weight: 700;
+}
+
+/* Role Selection Cards (legacy) */
+.role-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.role-card {
+  flex: 1;
+  border: 2px solid var(--card-border);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  background: #ffffff;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.role-card i.role-icon {
+  font-size: 28px;
+  color: var(--text-muted);
+  transition: color 0.25s;
+}
+
+.role-card span.role-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.role-card span.role-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.role-card input[type="radio"] {
+  display: none;
+}
+
+/* Checked state for Role Selection */
+.role-card:hover {
+  border-color: var(--orange);
+  transform: translateY(-2px);
+}
+
+.role-card.active {
+  border-color: var(--maroon);
+  background: rgba(139, 27, 27, 0.02);
+  box-shadow: 0 6px 20px rgba(139, 27, 27, 0.06);
+}
+
+.role-card.active i.role-icon {
+  color: var(--maroon);
+}
+
+.role-card.active::after {
+  content: "\f058"; /* FontAwesome check-circle */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--maroon);
+  font-size: 14px;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  font-size: 14.5px;
+  color: var(--text-dark);
+  background: var(--cream);
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.form-control:focus {
+  border-color: var(--orange);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(232, 99, 12, 0.12);
+}
+
+/* OTP Specific styles */
+.otp-group {
+  display: flex;
+  gap: 10px;
+}
+
+.otp-group input {
+  flex: 1;
+}
+
+.btn-send-otp {
+  background: var(--maroon);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 10px;
+  padding: 0 16px;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.btn-send-otp:hover {
+  background: var(--maroon-dark);
+}
+
+.btn-send-otp:disabled {
+  background: var(--card-border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Notifications and Helpers */
+.otp-status {
+  font-size: 12px;
+  color: var(--green);
+  margin-top: 5px;
+  display: none;
+  font-weight: 500;
+}
+
+.error-message {
+  font-size: 12px;
+  color: var(--maroon);
+  margin-top: 5px;
+  font-weight: 500;
+  display: none;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--orange), var(--maroon));
+  color: #ffffff;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(139, 27, 27, 0.2);
+  transition: all 0.3s;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(139, 27, 27, 0.3);
+  filter: brightness(1.05);
+}
+
+.btn-submit:active {
+  transform: translateY(1px);
+}
+
+/* Dynamic field transitions */
+.age-group {
+  transition: max-height 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
+  overflow: hidden;
+}
+
+.age-group.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0;
+  pointer-events: none;
+}

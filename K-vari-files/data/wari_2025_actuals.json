@@ -1,0 +1,19 @@
+{
+  "placeholder": true,
+  "_README": [
+    "THIS IS A TEMPLATE. IT CONTAINS NO REAL DATA.",
+    "",
+    "sim/backtest.mjs refuses to run while `placeholder` is true, so that",
+    "nobody can accidentally report a validation number derived from made-up",
+    "arrival times. Delete the flag only when the arrivals below are real.",
+    "",
+    "To fill it in: source the Sant Dnyaneshwar Maharaj Sansthan's published",
+    "2025 mukkam schedule (the actual arrival times, not the planned ones),",
+    "and give each halt its chainage from public/data/route.json landmarks.",
+    "",
+    "Until then the honest claim is 'validated against a simulator the model",
+    "cannot see', NOT 'validated against the 2025 Wari'."
+  ],
+  "source": "NOT SOURCED — template only",
+  "arrivals": []
+}

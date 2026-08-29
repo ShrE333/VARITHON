@@ -1,0 +1,291 @@
+/* ==========================================================================
+   Portal base — the small amount of CSS the merge itself needs.
+   --------------------------------------------------------------------------
+   Everything else under styles/portal/ is the original VariMitra CSS with
+   each file's selectors mechanically prefixed with its page's scope class.
+   That transform is why the portal pages survive sharing a document with
+   Tailwind: it turned rules like `body { background: var(--cream) }` into
+   `.vm-pilgrim { … }`, so they stop applying to the location features.
+
+   The rules below are new, and are limited to what the merge broke or added:
+   the page wrappers that replaced <body>, and the superadmin sidebar entry.
+   ========================================================================== */
+
+/*
+ * The portal CSS was written when each page owned <body>, so the page fill,
+ * font and colour all hung off it. The scoping moved those rules onto the
+ * wrapper element, which — unlike <body> — has no intrinsic height. Without
+ * this the cream background stops at the last card and the rest of a short
+ * page is white.
+ */
+.vm-portal {
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+/*
+ * The portal is a 16px-scale design; the root is 18px for the location
+ * features (see app/globals.css). Restating it here keeps every unstyled bit
+ * of portal text — mostly inside modals — at the size it was drawn at.
+ */
+.vm-portal {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   SOS / Locations call-to-action banner — top of the Command Dashboard
+   --------------------------------------------------------------------------
+   The sidebar already links to Location Management, but a sidebar entry is
+   easy to miss on first look. This banner sits above everything else in the
+   admin's main content so "where do I add a hospital or SOS point" has an
+   answer before the admin has to go looking for it.
+   ========================================================================== */
+.vm-admin .sos-cta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--maroon), var(--maroon-dark));
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(139, 27, 27, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vm-admin .sos-cta:hover,
+.vm-admin .sos-cta:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(139, 27, 27, 0.32);
+}
+
+.vm-admin .sos-cta-ic {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+}
+
+.vm-admin .sos-cta-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.vm-admin .sos-cta-body b {
+  font-size: 14.5px;
+  font-weight: 800;
+}
+
+.vm-admin .sos-cta-body span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vm-admin .sos-cta-go {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.16);
+  padding: 8px 14px;
+  border-radius: 9px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 650px) {
+  .vm-admin .sos-cta {
+    flex-wrap: wrap;
+  }
+  .vm-admin .sos-cta-go {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   Super Admin section label in the Command Dashboard sidebar
+   --------------------------------------------------------------------------
+   The dashboard's sidebar is a flat list of operational screens. Location
+   Management is not one of those — it edits the data every other screen
+   reads — so it gets a heading that says whose it is, rather than being
+   dropped in as a fourteenth peer.
+   ========================================================================== */
+.vm-admin .side-section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 4px 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--card-border);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+
+.vm-admin .side-section-label i {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   Location Management panel wrapper
+   --------------------------------------------------------------------------
+   The module is styled with stock Tailwind and deliberately ships no page
+   chrome (see docs/07-admin-locations.md §8), so the panel around it is the
+   host's job. `.wari-scope` on the same element is what gives its Tailwind
+   utilities their reset back — without it every `border` class in the table
+   and form renders borderless.
+   ========================================================================== */
+.vm-admin .locations-panel {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(43, 35, 32, 0.04);
+}
+
+.vm-admin .locations-intro {
+  margin-bottom: 16px;
+}
+
+.vm-admin .locations-intro h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--maroon);
+}
+
+.vm-admin .locations-intro p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  max-width: 78ch;
+}
+
+/*
+ * The module's own font scale is Tailwind's, which is relative to the 18px
+ * root. Inside the dashboard — a 13.5px design — that reads as oversized, so
+ * the panel steps the subtree down without touching the module's markup.
+ */
+.vm-admin .locations-panel .wari-scope {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Location feature cards on the pilgrim home
+   --------------------------------------------------------------------------
+   These four route out of the portal and into the live Wari location
+   features. They are visually distinct from the .qa-card row above them on
+   purpose: everything else on that screen opens an explainer, these open a
+   working tool with the pilgrim's real position in it.
+   ========================================================================== */
+.vm-pilgrim .live-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.vm-pilgrim .live-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-left: 4px solid var(--orange);
+  box-shadow: 0 2px 10px rgba(43, 35, 32, 0.04);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+  cursor: pointer;
+  text-align: left;
+}
+
+.vm-pilgrim .live-card:hover,
+.vm-pilgrim .live-card:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(43, 35, 32, 0.1);
+}
+
+.vm-pilgrim .live-card .ic {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+}
+
+.vm-pilgrim .live-card h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.vm-pilgrim .live-card p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.vm-pilgrim .live-card .go {
+  margin-top: auto;
+  padding-top: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--orange-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* A live feature is worth marking as live — it is the one thing on this
+   screen reading the pilgrim's actual GPS. */
+.vm-pilgrim .live-card .live-pill {
+  align-self: flex-start;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--green);
+  background: rgba(31, 157, 85, 0.1);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+.vm-pilgrim .live-card .live-pill.offline {
+  color: var(--blue);
+  background: rgba(37, 99, 235, 0.1);
+}
+
+@media (max-width: 1200px) {
+  .vm-pilgrim .live-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .vm-pilgrim .live-grid {
+    grid-template-columns: 1fr;
+  }
+}

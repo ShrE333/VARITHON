@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Shared, genuinely global
+   ========================================================================== */
+
+html {
+  /* prevent iOS double-tap zoom on the big tap targets */
+  touch-action: manipulation;
+
+  /* Honour the OS text-size setting instead of overriding it. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+
+  /*
+   * 18px base instead of the browser's 16, and it has to live on the root:
+   * Tailwind's whole scale is in rem, and rem is root-relative, so putting it
+   * on .wari-scope would size the wrapper and nothing inside it.
+   *
+   * Devanagari in particular reads badly below ~17px: the matras that
+   * distinguish the vowel signs sit above the line and are the first thing to
+   * disappear for a presbyopic eye. The portal CSS is written in px and is
+   * unaffected; it inherited the same 18px root in its original build.
+   */
+  font-size: 18px;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  overscroll-behavior-y: contain;
+}
+
+/*
+ * A focus ring that is actually visible.
+ *
+ * :focus-visible, not :focus, so it appears for keyboard and switch-control
+ * users without putting a ring around every button a thumb has just tapped.
+ */
+:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/*
+ * Someone who has asked their phone to stop animating usually did so because
+ * motion makes them ill or makes text unreadable.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   .wari-scope — Tailwind preflight, re-applied only where Tailwind is used
+   --------------------------------------------------------------------------
+   `corePlugins.preflight` is disabled in tailwind.config.ts so the reset does
+   not reach the portal pages, whose CSS was authored against browser
+   defaults. Everything Tailwind's utilities actually depend on is restated
+   below, confined to the location-feature subtree.
+
+   The border rule is the load-bearing one: `border` and `border-2` set only a
+   width, so without `border-style: solid` here every bordered card in those
+   pages would render with no visible border at all.
+   ========================================================================== */
+
+.wari-scope,
+.wari-scope *,
+.wari-scope *::before,
+.wari-scope *::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+
+.wari-scope h1,
+.wari-scope h2,
+.wari-scope h3,
+.wari-scope h4,
+.wari-scope h5,
+.wari-scope h6,
+.wari-scope p,
+.wari-scope figure,
+.wari-scope blockquote,
+.wari-scope dl,
+.wari-scope dd,
+.wari-scope pre {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.wari-scope ol,
+.wari-scope ul,
+.wari-scope menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wari-scope a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.wari-scope b,
+.wari-scope strong {
+  font-weight: bolder;
+}
+
+.wari-scope code,
+.wari-scope kbd,
+.wari-scope samp,
+.wari-scope pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1em;
+}
+
+.wari-scope small {
+  font-size: 80%;
+}
+
+.wari-scope table {
+  text-indent: 0;
+  border-color: inherit;
+  border-collapse: collapse;
+}
+
+.wari-scope button,
+.wari-scope input,
+.wari-scope optgroup,
+.wari-scope select,
+.wari-scope textarea {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.wari-scope button,
+.wari-scope [type='button'],
+.wari-scope [type='reset'],
+.wari-scope [type='submit'] {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+  cursor: pointer;
+}
+
+.wari-scope :-moz-focusring {
+  outline: auto;
+}
+
+.wari-scope textarea {
+  resize: vertical;
+}
+
+.wari-scope input::placeholder,
+.wari-scope textarea::placeholder {
+  opacity: 1;
+  color: #9ca3af;
+}
+
+.wari-scope img,
+.wari-scope svg,
+.wari-scope video,
+.wari-scope canvas,
+.wari-scope audio,
+.wari-scope iframe,
+.wari-scope embed,
+.wari-scope object {
+  display: block;
+  vertical-align: middle;
+}
+
+.wari-scope img,
+.wari-scope video {
+  max-width: 100%;
+  height: auto;
+}
+
+.wari-scope [hidden] {
+  display: none;
+}
+
+/*
+ * Typography baseline for the location features. The users here are a village
+ * grandmother with reading glasses, a ten-year-old walking beside her, and a
+ * volunteer holding the phone at arm's length in direct sun; this is sized for
+ * the worst of those three, not the average one.
+ */
+.wari-scope {
+  /* Slightly looser than default — Devanagari needs the vertical room. */
+  line-height: 1.6;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans Devanagari', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer utilities {
+  .tap-target {
+    @apply min-h-touch min-w-touch;
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}

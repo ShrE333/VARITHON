@@ -1,0 +1,483 @@
+/* Auto-scoped to ".vm-darshan" during the merge. Source: react-app/public/assets/darshan-booking.css */
+.vm-darshan{
+  --orange: #E8630C;
+  --orange-dark: #C94F06;
+  --maroon: #8B1B1B;
+  --maroon-dark: #5C1010;
+  --cream: #FDF8F1;
+  --card: #FFFFFF;
+  --text-dark: #2B2320;
+  --text-muted: #8A7F73;
+  --green: #1F9D55;
+  --purple: #7C3AED;
+  --border: #F1EAE0;
+}
+.vm-darshan, .vm-darshan *{ box-sizing: border-box; margin: 0; padding: 0; }
+.vm-darshan{
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--cream);
+  color: var(--text-dark);
+  min-height: 100vh;
+}
+.vm-darshan .db-top{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+}
+.vm-darshan .db-back{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dark);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  background: #F5EFE5;
+}
+.vm-darshan .db-back:hover{ background: #EADFCF; }
+.vm-darshan .db-brand{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--maroon);
+}
+.vm-darshan .db-brand i{ color: var(--orange); }
+.vm-darshan .db-hero{
+  background: linear-gradient(135deg, var(--purple), #5B21B6);
+  color: #fff;
+  padding: 40px 28px 36px;
+}
+.vm-darshan .db-hero-inner{
+  max-width: 720px;
+  margin: 0 auto;
+}
+.vm-darshan .db-hero-top{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.vm-darshan .db-hero-ic{
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.vm-darshan .db-hero h1{
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.vm-darshan .db-hero p{
+  font-size: 14px;
+  opacity: .92;
+  line-height: 1.55;
+}
+.vm-darshan .db-steps{
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.vm-darshan .db-step-pill{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, .14);
+  border-radius: 99px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.vm-darshan .db-step-pill .num{
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+.vm-darshan .db-step-pill.active{
+  background: #fff;
+  color: var(--purple);
+}
+.vm-darshan .db-step-pill.active .num{
+  background: var(--purple);
+  color: #fff;
+}
+.vm-darshan .db-step-pill.done .num{
+  background: var(--green);
+  color: #fff;
+}
+.vm-darshan .db-body{
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 28px 60px;
+}
+.vm-darshan .db-panel{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 14px rgba(60, 40, 20, .04);
+}
+.vm-darshan .db-panel h2{
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.vm-darshan .db-panel h2 i{ color: var(--orange); }
+.vm-darshan .db-panel .sub{
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+.vm-darshan .db-field{
+  margin-bottom: 18px;
+}
+.vm-darshan .db-field label{
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #4A423C;
+}
+.vm-darshan .db-field label .req{ color: var(--maroon); }
+.vm-darshan .db-field input,
+.vm-darshan .db-field select,
+.vm-darshan .db-field textarea{
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-dark);
+  background: #fff;
+  transition: border-color .15s;
+}
+.vm-darshan .db-field input:focus,
+.vm-darshan .db-field select:focus,
+.vm-darshan .db-field textarea:focus{
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, .12);
+}
+.vm-darshan .db-field input.error,
+.vm-darshan .db-field select.error{
+  border-color: #D64545;
+}
+.vm-darshan .db-field .hint{
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.vm-darshan .db-field .err-msg{
+  font-size: 11.5px;
+  color: #D64545;
+  margin-top: 4px;
+  display: none;
+}
+.vm-darshan .db-field .err-msg.show{ display: block; }
+.vm-darshan .db-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.vm-darshan .db-pilgrim-card{
+  background: #FBF6EE;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.vm-darshan .db-pilgrim-card h4{
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--maroon);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.vm-darshan .db-pilgrim-card h4 i{ color: var(--orange); font-size: 12px; }
+.vm-darshan .db-actions{
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.vm-darshan .db-btn{
+  padding: 11px 22px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.vm-darshan .db-btn-ghost{
+  background: #F5EFE5;
+  color: var(--text-dark);
+}
+.vm-darshan .db-btn-ghost:hover{ background: #EADFCF; }
+.vm-darshan .db-btn-primary{
+  background: var(--maroon);
+  color: #fff;
+}
+.vm-darshan .db-btn-primary:hover{ background: var(--maroon-dark); }
+.vm-darshan .db-ticket-actions{
+  justify-content: center;
+  flex-wrap: wrap;
+  border-top: none;
+  padding-top: 0;
+}
+.vm-darshan .db-step{ display: none; }
+.vm-darshan .db-step.active{ display: block; }
+/* Ticket — metro-style card */
+.vm-darshan .db-ticket-wrap{ display: none; }
+.vm-darshan .db-ticket-wrap.show{ display: block; }
+.vm-darshan .db-ticket-stack{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.vm-darshan .db-ticket{
+  width: min(360px, 100%);
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .10);
+  overflow: hidden;
+  border: 1px solid #E8E8E8;
+}
+.vm-darshan .db-ticket-route{
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid #EFEFEF;
+}
+.vm-darshan .db-route-row{
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.vm-darshan .db-route-row:last-child{ margin-bottom: 0; }
+.vm-darshan .db-route-icon{
+  width: 20px;
+  flex-shrink: 0;
+  padding-top: 2px;
+  font-size: 14px;
+}
+.vm-darshan .db-route-icon.from{ color: #22C55E; }
+.vm-darshan .db-route-icon.to{ color: #EF4444; }
+.vm-darshan .db-route-text{ flex: 1; min-width: 0; }
+.vm-darshan .db-route-label{
+  display: block;
+  font-size: 12px;
+  color: #9CA3AF;
+  margin-bottom: 2px;
+}
+.vm-darshan .db-route-value{
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: .2px;
+}
+.vm-darshan .db-ticket-qr-section{
+  padding: 20px 24px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px solid #EFEFEF;
+}
+.vm-darshan .db-scan-hint{
+  font-size: 13px;
+  color: #6B7280;
+  margin-bottom: 16px;
+  line-height: 1.4;
+  width: 100%;
+}
+.vm-darshan .db-qr-frame{
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 14px;
+  flex-shrink: 0;
+}
+.vm-darshan .db-qr-frame canvas,
+.vm-darshan .db-qr-frame img{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  display: block;
+  width: 220px !important;
+  height: 220px !important;
+  border-radius: 4px;
+}
+.vm-darshan .db-qr-frame canvas[hidden],
+.vm-darshan .db-qr-frame img[hidden]{
+  display: none !important;
+}
+.vm-darshan .db-passengers{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  width: 100%;
+}
+.vm-darshan .db-passenger-name{
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
+}
+.vm-darshan .db-ticket-validity{
+  padding: 14px 24px;
+  text-align: center;
+  border-bottom: 1px solid #EFEFEF;
+}
+.vm-darshan .db-ticket-validity p{
+  font-size: 13px;
+  font-weight: 600;
+  color: #DC2626;
+  line-height: 1.45;
+  margin: 0;
+}
+.vm-darshan .db-ticket-meta{
+  padding: 14px 24px;
+  border-bottom: 1px solid #EFEFEF;
+}
+.vm-darshan .db-meta-row{
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  font-size: 12.5px;
+}
+.vm-darshan .db-meta-row span:first-child{
+  color: #9CA3AF;
+  font-weight: 500;
+}
+.vm-darshan .db-meta-row span:last-child{
+  color: #374151;
+  font-weight: 700;
+  text-align: right;
+}
+.vm-darshan .db-ticket-notes{
+  padding: 16px 24px 20px;
+}
+.vm-darshan .db-ticket-notes p{
+  font-size: 11.5px;
+  color: #6B7280;
+  line-height: 1.55;
+  margin: 0 0 8px;
+}
+.vm-darshan .db-ticket-notes p:last-child{ margin-bottom: 0; }
+.vm-darshan .db-success-msg{
+  text-align: center;
+  margin-bottom: 24px;
+}
+.vm-darshan .db-success-msg .ic{
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #D1FAE5;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 14px;
+}
+.vm-darshan .db-success-msg h2{
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+.vm-darshan .db-success-msg p{
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.vm-darshan .db-slot-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.vm-darshan .db-slot{
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .15s, background .15s;
+}
+.vm-darshan .db-slot:hover{ border-color: var(--purple); background: #F5F0FF; }
+.vm-darshan .db-slot.selected{
+  border-color: var(--purple);
+  background: #EDE9FE;
+}
+.vm-darshan .db-slot b{
+  display: block;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.vm-darshan .db-slot span{
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.vm-darshan .db-slot .avail{
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--green);
+  margin-top: 4px;
+}
+@media (max-width: 640px) {.vm-darshan .db-row{ grid-template-columns: 1fr; }
+.vm-darshan .db-slot-grid{ grid-template-columns: 1fr; }
+.vm-darshan .db-hero h1{ font-size: 22px; }
+.vm-darshan .db-actions{ flex-direction: column-reverse; }
+.vm-darshan .db-btn{ width: 100%; justify-content: center; }
+.vm-darshan .db-ticket{ width: 100%; }}
+@media print {.vm-darshan .db-top,
+.vm-darshan .db-hero,
+.vm-darshan .db-actions,
+.vm-darshan .db-ticket-actions,
+.vm-darshan .db-success-msg{ display: none !important; }
+.vm-darshan{ background: #fff; }
+.vm-darshan .db-body{ padding: 0; max-width: 100%; }
+.vm-darshan .db-ticket{ box-shadow: none; border: 1px solid #ccc; }}
