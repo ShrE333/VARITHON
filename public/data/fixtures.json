@@ -18,7 +18,7 @@
     "chainageKm": 17.5,
     "offsetM": 72.9,
     "status": "open",
-    "contactPhone": "+919800007919"
+    "contactPhone": "+918669966070"
   },
   {
     "id": "fixture-003",
@@ -29,7 +29,7 @@
     "chainageKm": 29.4,
     "offsetM": 125.9,
     "status": "open",
-    "contactPhone": "+919800015838"
+    "contactPhone": "+919112213506"
   },
   {
     "id": "fixture-004",
@@ -51,7 +51,7 @@
     "chainageKm": 51.8,
     "offsetM": 231.7,
     "status": "open",
-    "contactPhone": "+919800031676",
+    "contactPhone": "+917822850386",
     "capacity": 102,
     "amenities": {
       "water": true,
@@ -67,7 +67,7 @@
     "chainageKm": 63.6,
     "offsetM": 284.7,
     "status": "closed",
-    "contactPhone": "+919800039595",
+    "contactPhone": "+918669966070",
     "capacity": 115
   },
   {
@@ -90,7 +90,7 @@
     "chainageKm": 86.1,
     "offsetM": 390.6,
     "status": "open",
-    "contactPhone": "+919800055433"
+    "contactPhone": "+919112213506"
   },
   {
     "id": "fixture-009",
@@ -101,7 +101,7 @@
     "chainageKm": 97.919,
     "offsetM": 443.4,
     "status": "open",
-    "contactPhone": "+919800063352"
+    "contactPhone": "+917822850386"
   },
   {
     "id": "fixture-010",
@@ -122,7 +122,7 @@
     "chainageKm": 120.3,
     "offsetM": 549.4,
     "status": "open",
-    "contactPhone": "+919800079190"
+    "contactPhone": "+918669966070"
   },
   {
     "id": "fixture-012",
@@ -133,7 +133,7 @@
     "chainageKm": 132.2,
     "offsetM": 602.3,
     "status": "full",
-    "contactPhone": "+919800087109",
+    "contactPhone": "+919112213506",
     "capacity": 193
   },
   {
@@ -160,7 +160,7 @@
     "chainageKm": 154.6,
     "offsetM": 708.2,
     "status": "open",
-    "contactPhone": "+919800102947",
+    "contactPhone": "+917822850386",
     "capacity": 219
   },
   {
@@ -172,7 +172,7 @@
     "chainageKm": 166.348,
     "offsetM": 759.8,
     "status": "open",
-    "contactPhone": "+919800110866",
+    "contactPhone": "+918669966070",
     "capacity": 232
   },
   {
@@ -194,7 +194,7 @@
     "chainageKm": 188.9,
     "offsetM": 867,
     "status": "open",
-    "contactPhone": "+919800126704"
+    "contactPhone": "+919112213506"
   },
   {
     "id": "fixture-018",
@@ -205,7 +205,7 @@
     "chainageKm": 200.7,
     "offsetM": 21,
     "status": "open",
-    "contactPhone": "+919800134623"
+    "contactPhone": "+917822850386"
   },
   {
     "id": "fixture-019",
@@ -226,7 +226,7 @@
     "chainageKm": 221.934,
     "offsetM": 31.7,
     "status": "closed",
-    "contactPhone": "+919800150461",
+    "contactPhone": "+918669966070",
     "capacity": 97
   },
   {
@@ -238,7 +238,7 @@
     "chainageKm": 235,
     "offsetM": 179.8,
     "status": "open",
-    "contactPhone": "+919800158380",
+    "contactPhone": "+919112213506",
     "capacity": 110,
     "amenities": {
       "water": true,
@@ -254,7 +254,7 @@
     "chainageKm": 257.168,
     "offsetM": 282.2,
     "status": "full",
-    "contactPhone": "+919800174218",
+    "contactPhone": "+917822850386",
     "capacity": 136
   },
   {
@@ -277,7 +277,7 @@
     "chainageKm": 269.181,
     "offsetM": 338.3,
     "status": "open",
-    "contactPhone": "+919800182137"
+    "contactPhone": "+918669966070"
   },
   {
     "id": "fixture-025",

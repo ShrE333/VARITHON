@@ -95,6 +95,16 @@ const KINDS = {
 const kindNames = Object.keys(KINDS);
 const CAPACITY_KINDS = new Set(['health_camp', 'refreshment_camp', 'rest_stop', 'night_stay']);
 
+/**
+ * The real contact numbers for this deployment, cycled across fixtures.
+ *
+ * These used to be procedurally generated fake numbers (+9198000...), which
+ * meant every "Call" button in the app dialled a number that doesn't exist.
+ * Hard-coded here rather than left generated so that re-running
+ * `npm run build:fixtures` cannot silently reintroduce fake numbers.
+ */
+const CONTACT_NUMBERS = ['+918669966070', '+919112213506', '+917822850386'];
+
 /** Project through the app's own maths. This is the ground truth. */
 function project(lat, lng) {
   const snap = nearestPointOnLine(line, point([lng, lat]), { units: 'kilometers' });
@@ -209,7 +219,7 @@ for (let i = 0; i < COUNT; i++) {
     chainageKm: Math.round(p.chainageKm * 1000) / 1000,
     offsetM: Math.round(p.offsetM * 10) / 10,
     status,
-    ...(i % 3 !== 0 ? { contactPhone: `+91${9800000000 + ((i * 7919) % 99999999)}` } : {}),
+    ...(i % 3 !== 0 ? { contactPhone: CONTACT_NUMBERS[i % CONTACT_NUMBERS.length] } : {}),
     ...(CAPACITY_KINDS.has(kind) ? { capacity: 50 + ((i * 13) % 200) } : {}),
     ...(kind === 'refreshment_camp' ? { amenities: { water: true, food: i % 2 === 0 } } : {}),
   });
