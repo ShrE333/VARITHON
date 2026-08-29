@@ -1,0 +1,781 @@
+{
+  "schema": 1,
+  "routeSlug": "dnyaneshwar-2026",
+  "routeVersion": 1,
+  "timezone": "Asia/Kolkata",
+  "synthetic": true,
+  "syntheticNote": "Day shape is assumed, not sourced from the Sansthan timetable. Daily distances ARE real (from the road-snapped route). Replace blocks with the published schedule when available.",
+  "generatedAt": "2026-08-27",
+  "days": [
+    {
+      "dayNumber": 1,
+      "date": "2026-06-25",
+      "fromPlace": "Alandi",
+      "toPlace": "Pune",
+      "startKm": 0,
+      "endKm": 21.356,
+      "distanceKm": 21.356,
+      "nominalKmphAvg": 2.373,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 2.319,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 2.563,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 1.953,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 21.36
+    },
+    {
+      "dayNumber": 2,
+      "date": "2026-06-26",
+      "fromPlace": "Pune",
+      "toPlace": "Saswad",
+      "startKm": 21.356,
+      "endKm": 55.451,
+      "distanceKm": 34.095,
+      "nominalKmphAvg": 3.788,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 3.702,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 4.091,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 3.117,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 34.094
+    },
+    {
+      "dayNumber": 3,
+      "date": "2026-06-28",
+      "fromPlace": "Saswad",
+      "toPlace": "Jejuri",
+      "startKm": 55.451,
+      "endKm": 72.376,
+      "distanceKm": 16.925,
+      "nominalKmphAvg": 1.881,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 1.838,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 2.031,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 1.547,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 16.925
+    },
+    {
+      "dayNumber": 4,
+      "date": "2026-06-29",
+      "fromPlace": "Jejuri",
+      "toPlace": "Walhe",
+      "startKm": 72.376,
+      "endKm": 84.123,
+      "distanceKm": 11.747,
+      "nominalKmphAvg": 1.305,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 1.275,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 1.41,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 1.074,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 11.747
+    },
+    {
+      "dayNumber": 5,
+      "date": "2026-06-30",
+      "fromPlace": "Walhe",
+      "toPlace": "Lonand",
+      "startKm": 84.123,
+      "endKm": 103.676,
+      "distanceKm": 19.553,
+      "nominalKmphAvg": 2.173,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 2.123,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 2.346,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 1.788,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 19.554
+    },
+    {
+      "dayNumber": 6,
+      "date": "2026-07-01",
+      "fromPlace": "Lonand",
+      "toPlace": "Taradgaon",
+      "startKm": 103.676,
+      "endKm": 112.974,
+      "distanceKm": 9.298,
+      "nominalKmphAvg": 1.033,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 1.009,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 1.116,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 0.85,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 9.297
+    },
+    {
+      "dayNumber": 7,
+      "date": "2026-07-02",
+      "fromPlace": "Taradgaon",
+      "toPlace": "Phaltan",
+      "startKm": 112.974,
+      "endKm": 139.741,
+      "distanceKm": 26.767,
+      "nominalKmphAvg": 2.974,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 2.906,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 3.212,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 2.447,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 26.766
+    },
+    {
+      "dayNumber": 8,
+      "date": "2026-07-03",
+      "fromPlace": "Phaltan",
+      "toPlace": "Barad",
+      "startKm": 139.741,
+      "endKm": 170.621,
+      "distanceKm": 30.88,
+      "nominalKmphAvg": 3.431,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 3.353,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 3.706,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 2.823,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 30.881
+    },
+    {
+      "dayNumber": 9,
+      "date": "2026-07-04",
+      "fromPlace": "Barad",
+      "toPlace": "Natepute",
+      "startKm": 170.621,
+      "endKm": 194.453,
+      "distanceKm": 23.832,
+      "nominalKmphAvg": 2.648,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 2.587,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 2.86,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 2.179,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 23.831
+    },
+    {
+      "dayNumber": 10,
+      "date": "2026-07-05",
+      "fromPlace": "Natepute",
+      "toPlace": "Malshiras",
+      "startKm": 194.453,
+      "endKm": 222.487,
+      "distanceKm": 28.034,
+      "nominalKmphAvg": 3.115,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 3.044,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 3.364,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 2.563,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 28.035
+    },
+    {
+      "dayNumber": 11,
+      "date": "2026-07-06",
+      "fromPlace": "Malshiras",
+      "toPlace": "Velapur",
+      "startKm": 222.487,
+      "endKm": 240.202,
+      "distanceKm": 17.715,
+      "nominalKmphAvg": 1.968,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 1.923,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 2.126,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 1.62,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 17.716
+    },
+    {
+      "dayNumber": 12,
+      "date": "2026-07-07",
+      "fromPlace": "Velapur",
+      "toPlace": "Bhalavani",
+      "startKm": 240.202,
+      "endKm": 261.993,
+      "distanceKm": 21.791,
+      "nominalKmphAvg": 2.421,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 2.366,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 2.615,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 1.992,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 21.791
+    },
+    {
+      "dayNumber": 13,
+      "date": "2026-07-08",
+      "fromPlace": "Bhalavani",
+      "toPlace": "Wakhari",
+      "startKm": 261.993,
+      "endKm": 279.509,
+      "distanceKm": 17.516,
+      "nominalKmphAvg": 1.946,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 1.902,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 2.102,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 1.601,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 17.516
+    },
+    {
+      "dayNumber": 14,
+      "date": "2026-07-09",
+      "fromPlace": "Wakhari",
+      "toPlace": "Pandharpur",
+      "startKm": 279.509,
+      "endKm": 285.574,
+      "distanceKm": 6.065,
+      "nominalKmphAvg": 0.674,
+      "blocks": [
+        {
+          "start": "00:00",
+          "end": "05:30",
+          "kmph": 0,
+          "label": "overnight mukkam"
+        },
+        {
+          "start": "05:30",
+          "end": "09:00",
+          "kmph": 0.658,
+          "label": "pre-dawn to breakfast"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "kmph": 0,
+          "label": "nashta"
+        },
+        {
+          "start": "10:00",
+          "end": "12:30",
+          "kmph": 0.728,
+          "label": "late morning"
+        },
+        {
+          "start": "12:30",
+          "end": "15:30",
+          "kmph": 0,
+          "label": "lunch and heat rest"
+        },
+        {
+          "start": "15:30",
+          "end": "19:00",
+          "kmph": 0.555,
+          "label": "evening into mukkam"
+        },
+        {
+          "start": "19:00",
+          "end": "24:00",
+          "kmph": 0,
+          "label": "arrived at mukkam"
+        }
+      ],
+      "_coveredKm": 6.065
+    }
+  ]
+}

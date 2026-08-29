@@ -1,0 +1,48 @@
+{
+  "name": "wari-saathi",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prep-route": "python scripts/build_route_data.py",
+    "build:route": "node scripts/build_road_route.mjs",
+    "build:fixtures": "node scripts/build_fixtures.mjs",
+    "build:data": "npm run build:route && npm run build:schedule && npm run build:fixtures",
+    "test:chainage": "node scripts/test_chainage.mjs",
+    "test:geometry": "node --no-warnings tests/route-geometry.test.mts",
+    "test": "npm run test:geometry && npm run test:estimator && npm run test:chainage",
+    "test:estimator": "node --no-warnings tests/estimator.test.mts",
+    "build:schedule": "node scripts/build_schedule.mjs",
+    "sim": "node sim/simulator.mjs --speed 300 --seed 7",
+    "sim:fast": "node sim/simulator.mjs --speed 1200 --seed 7",
+    "backtest": "node sim/backtest.mjs"
+  },
+  "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "@turf/distance": "^7.1.0",
+    "@turf/helpers": "^7.1.0",
+    "@turf/nearest-point-on-line": "^7.1.0",
+    "dexie": "^4.0.8",
+    "dexie-react-hooks": "^1.1.7",
+    "leaflet": "^1.9.4",
+    "next": "14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.12",
+    "@types/node": "^20.14.15",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4"
+  }
+}

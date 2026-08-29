@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  /* prevent iOS double-tap zoom on the big tap targets */
+  touch-action: manipulation;
+}
+
+body {
+  overscroll-behavior-y: contain;
+}
+
+@layer utilities {
+  .tap-target {
+    @apply min-h-touch min-w-touch;
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
