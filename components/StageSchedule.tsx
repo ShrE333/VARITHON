@@ -30,11 +30,11 @@ export function StageSchedule({ stages, currentStage, remainingCount }: Props) {
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-bold text-neutral-800">{t('schedule.title')}</h2>
         {remainingCount !== null ? (
-          <span className="text-xs font-semibold text-saffron-700 bg-saffron-50 rounded-full px-2 py-1">
+          <span className="text-sm font-semibold text-saffron-700 bg-saffron-50 rounded-full px-2 py-1">
             {t('schedule.daysRemaining', { n: remainingCount })}
           </span>
         ) : (
-          <span className="text-xs text-neutral-400">{t('schedule.notLocated')}</span>
+          <span className="text-sm text-neutral-600">{t('schedule.notLocated')}</span>
         )}
       </div>
 
@@ -51,7 +51,7 @@ export function StageSchedule({ stages, currentStage, remainingCount }: Props) {
             >
               <div className="flex items-center gap-2">
                 <span
-                  className={`text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shrink-0 ${
+                  className={`text-sm font-bold rounded-full w-6 h-6 flex items-center justify-center shrink-0 ${
                     isCurrent ? 'bg-saffron-600 text-white' : 'bg-neutral-100 text-neutral-500'
                   }`}
                 >
@@ -61,10 +61,10 @@ export function StageSchedule({ stages, currentStage, remainingCount }: Props) {
                   {from} → {to}
                 </span>
                 {isCurrent && (
-                  <span className="text-[10px] font-bold text-saffron-600 uppercase">{t('schedule.today')}</span>
+                  <span className="text-sm font-bold text-saffron-600 uppercase">{t('schedule.today')}</span>
                 )}
               </div>
-              <span className="text-neutral-400 text-xs shrink-0 ml-2">
+              <span className="text-neutral-600 text-sm shrink-0 ml-2">
                 {(stage.endKm - stage.startKm).toFixed(0)} km
               </span>
             </li>

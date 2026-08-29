@@ -16,6 +16,26 @@ Modules M1–M4 are in scope. Crowd detection (M5) is not.
 
 ---
 
+## Documentation
+
+One document per feature in **[docs/](docs/)** — what it does, how it works,
+which files to read, how to run it, how to verify it, and what it cannot do.
+
+| Doc | Covers |
+|---|---|
+| [01 · Home & distance](docs/01-home-distance.md) | M1 — distance to Pandharpur, ETA, GPS smoothing |
+| [02 · Route map & schedule](docs/02-route-map.md) | M2 — the polyline, 15 mukkam stages, regenerating the route |
+| [03 · Facility finder](docs/03-facility-finder.md) | M3 — SOS, and why SOS searches differently |
+| [04 · Camp admin](docs/04-camp-admin.md) | M4 — stable GPS pins, the offline queue |
+| [05 · Palki live location](docs/05-palki-live-location.md) | The packet, the model, the honesty rules |
+| [06 · Demo runbook](docs/06-demo-runbook.md) | The five-minute script for presenting it |
+| [07 · Admin locations module](docs/07-admin-locations.md) | Location CRUD, built to drop into an external dashboard |
+| [08 · Deploy](docs/08-deploy.md) | Supabase, env vars, going to production |
+| [09 · Chainage engine](docs/09-chainage-engine.md) | **Read first.** The one number everything reduces to |
+| [10 · Accessibility](docs/10-accessibility.md) | Type, contrast, touch targets, language, gaps |
+
+---
+
 ## The Palki live-location feature
 
 The headline feature. M1 answers *"where am **I**?"*; this answers *"where is
@@ -65,11 +85,12 @@ It is **not** a neural network and should never be described as one.
   over the same interval — not a ratio of speeds, because a speed measured
   across a lunch halt says nothing about walking pace.
 
-**Demo** — `/demo`, marked SIMULATION. See [DEMO.md](DEMO.md) for the runbook.
+**Demo** — `/demo`, marked SIMULATION. See
+[docs/06-demo-runbook.md](docs/06-demo-runbook.md) for the runbook.
 
 ```bash
-npm run dev
-npm run sim        # separate terminal: 300x, seeded, reproducible
+npm run dev        # terminal 1
+npm run demo       # terminal 2: resets to km 0, then walks at 300x
 ```
 
 Measured against the simulator (which the estimator cannot see): MAE ≈ 0.24 km
@@ -218,6 +239,7 @@ app/
 components/
   Providers.tsx        wraps LangProvider + AppProvider
   DistanceCard.tsx      M1's main card
+  RouteGlance.tsx        M1's map + today's stage, below the number
   AccuracyChip.tsx       ± accuracy badge
   OfflineBanner.tsx       shows when navigator.onLine is false, with cache age
   SimBadge.tsx             shown only when ?sim=1 is active
@@ -252,9 +274,11 @@ lib/palki/           the Palki live-location feature
   airplane.ts                  demo-only simulated connectivity loss
   types.ts
 
-app/api/v1/palki/    packet · route/[version] · ping · accuracy · truth
+app/api/v1/palki/    packet · route/[version] · ping · accuracy · truth · reset
 app/palki/           pilgrim-facing "where is the Palki?"
 app/demo/            SIMULATION dashboard
+
+docs/                 one markdown file per feature — start at docs/README.md
 
 sim/
   simulator.mjs        separate process; imports nothing from the app
@@ -269,6 +293,7 @@ tests/
   estimator.test.mts          32 checks
 
 scripts/
+  demo_start.mjs        reset the Palki state, then launch the simulator
   build_route_data.py   ← yours, untouched — one-time OSM harvest + pois.json/seed.sql
   test_chainage.mjs      ← yours, untouched — sanity check against a synthetic route
   build_road_route.mjs    snaps the mukkam waypoints to real roads (OSRM), writes route.json
@@ -365,7 +390,7 @@ and run `build_route_data.py` instead — nothing downstream changes.
 ### 3. Environment
 
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 ```
 
 ```
@@ -469,9 +494,12 @@ built in at every layer:
 
 ## Bundle budget
 
-Initial route (`/`) is ~92 KB gzipped First Load JS as of this build —
-under the 300 KB target. Leaflet/`react-leaflet` are only pulled in by M2's
-map view (dynamically imported), not by M1, so the home screen stays light.
+Initial route (`/`) is 135 KB First Load JS as of this build — under the
+300 KB target. Leaflet/`react-leaflet` are dynamically imported wherever a
+map appears (`/route`, and the glance on `/`), so they land in a lazy chunk
+fetched after the distance number has already painted, never in the initial
+payload. `/help` is the heaviest route at 200 KB because it pulls the map in
+too.
 Turf functions are imported individually
 (`@turf/nearest-point-on-line`, not `turf`) for the same reason.
 

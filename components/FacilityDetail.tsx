@@ -36,7 +36,7 @@ export function FacilityDetail({ facility, routeCoordinates, you, onBack }: Prop
         <div className="flex items-start justify-between gap-2">
           <h2 className="text-lg font-bold text-neutral-800">{facility.name}</h2>
           <span
-            className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLE[facility.status] ?? ''}`}
+            className={`shrink-0 rounded-full px-2.5 py-1 text-sm font-bold ${STATUS_STYLE[facility.status] ?? ''}`}
           >
             {t(`nearby.status.${facility.status}`)}
           </span>
@@ -49,7 +49,7 @@ export function FacilityDetail({ facility, routeCoordinates, you, onBack }: Prop
           <span>🚶 {formatEta(facility.totalWalkKm)}</span>
         </div>
         {!facility.isAhead && (
-          <p className="mt-1 text-xs text-neutral-400">{t('nearby.behind')}</p>
+          <p className="mt-1 text-sm text-neutral-600">{t('nearby.behind')}</p>
         )}
 
         {facility.contactPhone && (

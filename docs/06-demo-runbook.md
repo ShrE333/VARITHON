@@ -7,8 +7,8 @@ Rehearse this once end to end. It takes about five minutes to run.
 ```bash
 npm install
 npm run build:data      # route + schedule + fixtures (only needed once)
-npm run test            # 3 suites, all green
-npm run dev
+npm run test            # 3 suites, 66 checks, all green
+npm run dev             # leave this running in its own terminal
 ```
 
 Open two browser windows:
@@ -36,13 +36,21 @@ Point at the red banner on `/demo` before anyone reads it themselves:
 Disclosing this first is the whole posture of the feature. A judge who
 discovers it themselves will assume you were hiding it.
 
-### 2. Start the simulator (30s)
+### 2. Start the Wari (30s)
 
 ```bash
-npm run sim          # 300x — a 12-hour walking day in about 2.5 minutes
+npm run demo         # 300x — a 12-hour walking day in about 2.5 minutes
 ```
 
-Or `npm run sim:fast` (1200x) if you are short on time.
+Or `npm run demo:fast` (1200x) if you are short on time.
+
+`npm run demo` **resets first** — it clears the estimator state, the pings,
+the stored forecasts and the simulator truth, then starts the Palki from
+km 0. That is what makes this rehearsable: run it twice in a row and the
+second run looks exactly like the first. Without the reset, run two inherits
+run one's state and the Palki appears to teleport the moment it starts.
+
+If you want to resume rather than restart, `npm run demo -- --no-reset`.
 
 Watch the terminal: each line prints the true position, the model's estimate,
 and the error. Then switch to window A. The red and blue markers converge
@@ -170,5 +178,17 @@ npx kill-port 3000 3001   # or Stop-Process on the PIDs holding the ports
 **Everything reads km 0** — the estimator has no state yet. Give the
 simulator two pings (a few seconds at 300x).
 
-**Fresh start** — restart `npm run dev`. In-memory state is cleared with the
-process (see the note in `lib/palki/store.ts` about serverless).
+**The Palki starts somewhere it should not, or jumps forward** — leftover
+state from an earlier run. This is what the reset is for:
+
+```bash
+npm run demo:reset       # clear it and stop
+npm run demo             # or just start again — it resets first anyway
+```
+
+**Fresh start** — `npm run demo` is the fresh start; it does not need the dev
+server restarted. If you want to clear state without walking, use
+`npm run demo:reset`. With Supabase configured the reset deletes the
+simulated rows there too (never the live ones — every delete is filtered on
+`is_simulated`). Without Supabase, state lives in-process and also dies with
+`npm run dev` (see the note in `lib/palki/store.ts` about serverless).

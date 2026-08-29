@@ -9,7 +9,7 @@ export function AccuracyChip({ accuracyM }: { accuracyM: number }) {
         : 'bg-red-100 text-red-800';
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${tone}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-sm font-semibold ${tone}`}>
       ± {Math.round(accuracyM)} m
     </span>
   );

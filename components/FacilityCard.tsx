@@ -32,7 +32,7 @@ export function FacilityCard({ facility, onSelect }: Props) {
           </p>
         </div>
         <span
-          className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_STYLE[facility.status] ?? ''}`}
+          className={`shrink-0 rounded-full px-2.5 py-1 text-sm font-bold ${STATUS_STYLE[facility.status] ?? ''}`}
         >
           {t(`nearby.status.${facility.status}`)}
         </span>

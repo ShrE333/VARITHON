@@ -78,16 +78,16 @@ export default function HelpPage() {
         >
           ← {t('nearby.back')}
         </button>
-        <h1 className="text-lg font-bold text-neutral-800">
+        <h1 className="text-2xl font-bold text-neutral-900">
           {CATEGORY_ICON[category]} {t(`nearby.category.${category}`)}
         </h1>
 
         {chainageKm === null ? (
-          <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-neutral-400">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-neutral-600">
             {t('nearby.needLocation')}
           </div>
         ) : list.length === 0 ? (
-          <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-neutral-400">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-neutral-600">
             {t('nearby.empty')}
           </div>
         ) : (
@@ -104,7 +104,7 @@ export default function HelpPage() {
   // --- Categories view ---
   return (
     <div className="mx-auto max-w-md space-y-4 px-4 pb-6 pt-4">
-      <h1 className="text-lg font-bold text-neutral-800">{t('nearby.title')}</h1>
+      <h1 className="text-2xl font-bold text-neutral-900">{t('nearby.title')}</h1>
 
       {error && !facilities.length && (
         <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm text-amber-800">
@@ -115,11 +115,11 @@ export default function HelpPage() {
       <button
         onClick={handleSos}
         disabled={chainageKm === null}
-        className="tap-target w-full rounded-2xl bg-red-600 py-5 text-lg font-bold text-white shadow-md active:bg-red-700 disabled:opacity-50"
+        className="tap-target w-full rounded-2xl bg-red-600 py-7 text-2xl font-bold text-white shadow-md active:bg-red-700 disabled:opacity-60"
       >
         🆘 {t('nearby.sos')}
       </button>
-      <p className="text-center text-xs text-neutral-400">{t('nearby.sosSubtitle')}</p>
+      <p className="text-center text-sm text-neutral-600">{t('nearby.sosSubtitle')}</p>
 
       <div className="grid grid-cols-2 gap-3 pt-2">
         {(Object.keys(KIND_GROUPS) as Category[]).map((cat) => (
@@ -129,7 +129,7 @@ export default function HelpPage() {
             className="tap-target flex flex-col items-center justify-center gap-1 rounded-2xl border border-neutral-200 bg-white py-6 shadow-sm active:bg-neutral-50"
           >
             <span className="text-3xl">{CATEGORY_ICON[cat]}</span>
-            <span className="text-sm font-semibold text-neutral-700">
+            <span className="text-lg font-semibold text-neutral-800">
               {t(`nearby.category.${cat}`)}
             </span>
           </button>
@@ -137,7 +137,7 @@ export default function HelpPage() {
       </div>
 
       {!loading && cachedAt && (
-        <p className="pt-2 text-center text-xs text-neutral-400">
+        <p className="pt-2 text-center text-sm text-neutral-600">
           {facilities.length} {t('nearby.spotsLoaded')}
         </p>
       )}

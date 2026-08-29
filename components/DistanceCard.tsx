@@ -55,7 +55,7 @@ export function DistanceCard({ route, fix, gpsStatus, rejectedCount, onRetry }: 
         </p>
         {waiting && <p className="text-sm text-neutral-500">{t('home.waitingSignalSub')}</p>}
         {rejectedCount > 0 && (
-          <p className="text-xs text-neutral-400">{t('home.rejectedCount', { n: rejectedCount })}</p>
+          <p className="text-sm text-neutral-600">{t('home.rejectedCount', { n: rejectedCount })}</p>
         )}
       </div>
     );
@@ -81,7 +81,7 @@ export function DistanceCard({ route, fix, gpsStatus, rejectedCount, onRetry }: 
         <div className="mt-4 flex items-center justify-center gap-2 text-neutral-700 bg-neutral-50 rounded-xl py-3">
           <span className="text-xl">🚶</span>
           <span className="font-semibold">{formatEta(d.routeKm)}</span>
-          <span className="text-xs text-neutral-400">({t('home.paceNote')})</span>
+          <span className="text-sm text-neutral-600">({t('home.paceNote')})</span>
         </div>
 
         <div className="mt-3 text-center text-sm text-neutral-500">

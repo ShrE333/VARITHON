@@ -72,9 +72,11 @@ interface Props {
   route: RouteIndex;
   fix: LocationFix | null;
   routePos: RoutePosition | null;
+  /** Map height in px. The home glance wants a shorter map than /route does. */
+  height?: number;
 }
 
-export function RouteMap({ route, fix, routePos }: Props) {
+export function RouteMap({ route, fix, routePos, height = 420 }: Props) {
   const { t } = useLang();
   const [autoFollow, setAutoFollow] = useState(true);
   const initialBoundsRef = useRef<LatLngBoundsExpression>(
@@ -85,7 +87,7 @@ export function RouteMap({ route, fix, routePos }: Props) {
   const dest: LatLngTuple = [route.bundle.destination.lat, route.bundle.destination.lng];
 
   return (
-    <div className="relative rounded-2xl overflow-hidden border border-neutral-200" style={{ height: 420 }}>
+    <div className="relative rounded-2xl overflow-hidden border border-neutral-200" style={{ height }}>
       <style>{`
         @keyframes wari-pulse {
           0% { box-shadow: 0 0 0 0 rgba(234,88,12,.5); }

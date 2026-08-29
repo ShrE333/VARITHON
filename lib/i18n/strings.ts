@@ -16,6 +16,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     'nav.route': 'मार्ग',
     'nav.help': 'मदत',
     'nav.admin': 'शिबिर नोंदणी',
+    'nav.label': 'मुख्य नेव्हिगेशन',
 
     'home.title': 'पंढरपूर पर्यंत अंतर',
     'home.remaining': 'शिल्लक अंतर',
@@ -37,6 +38,10 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     'home.locating': 'स्थान शोधत आहे…',
     'home.stage': 'आजचा टप्पा',
     'home.destination': 'पंढरपूर',
+    'home.routeTitle': 'आजचा मार्ग',
+    'home.fullRoute': 'पूर्ण मार्ग व वेळापत्रक पहा',
+    'home.mapHint': 'निळा ठिपका म्हणजे तुम्ही',
+    'home.stageOf': 'टप्पा {n} पैकी {total}',
 
     'offline.banner': 'ऑफलाइन मोड',
     'offline.cacheAge': '{age} पूर्वीचा डेटा',
@@ -134,6 +139,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     'nav.route': 'मार्ग',
     'nav.help': 'मदद',
     'nav.admin': 'शिविर पंजीकरण',
+    'nav.label': 'मुख्य नेविगेशन',
 
     'common.loading': 'लोड हो रहा है…',
     'common.retry': 'फिर कोशिश करें',
@@ -141,6 +147,11 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     'common.hr': 'घंटे',
     'common.km': 'किमी',
     'common.m': 'मी',
+
+    'home.routeTitle': 'आज का मार्ग',
+    'home.fullRoute': 'पूरा मार्ग और समय-सारणी देखें',
+    'home.mapHint': 'नीला बिंदु आप हैं',
+    'home.stageOf': 'चरण {n} / {total}',
 
     'offline.banner': 'ऑफ़लाइन मोड',
     'offline.justNow': 'अभी',
@@ -222,6 +233,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     'nav.route': 'Route',
     'nav.help': 'Help',
     'nav.admin': 'Camp Registration',
+    'nav.label': 'Main navigation',
 
     'home.title': 'Distance to Pandharpur',
     'home.remaining': 'Remaining',
@@ -243,6 +255,10 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     'home.locating': 'Locating…',
     'home.stage': "Today's stage",
     'home.destination': 'Pandharpur',
+    'home.routeTitle': 'Your route today',
+    'home.fullRoute': 'See full route & schedule',
+    'home.mapHint': 'The blue dot is you',
+    'home.stageOf': 'Stage {n} of {total}',
 
     'offline.banner': 'Offline mode',
     'offline.cacheAge': 'data from {age}',

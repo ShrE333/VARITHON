@@ -18,18 +18,29 @@ export function BottomNav() {
   if (pathname.startsWith('/admin') || pathname.startsWith('/demo')) return null;
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 bg-white border-t border-neutral-200 flex safe-bottom z-40">
+    <nav
+      aria-label={t('nav.label')}
+      className="fixed bottom-0 inset-x-0 bg-white border-t-2 border-neutral-300 flex safe-bottom z-40"
+    >
       {ITEMS.map((item) => {
         const active = pathname === item.href;
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex-1 tap-target flex flex-col items-center justify-center gap-0.5 py-2 text-xs font-medium ${
-              active ? 'text-saffron-600' : 'text-neutral-500'
+            // Read out by a screen reader as "current page", and the only cue
+            // besides colour — colour alone fails for the red/green colour
+            // blindness that ~8% of men have.
+            aria-current={active ? 'page' : undefined}
+            className={`flex-1 tap-target flex flex-col items-center justify-center gap-0.5 py-2 text-base font-semibold border-t-4 ${
+              active
+                ? 'text-saffron-700 border-saffron-600 bg-saffron-50'
+                : 'text-neutral-600 border-transparent'
             }`}
           >
-            <span className="text-xl leading-none">{item.icon}</span>
+            <span className="text-2xl leading-none" aria-hidden>
+              {item.icon}
+            </span>
             {t(item.key)}
           </Link>
         );

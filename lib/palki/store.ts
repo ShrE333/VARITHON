@@ -266,6 +266,50 @@ export function truthAt(ts: string): number | null {
   return before?.sKm ?? after?.sKm ?? null;
 }
 
+export interface ResetReport {
+  supabase: boolean;
+  deleted: string[];
+  errors: string[];
+}
+
+/**
+ * Wipe a simulated run so a demo can start from km 0 again.
+ *
+ * Every delete is filtered on `is_simulated` (or, for palki_sim_truth, on
+ * the fact that the table only ever holds simulator output). A reset run by
+ * mistake during a real Wari must not be able to erase real history — losing
+ * the demo run is recoverable, losing the live one is not.
+ *
+ * palki_scores is not listed: it cascades from palki_forecasts.
+ */
+export async function resetSimulated(): Promise<ResetReport> {
+  resetMemory();
+
+  if (!supabaseAdmin) return { supabase: false, deleted: [], errors: [] };
+
+  const deleted: string[] = [];
+  const errors: string[] = [];
+
+  for (const table of ['palki_forecasts', 'palki_pings', 'palki_state'] as const) {
+    const { error } = await supabaseAdmin
+      .from(table)
+      .delete()
+      .eq('route_slug', ROUTE_SLUG)
+      .eq('is_simulated', true);
+    if (error) errors.push(`${table}: ${error.message}`);
+    else deleted.push(table);
+  }
+
+  const { error: truthError } = await supabaseAdmin
+    .from('palki_sim_truth')
+    .delete()
+    .eq('route_slug', ROUTE_SLUG);
+  if (truthError) errors.push(`palki_sim_truth: ${truthError.message}`);
+  else deleted.push('palki_sim_truth');
+
+  return { supabase: true, deleted, errors };
+}
+
 export function resetMemory(): void {
   memory.state.clear();
   memory.pings.length = 0;

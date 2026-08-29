@@ -2,13 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Accessibility baseline.
+ *
+ * The users here are a village grandmother with reading glasses, a ten-year-old
+ * walking beside her, and a volunteer holding the phone at arm's length in
+ * direct sun. Everything below is sized for the worst of those three, not the
+ * average one.
+ */
+
 html {
   /* prevent iOS double-tap zoom on the big tap targets */
   touch-action: manipulation;
+
+  /*
+   * 18px base instead of the browser's 16. Every Tailwind size is relative to
+   * this, so the whole app steps up together rather than needing a per-class
+   * override. Devanagari in particular reads badly below ~17px: the matras
+   * that distinguish ा from ी sit above the line and are the first thing to
+   * disappear for a presbyopic eye.
+   */
+  font-size: 18px;
+
+  /* Honour the OS text-size setting instead of overriding it. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   overscroll-behavior-y: contain;
+  /* Slightly looser than default — Devanagari needs the vertical room. */
+  line-height: 1.6;
+}
+
+/*
+ * A focus ring that is actually visible.
+ *
+ * :focus-visible, not :focus, so it appears for keyboard and switch-control
+ * users without putting a ring around every button a thumb has just tapped.
+ */
+:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/*
+ * Someone who has asked their phone to stop animating usually did so because
+ * motion makes them ill or makes text unreadable. The pulsing GPS dot and the
+ * map's pan animation are the two things this actually affects.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @layer utilities {

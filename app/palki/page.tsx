@@ -83,7 +83,7 @@ export default function PalkiPage() {
       <header className="flex items-center justify-between">
         <h1 className="text-lg font-bold text-neutral-800">{t('palki.title')}</h1>
         <div className="flex items-center gap-2">
-          {refreshing && <span className="text-xs text-neutral-400">{t('palki.refreshing')}</span>}
+          {refreshing && <span className="text-sm text-neutral-600">{t('palki.refreshing')}</span>}
           <LangToggle />
         </div>
       </header>
@@ -96,7 +96,7 @@ export default function PalkiPage() {
       )}
 
       {loading && !packet && (
-        <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-neutral-400">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-neutral-600">
           {t('common.loading')}
         </div>
       )}
@@ -104,7 +104,7 @@ export default function PalkiPage() {
       {!loading && !packet && (
         <div className="rounded-2xl border border-neutral-200 bg-white p-8 text-center text-neutral-500">
           {t('palki.noData')}
-          {staleError && <p className="mt-2 text-xs text-neutral-400">{staleError}</p>}
+          {staleError && <p className="mt-2 text-sm text-neutral-600">{staleError}</p>}
         </div>
       )}
 
@@ -134,7 +134,7 @@ export default function PalkiPage() {
                     🚶 {formatEta(Math.abs(relative.deltaKm))}
                   </p>
                 )}
-                <p className="mt-2 text-xs text-neutral-400">🔒 {t('palki.privacy')}</p>
+                <p className="mt-2 text-sm text-neutral-600">🔒 {t('palki.privacy')}</p>
               </div>
             ) : (
               <p className="text-center text-sm text-neutral-500">{t('palki.needLocation')}</p>
@@ -143,7 +143,7 @@ export default function PalkiPage() {
 
           {coordinates && <PalkiMap coordinates={coordinates} view={view} you={null} />}
 
-          <p className="text-center text-xs text-neutral-400">
+          <p className="text-center text-sm text-neutral-600">
             {t('palki.age', { age: formatAge(view.observationAgeMs) })}
           </p>
         </>

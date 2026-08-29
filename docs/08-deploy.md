@@ -105,7 +105,7 @@ to whatever `--base` you give it. It doesn't need to run on Vercel itself.
 4. It should still load and show the last-known estimate, correctly labeled
    as stale (age + ± uncertainty), and keep counting up in age as it sits
    there with no network — see the freshness tiers in
-   [lib/palki/client.ts](lib/palki/client.ts).
+   [lib/palki/client.ts](../lib/palki/client.ts).
 
 If step 3 fails to load anything at all: the very first visit needs internet
 to install the service worker in the first place — a phone that has *never*

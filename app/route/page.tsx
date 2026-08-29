@@ -23,7 +23,7 @@ export default function RoutePage() {
     return (
       <div className="max-w-md mx-auto px-4 pt-4 pb-6">
         <h1 className="text-lg font-bold text-neutral-800 mb-4">{t('nav.route')}</h1>
-        <div className="rounded-2xl bg-white border border-neutral-200 p-8 text-center text-neutral-400">
+        <div className="rounded-2xl bg-white border border-neutral-200 p-8 text-center text-neutral-600">
           {routeLoading ? t('common.loading') : t('common.retry')}
         </div>
       </div>

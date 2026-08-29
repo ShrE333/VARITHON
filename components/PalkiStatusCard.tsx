@@ -142,7 +142,7 @@ export function PalkiStatusCard({ packet, view, next, segmentNames, totalKm }: P
               >
                 <span className="font-medium text-neutral-700">{placeName(l)}</span>
                 <span
-                  className={`tabular-nums ${l.beyondForecast ? 'text-neutral-400' : 'text-neutral-600'}`}
+                  className={`tabular-nums ${l.beyondForecast ? 'text-neutral-500' : 'text-neutral-800'}`}
                 >
                   {l.eta ? `${l.beyondForecast ? '~' : ''}${formatClock(l.eta)}` : '—'}
                 </span>
