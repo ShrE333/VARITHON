@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VariMitra — Feature</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --orange:#E8630C; --orange-dark:#C94F06; --maroon:#8B1B1B; --maroon-dark:#5C1010;
+    --cream:#FDF8F1; --card:#FFFFFF; --text-dark:#2B2320; --text-muted:#8A7F73;
+    --green:#1F9D55; --amber:#E0A825; --red:#D64545; --blue:#2563EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--cream);color:var(--text-dark);}
+
+  .fd-top{
+    position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #F1EAE0;
+    display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
+  }
+  .fd-back{
+    display:inline-flex;align-items:center;gap:8px;color:var(--text-dark);text-decoration:none;
+    font-weight:700;font-size:13.5px;padding:8px 14px;border-radius:9px;background:#F5EFE5;
+  }
+  .fd-back:hover{background:#EADFCF;}
+  .fd-brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;color:var(--maroon);}
+  .fd-brand i{color:var(--orange);}
+
+  .fd-hero{
+    padding:56px 28px 44px;color:#fff;position:relative;overflow:hidden;
+  }
+  .fd-hero::after{
+    content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%, rgba(255,255,255,.14), transparent 55%);
+  }
+  .fd-hero-inner{max-width:920px;margin:0 auto;position:relative;}
+  .fd-tag{
+    display:inline-block;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+    background:rgba(255,255,255,.18);padding:6px 14px;border-radius:99px;margin-bottom:16px;
+  }
+  .fd-hero-top{display:flex;align-items:center;gap:18px;margin-bottom:16px;}
+  .fd-hero-ic{
+    width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,.16);
+    display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;
+    box-shadow:0 10px 24px rgba(0,0,0,.18);
+  }
+  .fd-hero h1{font-size:32px;font-weight:800;line-height:1.15;}
+  .fd-hero .sub{font-size:15px;line-height:1.6;max-width:640px;opacity:.95;margin-top:6px;}
+
+  .fd-stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px;}
+  .fd-stat{
+    background:rgba(255,255,255,.14);border-radius:14px;padding:14px 20px;min-width:130px;
+    backdrop-filter:blur(2px);
+  }
+  .fd-stat b{display:block;font-size:22px;font-weight:800;}
+  .fd-stat span{font-size:11px;font-weight:600;opacity:.9;text-transform:uppercase;letter-spacing:.3px;}
+
+  .fd-body{max-width:920px;margin:0 auto;padding:44px 28px 60px;}
+
+  .fd-section-title{font-size:19px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+  .fd-section-title i{color:var(--orange);}
+
+  .fd-highlights{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:44px;}
+  .fd-hcard{
+    background:var(--card);border:1px solid #F1EAE0;border-radius:14px;padding:18px 20px;
+    display:flex;gap:14px;align-items:flex-start;box-shadow:0 4px 14px rgba(60,40,20,.04);
+  }
+  .fd-hcard .num{
+    width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:800;font-size:12px;
+  }
+  .fd-hcard p{font-size:13.5px;font-weight:600;line-height:1.5;color:var(--text-dark);}
+
+  .fd-panel{
+    background:var(--card);border:1px solid #F1EAE0;border-radius:16px;padding:26px;margin-bottom:36px;
+  }
+  .fd-panel p{font-size:14px;line-height:1.7;color:#4A423C;}
+
+  .fd-cta{
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;
+    background:linear-gradient(135deg,#FCEBD8,#F5DCC0);border-radius:16px;padding:24px 26px;margin-bottom:44px;
+  }
+  .fd-cta p{font-size:14px;font-weight:700;color:var(--maroon-dark);}
+  .fd-cta a{
+    background:var(--maroon);color:#fff;font-weight:700;font-size:13px;padding:11px 22px;border-radius:9px;
+    text-decoration:none;white-space:nowrap;
+  }
+  .fd-cta a:hover{background:var(--maroon-dark);}
+
+  .fd-related{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .fd-rcard{
+    background:var(--card);border:1px solid #F1EAE0;border-radius:14px;padding:16px;text-decoration:none;color:inherit;
+    display:flex;flex-direction:column;gap:10px;transition:transform .15s, box-shadow .15s;
+  }
+  .fd-rcard:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(60,40,20,.08);}
+  .fd-rcard .ic{width:36px;height:36px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .fd-rcard b{font-size:13.5px;font-weight:800;}
+  .fd-rcard span{font-size:12px;color:var(--text-muted);line-height:1.4;}
+
+  @media (max-width:720px){
+    .fd-highlights, .fd-related{grid-template-columns:1fr;}
+    .fd-hero h1{font-size:24px;}
+    .fd-hero-top{flex-direction:column;align-items:flex-start;gap:12px;}
+    .fd-cta{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<div class="fd-top">
+  <a class="fd-back" id="fdBack" href="varimitra.html"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="common.back">Back</span></a>
+  <div class="fd-brand"><i class="fa-solid fa-compass"></i> VariMitra</div>
+</div>
+
+<section class="fd-hero" id="fdHero">
+  <div class="fd-hero-inner">
+    <span class="fd-tag" id="fdTag">Feature</span>
+    <div class="fd-hero-top">
+      <div class="fd-hero-ic" id="fdIcon"><i></i></div>
+      <div>
+        <h1 id="fdTitle">Loading…</h1>
+      </div>
+    </div>
+    <p class="sub" id="fdDesc"></p>
+    <div class="fd-stats" id="fdStats"></div>
+  </div>
+</section>
+
+<div class="fd-body">
+  <h3 class="fd-section-title"><i class="fa-solid fa-list-check"></i><span data-i18n="common.whatFeatureDoes">What this feature does</span></h3>
+  <div class="fd-highlights" id="fdHighlights"></div>
+
+  <div class="fd-panel">
+    <h3 class="fd-section-title" style="margin-bottom:10px;"><i class="fa-solid fa-lightbulb"></i><span data-i18n="common.biggerPicture">The bigger picture</span></h3>
+    <p id="fdLong"></p>
+  </div>
+
+  <div class="fd-cta">
+    <p id="fdCtaText" data-i18n="common.exploreLive">Explore this on the live platform.</p>
+    <a id="fdCtaBtn" href="varimitra.html" data-i18n="common.goToPortal">Go to VariMitra</a>
+  </div>
+
+  <h3 class="fd-section-title"><i class="fa-solid fa-grip"></i><span data-i18n="common.relatedFeatures">Related features</span></h3>
+  <div class="fd-related" id="fdRelated"></div>
+</div>
+
+<script src="assets/translations.js"></script>
+<script src="assets/feature-translations.js"></script>
+<script src="assets/features-data.js"></script>
+<script src="assets/i18n.js"></script>
+<script src="assets/feature-detail.js"></script>
+</body>
+</html>

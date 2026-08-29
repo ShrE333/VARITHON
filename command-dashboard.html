@@ -1,0 +1,5346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<script>
+  /* ===== ADMIN ACCESS CHECK ===== */
+  (function(){
+    try {
+      var saved = localStorage.getItem('varimitra_user');
+
+      if (!saved) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      var user = JSON.parse(saved);
+
+      if (user.role !== 'admin') {
+        window.location.href = 'varimitra.html';
+        return;
+      }
+
+    } catch(e) {
+      window.location.href = 'index.html';
+    }
+  })();
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VariMitra Temple Command Dashboard</title>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+>
+
+<link rel="stylesheet" href="assets/modal.css">
+
+<style>
+
+:root{
+  --maroon:#8B1B1B;
+  --maroon-dark:#5C1010;
+  --orange:#E8630C;
+  --orange-dark:#C94F06;
+  --cream:#FBF6EE;
+
+  --card-border:#ECE4D8;
+
+  --text-dark:#2B2320;
+  --text-muted:#7A7068;
+
+  --green:#1F9D55;
+  --amber:#E0A825;
+  --red:#D64545;
+  --blue:#2563EB;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  background:var(--cream);
+  color:var(--text-dark);
+  font-size:13.5px;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+button{
+  font-family:inherit;
+  cursor:pointer;
+  border:none;
+}
+
+::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#E4D9C9;
+  border-radius:8px;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+
+  background:#fff;
+  border-bottom:1px solid var(--card-border);
+
+  padding:10px 22px;
+
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:230px;
+}
+
+.sidebar-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  width:38px;
+  height:38px;
+
+  border-radius:9px;
+
+  background:var(--cream);
+  border:1px solid var(--card-border);
+
+  font-size:16px;
+  color:var(--maroon);
+
+  flex-shrink:0;
+}
+
+.sidebar-toggle:hover{
+  background:#FBF1E7;
+}
+
+.sidebar-overlay{
+  display:none;
+
+  position:fixed;
+  inset:0;
+
+  background:rgba(43,35,32,.4);
+
+  z-index:90;
+}
+
+.sidebar-overlay.open{
+  display:block;
+}
+
+.brand .logo{
+  width:40px;
+  height:40px;
+
+  border-radius:50%;
+
+  background:linear-gradient(
+    135deg,
+    var(--orange),
+    var(--maroon)
+  );
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+  font-size:17px;
+
+  flex-shrink:0;
+}
+
+.brand .name{
+  font-weight:800;
+  font-size:17px;
+  color:var(--maroon);
+  line-height:1;
+}
+
+.brand .tagline{
+  font-size:9.5px;
+  color:var(--text-muted);
+  line-height:1.3;
+}
+
+.page-title{
+  border-left:1px solid var(--card-border);
+  padding-left:18px;
+}
+
+.page-title h1{
+  font-size:16px;
+  margin:0;
+  font-weight:800;
+}
+
+.page-title p{
+  font-size:11px;
+  margin:2px 0 0;
+  color:var(--text-muted);
+}
+
+.search-box{
+  flex:1;
+  max-width:340px;
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  background:var(--cream);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+
+  padding:8px 14px;
+
+  color:var(--text-muted);
+  font-size:12.5px;
+}
+
+.search-box input{
+  border:none;
+  background:transparent;
+  outline:none;
+
+  flex:1;
+
+  font-size:12.5px;
+  color:var(--text-dark);
+}
+
+.search-box kbd{
+  font-size:10.5px;
+  color:#B3AAA0;
+
+  border:1px solid #E4DCD0;
+
+  padding:1px 5px;
+  border-radius:4px;
+}
+
+.topbar-right{
+  display:flex;
+  align-items:center;
+  gap:16px;
+
+  flex-shrink:0;
+
+  font-size:12.5px;
+  font-weight:600;
+}
+
+.dt-chip{
+  display:flex;
+  align-items:center;
+  gap:7px;
+
+  background:var(--cream);
+  border:1px solid var(--card-border);
+
+  border-radius:8px;
+
+  padding:6px 12px;
+}
+
+.lang-pick{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.bell{
+  position:relative;
+  font-size:17px;
+}
+
+.bell .dot{
+  position:absolute;
+  top:-6px;
+  right:-8px;
+
+  background:var(--red);
+  color:#fff;
+
+  font-size:9px;
+  font-weight:700;
+
+  border-radius:8px;
+
+  padding:1px 5px;
+}
+
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.user-chip img{
+  width:32px;
+  height:32px;
+
+  border-radius:50%;
+
+  object-fit:cover;
+
+  border:2px solid var(--orange);
+}
+
+.user-chip .who b{
+  font-size:12.5px;
+  display:block;
+}
+
+.user-chip .who span{
+  font-size:10.5px;
+  color:var(--text-muted);
+}
+
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+.layout{
+  display:flex;
+  align-items:flex-start;
+}
+
+.sidebar{
+  width:220px;
+  flex-shrink:0;
+
+  background:#fff;
+  border-right:1px solid var(--card-border);
+
+  min-height:calc(100vh - 60px);
+
+  padding:14px 12px;
+
+  position:fixed;
+  top:60px;
+  left:0;
+  bottom:0;
+
+  z-index:100;
+
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+
+  overflow-y:auto;
+
+  transform:translateX(-100%);
+  transition:transform .25s ease;
+
+  box-shadow:4px 0 20px rgba(0,0,0,.08);
+}
+
+.sidebar.open{
+  transform:translateX(0);
+}
+
+.side-link{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:10px 12px;
+
+  border-radius:9px;
+
+  font-size:13px;
+  font-weight:600;
+
+  color:#4A423C;
+}
+
+.side-link .l{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.side-link i.icn{
+  width:16px;
+  text-align:center;
+  color:#8A8078;
+}
+
+.side-link:hover{
+  background:#FBF1E7;
+}
+
+.side-link.active{
+  background:var(--maroon);
+  color:#fff;
+}
+
+.side-link.active i.icn{
+  color:#fff;
+}
+
+.side-link .badge{
+  background:var(--red);
+  color:#fff;
+
+  font-size:10px;
+  font-weight:700;
+
+  border-radius:8px;
+
+  padding:1px 7px;
+}
+
+.side-link .chev{
+  font-size:10px;
+  color:#C7BEB4;
+}
+
+.side-promo{
+  margin:16px 4px 8px;
+
+  border-radius:12px;
+  overflow:hidden;
+
+  position:relative;
+
+  height:130px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30,10,10,.15),
+      rgba(20,5,5,.85)
+    ),
+    radial-gradient(
+      circle at 30% 20%,
+      #b5651d,
+      #3b1c0d 75%
+    );
+
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+
+  padding:12px;
+
+  color:#fff;
+}
+
+.side-promo b{
+  font-size:13px;
+}
+
+.side-promo span{
+  font-size:10.5px;
+  opacity:.9;
+
+  display:flex;
+  align-items:center;
+  gap:5px;
+
+  margin-top:4px;
+}
+
+.side-promo span i{
+  color:var(--green);
+  font-size:7px;
+}
+
+.side-status{
+  margin:10px 4px 0;
+
+  background:var(--cream);
+
+  border:1px solid var(--card-border);
+
+  border-radius:12px;
+
+  padding:12px;
+}
+
+.side-status .row{
+  display:flex;
+  align-items:center;
+
+  gap:7px;
+
+  font-size:12px;
+  font-weight:700;
+
+  margin-bottom:4px;
+}
+
+.side-status .row i{
+  color:var(--green);
+  font-size:8px;
+}
+
+.side-status p{
+  margin:0 0 8px;
+
+  font-size:11px;
+
+  color:var(--text-muted);
+}
+
+.side-status button{
+  width:100%;
+
+  background:#fff;
+
+  border:1px solid var(--card-border);
+
+  padding:7px;
+
+  border-radius:7px;
+
+  font-size:11.5px;
+  font-weight:700;
+
+  color:var(--maroon);
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.content{
+  flex:1;
+
+  padding:18px 20px;
+
+  min-width:0;
+}
+
+
+/* =========================================================
+   STAT STRIP
+========================================================= */
+
+.stat-strip{
+  display:grid;
+
+  grid-template-columns:
+    repeat(6,1fr);
+
+  gap:12px;
+
+  margin-bottom:18px;
+}
+
+.stat-card{
+  background:#fff;
+
+  border:1px solid var(--card-border);
+
+  border-radius:12px;
+
+  padding:14px;
+
+  display:flex;
+
+  gap:10px;
+
+  align-items:flex-start;
+}
+
+.stat-card .ic{
+  width:38px;
+  height:38px;
+
+  border-radius:9px;
+
+  flex-shrink:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+  font-size:15px;
+}
+
+.stat-card .lbl{
+  font-size:11px;
+  color:var(--text-muted);
+  font-weight:600;
+}
+
+.stat-card .val{
+  font-size:19px;
+  font-weight:800;
+
+  margin:1px 0 2px;
+}
+
+.stat-card .delta{
+  font-size:10.5px;
+  font-weight:700;
+}
+
+.stat-card .delta.up{
+  color:var(--red);
+}
+
+.stat-card .delta.upgood{
+  color:var(--green);
+}
+
+.stat-card .delta.neutral{
+  color:var(--text-muted);
+}
+
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.panel{
+  background:#fff;
+
+  border:1px solid var(--card-border);
+
+  border-radius:14px;
+
+  padding:16px;
+}
+
+.panel-head{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  margin-bottom:12px;
+}
+
+.panel-head h3{
+  margin:0;
+
+  font-size:14.5px;
+
+  font-weight:800;
+
+  display:flex;
+  align-items:center;
+
+  gap:8px;
+}
+
+.panel-head .tag-live{
+  background:var(--red);
+
+  color:#fff;
+
+  font-size:9.5px;
+  font-weight:800;
+
+  padding:2px 8px;
+
+  border-radius:5px;
+
+  letter-spacing:.5px;
+}
+
+.panel-head a{
+  font-size:11.5px;
+
+  color:var(--orange);
+
+  font-weight:700;
+}
+
+
+/* =========================================================
+   UPDATED CCTV SECTION
+   MATCHES REFERENCE IMAGE
+========================================================= */
+
+.main-grid{
+  display:flex;
+
+  flex-direction:column;
+
+  gap:18px;
+
+  margin-bottom:18px;
+}
+
+
+/* CCTV GRID */
+
+.cctv-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  grid-template-rows:
+    120px 120px;
+
+  gap:8px;
+
+  width:100%;
+}
+
+.cctv-tile{
+  position:relative;
+
+  border-radius:10px;
+
+  overflow:hidden;
+
+  height:100%;
+
+  min-height:0;
+
+  color:#fff;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:space-between;
+
+  padding:8px;
+
+  background-size:cover;
+
+  background-position:center;
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(255,255,255,.08);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.cctv-tile:hover{
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 6px 15px
+    rgba(0,0,0,.16);
+}
+
+.cctv-tile .tag{
+  font-size:10.5px;
+
+  font-weight:700;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+
+  text-shadow:
+    0 1px 3px
+    rgba(0,0,0,.6);
+}
+
+.cctv-tile .tag .dot{
+  width:6px;
+  height:6px;
+
+  background:var(--green);
+
+  border-radius:50%;
+}
+
+.cctv-tile .badge{
+  align-self:flex-start;
+
+  font-size:9.5px;
+
+  font-weight:800;
+
+  padding:2px 7px;
+
+  border-radius:5px;
+
+  color:#fff;
+}
+
+.cctv-tile .density{
+  font-size:10.5px;
+
+  font-weight:700;
+
+  background:
+    rgba(0,0,0,.4);
+
+  padding:2px 8px;
+
+  border-radius:5px;
+
+  align-self:flex-start;
+
+  margin-top:3px;
+}
+
+.cctv-dots{
+  display:flex;
+
+  justify-content:center;
+
+  gap:5px;
+
+  margin-top:10px;
+}
+
+.cctv-dots span{
+  width:6px;
+  height:6px;
+
+  border-radius:50%;
+
+  background:#E4DCD0;
+}
+
+.cctv-dots span.on{
+  background:var(--maroon);
+}
+
+
+/* =========================================================
+   TEMPLE MAP
+========================================================= */
+
+.map-panel{
+  width:100%;
+}
+
+.map-panel-wrap{
+  height:296px;
+
+  border-radius:10px;
+
+  position:relative;
+
+  overflow:hidden;
+
+  background:
+
+    radial-gradient(
+      circle at 34% 42%,
+      rgba(214,69,69,.30),
+      transparent 40%
+    ),
+
+    radial-gradient(
+      circle at 60% 55%,
+      rgba(224,168,37,.30),
+      transparent 42%
+    ),
+
+    linear-gradient(
+      135deg,
+      #F3EFE6,
+      #E7E0D2
+    );
+}
+
+.map-legend-top{
+  display:flex;
+
+  gap:12px;
+
+  font-size:10.5px;
+
+  font-weight:700;
+
+  color:var(--text-muted);
+
+  flex-wrap:wrap;
+
+  margin-bottom:5px;
+}
+
+.map-legend-top span{
+  display:flex;
+
+  align-items:center;
+
+  gap:4px;
+}
+
+.map-legend-top i.dot{
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  display:inline-block;
+}
+
+.map-node{
+  position:absolute;
+
+  font-size:11px;
+
+  font-weight:700;
+
+  color:#4A423C;
+
+  text-align:center;
+
+  z-index:2;
+}
+
+.map-pin{
+  width:26px;
+  height:26px;
+
+  border-radius:50%;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  font-size:11px;
+
+  position:absolute;
+
+  box-shadow:
+    0 2px 6px
+    rgba(0,0,0,.2);
+
+  z-index:3;
+}
+
+.map-legend-bottom{
+  display:flex;
+
+  gap:14px;
+
+  flex-wrap:wrap;
+
+  font-size:10px;
+
+  font-weight:600;
+
+  color:var(--text-muted);
+
+  margin-top:10px;
+}
+
+.map-legend-bottom span{
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+}
+
+
+/* =========================================================
+   PRIORITY ALERTS
+========================================================= */
+
+.pa-item{
+  display:flex;
+
+  gap:10px;
+
+  padding:10px 0;
+
+  border-bottom:1px solid #F1EAE0;
+
+  align-items:flex-start;
+}
+
+.pa-item:last-of-type{
+  border-bottom:none;
+}
+
+.pa-item .ic{
+  width:30px;
+  height:30px;
+
+  border-radius:8px;
+
+  flex-shrink:0;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  font-size:12px;
+}
+
+.pa-item b{
+  font-size:12.5px;
+
+  display:block;
+}
+
+.pa-item span.loc{
+  font-size:11px;
+
+  color:var(--text-muted);
+}
+
+.pa-item span.tm{
+  font-size:10px;
+
+  color:#B3AAA0;
+}
+
+.sev-tag{
+  margin-left:auto;
+
+  font-size:10px;
+
+  font-weight:700;
+
+  padding:3px 9px;
+
+  border-radius:6px;
+
+  white-space:nowrap;
+}
+
+.sev-tag.high{
+  background:#FDECEC;
+
+  color:var(--red);
+}
+
+.sev-tag.medium{
+  background:#FDF3E0;
+
+  color:var(--amber);
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.qa-grid{
+  display:grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:8px;
+
+  margin-top:6px;
+}
+
+.qa-btn{
+  background:var(--cream);
+
+  border:1px solid var(--card-border);
+
+  border-radius:10px;
+
+  padding:10px 6px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  gap:6px;
+
+  font-size:10.5px;
+
+  font-weight:700;
+
+  text-align:center;
+}
+
+.qa-btn i{
+  font-size:16px;
+}
+
+
+/* =========================================================
+   TEMPLE STATUS
+========================================================= */
+
+.tso-row{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  padding:7px 0;
+
+  font-size:12px;
+
+  font-weight:600;
+
+  border-bottom:1px solid #F4EEE4;
+}
+
+.tso-row:last-child{
+  border-bottom:none;
+}
+
+.tso-tag{
+  font-size:10px;
+
+  font-weight:700;
+
+  padding:2px 9px;
+
+  border-radius:6px;
+}
+
+.tso-tag.ok{
+  background:#E7F6EC;
+
+  color:var(--green);
+}
+
+.tso-tag.info{
+  background:#EAF1FD;
+
+  color:var(--blue);
+}
+
+
+/* =========================================================
+   INCIDENTS
+========================================================= */
+
+.incidents-row{
+  display:grid;
+
+  grid-template-columns:
+    1.4fr 1fr;
+
+  gap:16px;
+
+  margin-bottom:18px;
+
+  align-items:start;
+}
+
+table.inc-table{
+  width:100%;
+
+  border-collapse:collapse;
+
+  font-size:12px;
+}
+
+table.inc-table th{
+  text-align:left;
+
+  font-size:10.5px;
+
+  color:var(--text-muted);
+
+  text-transform:uppercase;
+
+  letter-spacing:.3px;
+
+  padding:6px 8px;
+
+  border-bottom:
+    1px solid var(--card-border);
+}
+
+table.inc-table td{
+  padding:9px 8px;
+
+  border-bottom:
+    1px solid #F4EEE4;
+
+  font-weight:600;
+}
+
+.sev-pill{
+  font-size:10px;
+
+  font-weight:800;
+
+  padding:2px 9px;
+
+  border-radius:6px;
+}
+
+.sev-pill.High{
+  background:#FDECEC;
+
+  color:var(--red);
+}
+
+.sev-pill.Medium{
+  background:#FDF3E0;
+
+  color:var(--amber);
+}
+
+.status-pill{
+  font-size:10px;
+
+  font-weight:800;
+
+  padding:2px 9px;
+
+  border-radius:6px;
+}
+
+.status-pill.Dispatched{
+  background:#EAF1FD;
+
+  color:var(--blue);
+}
+
+.status-pill.EnRoute{
+  background:#FDF3E0;
+
+  color:var(--amber);
+}
+
+
+/* =========================================================
+   DISPATCH
+========================================================= */
+
+.dispatch-card{
+  background:var(--cream);
+
+  border:1px solid var(--card-border);
+
+  border-radius:12px;
+
+  padding:12px 14px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:8px;
+
+  margin-bottom:10px;
+}
+
+.dispatch-top{
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+}
+
+.dispatch-top .ic{
+  width:32px;
+  height:32px;
+
+  border-radius:8px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  font-size:13px;
+
+  flex-shrink:0;
+}
+
+.dispatch-top b{
+  font-size:12.5px;
+
+  display:block;
+}
+
+.dispatch-top span{
+  font-size:11px;
+
+  color:var(--text-muted);
+}
+
+.dispatch-top i.chev{
+  margin-left:auto;
+
+  color:#B3AAA0;
+}
+
+.dispatch-bottom{
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+}
+
+.avatars{
+  display:flex;
+}
+
+.avatars img{
+  width:24px;
+  height:24px;
+
+  border-radius:50%;
+
+  border:2px solid #fff;
+
+  object-fit:cover;
+
+  margin-left:-8px;
+}
+
+.avatars img:first-child{
+  margin-left:0;
+}
+
+.avatars .more{
+  width:24px;
+  height:24px;
+
+  border-radius:50%;
+
+  background:#E4DCD0;
+
+  color:#4A423C;
+
+  font-size:9.5px;
+
+  font-weight:700;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  margin-left:-8px;
+
+  border:2px solid #fff;
+}
+
+.eta-pill{
+  font-size:10.5px;
+
+  font-weight:800;
+
+  color:#fff;
+
+  padding:5px 12px;
+
+  border-radius:7px;
+}
+
+
+/* =========================================================
+   BOTTOM STATS
+========================================================= */
+
+.bottom-grid{
+  display:grid;
+
+  grid-template-columns:
+    5fr 2fr;
+
+  gap:16px;
+
+  margin-bottom:18px;
+}
+
+.bstat-strip{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:12px;
+}
+
+.bstat-card{
+  background:#fff;
+
+  border:1px solid var(--card-border);
+
+  border-radius:12px;
+
+  padding:14px;
+}
+
+.bstat-card .top{
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:flex-start;
+}
+
+.bstat-card .lbl{
+  font-size:11px;
+
+  color:var(--text-muted);
+
+  font-weight:700;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:6px;
+}
+
+.bstat-card .lbl i{
+  color:var(--orange);
+}
+
+.bstat-card .val{
+  font-size:20px;
+
+  font-weight:800;
+
+  margin:6px 0 2px;
+}
+
+.bstat-card .delta{
+  font-size:10.5px;
+
+  font-weight:700;
+}
+
+.mini-chart{
+  height:26px;
+
+  margin-top:6px;
+}
+
+.ring-sm{
+  width:52px;
+  height:52px;
+
+  border-radius:50%;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  flex-shrink:0;
+}
+
+.ring-sm .hole{
+  width:36px;
+  height:36px;
+
+  background:#fff;
+
+  border-radius:50%;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  font-size:11px;
+
+  font-weight:800;
+}
+
+
+/* =========================================================
+   HEALTHCARE TABLE
+========================================================= */
+
+.hc-table{
+  width:100%;
+
+  border-collapse:collapse;
+
+  font-size:12px;
+}
+
+.hc-table th{
+  text-align:left;
+
+  font-size:10px;
+
+  color:var(--text-muted);
+
+  text-transform:uppercase;
+
+  padding:6px 4px;
+
+  border-bottom:
+    1px solid var(--card-border);
+}
+
+.hc-table td{
+  padding:9px 4px;
+
+  border-bottom:
+    1px solid #F4EEE4;
+
+  font-weight:600;
+}
+
+.hc-name{
+  display:flex;
+
+  align-items:center;
+
+  gap:8px;
+}
+
+.hc-name i{
+  width:26px;
+  height:26px;
+
+  border-radius:7px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  font-size:11px;
+}
+
+.occ-bar{
+  width:70px;
+  height:6px;
+
+  background:#EFE9DF;
+
+  border-radius:4px;
+
+  overflow:hidden;
+
+  display:inline-block;
+
+  margin-right:6px;
+
+  vertical-align:middle;
+}
+
+.occ-bar span{
+  display:block;
+
+  height:100%;
+
+  background:var(--red);
+}
+
+.op-tag{
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+
+  font-size:11px;
+
+  font-weight:700;
+
+  color:var(--green);
+}
+
+.op-tag i{
+  font-size:7px;
+}
+
+
+/* =========================================================
+   CHARTS
+========================================================= */
+
+.charts-row{
+  display:grid;
+
+  grid-template-columns:
+    1.2fr 1fr;
+
+  gap:16px;
+}
+
+.chart-legend{
+  display:flex;
+
+  gap:14px;
+
+  font-size:10.5px;
+
+  font-weight:700;
+
+  flex-wrap:wrap;
+
+  margin-bottom:8px;
+}
+
+.chart-legend span{
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+}
+
+.chart-legend i{
+  width:14px;
+
+  height:2.5px;
+
+  border-radius:2px;
+
+  display:inline-block;
+}
+
+.chart-legend i.dashed{
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #B3AAA0 0 4px,
+      transparent 4px 7px
+    );
+}
+
+.axis-labels{
+  display:flex;
+
+  justify-content:space-between;
+
+  font-size:9.5px;
+
+  color:var(--text-muted);
+
+  font-weight:600;
+
+  margin-top:4px;
+}
+
+.bar-values{
+  display:flex;
+
+  justify-content:space-between;
+
+  font-size:9.5px;
+
+  font-weight:700;
+
+  color:var(--text-dark);
+
+  margin-bottom:2px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1200px){
+
+  .stat-strip{
+    grid-template-columns:
+      repeat(3,1fr);
+  }
+
+  .topbar{
+    flex-wrap:wrap;
+  }
+
+  .page-title{
+    order:2;
+  }
+
+  .search-box{
+    order:3;
+
+    max-width:none;
+
+    width:100%;
+  }
+
+  .topbar-right{
+    order:4;
+  }
+
+  .cctv-grid{
+    grid-template-columns:
+      repeat(4,1fr);
+  }
+
+}
+
+@media(max-width:900px){
+
+  .sidebar{
+    width:220px;
+  }
+
+  .stat-strip{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .cctv-grid{
+    grid-template-columns:
+      1fr 1fr;
+
+    grid-template-rows:
+      repeat(3,120px);
+  }
+
+  .cctv-tile{
+    grid-column:auto !important;
+    grid-row:auto !important;
+  }
+
+  .incidents-row{
+    grid-template-columns:1fr;
+  }
+
+  .bottom-grid{
+    grid-template-columns:1fr;
+  }
+
+  .charts-row{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:650px){
+
+  .layout{
+    display:block;
+  }
+
+  .sidebar{
+    width:min(280px,85vw);
+  }
+
+  .content{
+    padding:12px;
+  }
+
+  .stat-strip{
+    grid-template-columns:1fr;
+  }
+
+  .cctv-grid{
+    grid-template-columns:1fr;
+
+    grid-template-rows:
+      repeat(6,120px);
+  }
+
+  .bstat-strip{
+    grid-template-columns:1fr;
+  }
+
+  .topbar-right{
+    width:100%;
+
+    justify-content:space-between;
+
+    flex-wrap:wrap;
+  }
+
+  .page-title{
+    border-left:none;
+
+    padding-left:0;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     TOP BAR
+========================================================= -->
+
+<header class="topbar">
+
+  <div class="brand">
+
+    <button
+      class="sidebar-toggle"
+      id="sidebarToggle"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+    >
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="logo">
+      <i class="fa-solid fa-place-of-worship"></i>
+    </div>
+
+    <div>
+      <div class="name">VariMitra</div>
+
+      <div class="tagline" data-i18n-html="common.taglineHtml">
+        One Platform. Safer Pilgrimage.
+        <br>
+        Preserved Heritage.
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="page-title">
+
+    <h1 data-i18n="admin.dashboardTitle">
+      VariMitra Temple Command Dashboard
+    </h1>
+
+    <p data-i18n="admin.dashboardSubtitle">
+      Temple Management & Crowd Response Subsystem
+    </p>
+
+  </div>
+
+
+  <div class="search-box">
+
+    <i class="fa-solid fa-magnifying-glass"></i>
+
+    <input
+      type="text"
+      data-i18n-placeholder="admin.searchPlaceholder"
+      placeholder="Search temples, locations, incidents..."
+    >
+
+    <kbd>⌘K</kbd>
+
+  </div>
+
+
+  <div class="topbar-right">
+
+    <div class="dt-chip">
+
+      <i
+        class="fa-regular fa-calendar"
+        style="color:var(--orange)"
+      ></i>
+
+      12 Jun 2025, Thu
+      <br>
+      10:30:44 AM
+
+    </div>
+
+
+    <div
+      class="lang-pick"
+      tabindex="0"
+    >
+
+      <i class="fa-solid fa-globe" style="font-size:14px"></i>
+      <span class="lang-pick-label">English</span>
+
+      <i
+        class="fa-solid fa-chevron-down"
+        style="font-size:9px"
+      ></i>
+
+    </div>
+
+
+    <div
+      class="bell"
+      data-modal
+      data-feature="alerts-admin"
+      tabindex="0"
+    >
+
+      <i class="fa-regular fa-bell"></i>
+
+      <span class="dot">
+        12
+      </span>
+
+    </div>
+
+
+    <div
+      class="user-chip"
+      data-modal
+      data-title="Super Admin"
+      data-icon="fa-solid fa-user-shield"
+      data-color="#8B1B1B"
+      data-tag="Command Dashboard Account"
+      data-body="You're signed in as Super Admin, with full access to incident management, dispatch and system settings."
+      tabindex="0"
+    >
+
+      <img
+        src="https://i.pravatar.cc/64?img=51"
+        alt="admin"
+      >
+
+      <div
+        class="who"
+        id="adminChipName"
+      >
+        <span data-i18n="common.admin">Admin</span>
+        <b data-i18n="admin.superAdmin">Super Admin</b>
+      </div>
+
+      <i
+        class="fa-solid fa-chevron-down"
+        style="font-size:9px;color:#B3AAA0"
+      ></i>
+
+    </div>
+
+
+    <a
+      href="index.html"
+      data-i18n-title="common.signOutTitle"
+      title="Sign Out / Switch Role"
+      style="
+        color:var(--maroon);
+        font-size:13px;
+        padding:5px 10px;
+        border-radius:8px;
+        background:var(--cream);
+        border:1px solid var(--card-border);
+        display:flex;
+        align-items:center;
+        gap:6px;
+        font-weight:600;
+      "
+    >
+
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+      <span data-i18n="common.signOut">Sign Out</span>
+
+    </a>
+
+  </div>
+
+</header>
+
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="layout">
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar" id="sidebar">
+
+  <a
+    class="side-link active"
+    data-modal
+    data-feature="overview"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-gauge"></i>
+
+      <span data-i18n="admin.sidebarOverview">Overview</span>
+
+    </span>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="live-cctv"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-video"></i>
+
+      <span data-i18n="admin.sidebarCctv">Live CCTV</span>
+
+    </span>
+
+    <i class="chev fa-solid fa-chevron-right"></i>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="crowd-heatmap"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-fire"></i>
+
+      <span data-i18n="admin.sidebarHeatmap">Crowd Heatmap</span>
+
+    </span>
+
+    <i class="chev fa-solid fa-chevron-right"></i>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="temple-map"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-map"></i>
+
+      <span data-i18n="admin.sidebarMap">Temple Map</span>
+
+    </span>
+
+    <i class="chev fa-solid fa-chevron-right"></i>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="volunteer-dispatch"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-people-group"></i>
+
+      <span data-i18n="admin.sidebarDispatch">Volunteer Dispatch</span>
+
+    </span>
+
+    <i class="chev fa-solid fa-chevron-right"></i>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="healthcare-centers"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-briefcase-medical"></i>
+
+      <span data-i18n="admin.sidebarHealthcare">Healthcare Centers</span>
+
+    </span>
+
+    <i class="chev fa-solid fa-chevron-right"></i>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="incident-mgmt"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-triangle-exclamation"></i>
+
+      <span data-i18n="admin.sidebarIncidents">Incident Management</span>
+
+    </span>
+
+    <i class="chev fa-solid fa-chevron-right"></i>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="alerts-admin"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-regular fa-bell"></i>
+
+      <span data-i18n="admin.sidebarAlerts">Alerts</span>
+
+    </span>
+
+    <span class="badge">
+      12
+    </span>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="reports"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-file-lines"></i>
+
+      <span data-i18n="admin.sidebarReports">Reports</span>
+
+    </span>
+
+    <i class="chev fa-solid fa-chevron-right"></i>
+
+  </a>
+
+
+  <a
+    class="side-link"
+    data-modal
+    data-feature="settings"
+    tabindex="0"
+  >
+
+    <span class="l">
+
+      <i class="icn fa-solid fa-gear"></i>
+
+      <span data-i18n="admin.sidebarSettings">Settings</span>
+
+    </span>
+
+    <i class="chev fa-solid fa-chevron-right"></i>
+
+  </a>
+
+
+  <div
+    class="side-promo"
+    data-modal
+    data-icon="fa-solid fa-circle"
+    data-color="#8B1B1B"
+    data-tag="Live Operations"
+    data-title="Pandharpur Wari (Vari)"
+    data-body="Main Temple Complex is under live operational monitoring — cameras, sensors and response teams are all active."
+    tabindex="0"
+  >
+
+    <b>
+      PANDHARPUR WARI (VARI)
+    </b>
+
+    <span>
+      Main Temple Complex
+    </span>
+
+    <span>
+      <i class="fa-solid fa-circle"></i>
+      Live Operations
+    </span>
+
+  </div>
+
+
+  <div class="side-status">
+
+    <div class="row">
+
+      <i class="fa-solid fa-circle"></i>
+
+      <span data-i18n="admin.systemStatus">System Status</span>
+
+    </div>
+
+    <p data-i18n="admin.allOperational">
+      All Systems Operational
+    </p>
+
+    <button
+      data-modal
+      data-feature="system-logs"
+      data-i18n="admin.viewLogs"
+    >
+      View System Logs
+    </button>
+
+  </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="content">
+
+
+<!-- =========================================================
+     TOP STAT STRIP
+========================================================= -->
+
+<div class="stat-strip">
+
+
+  <div
+    class="stat-card"
+    data-modal
+    data-feature="crowd-heatmap"
+    data-icon="fa-solid fa-users"
+    data-color="var(--orange)"
+    tabindex="0"
+  >
+
+    <div
+      class="ic"
+      style="background:var(--orange)"
+    >
+
+      <i class="fa-solid fa-users"></i>
+
+    </div>
+
+    <div>
+
+      <div class="lbl" data-i18n="admin.footfall">
+        Current Footfall
+      </div>
+
+      <div class="val">
+        56,842
+      </div>
+
+      <div class="delta up">
+        +12.6% vs yesterday
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="stat-card"
+    data-modal
+    data-icon="fa-solid fa-triangle-exclamation"
+    data-color="var(--amber)"
+    data-tag="Command Dashboard"
+    data-title="High-Risk Zones"
+    data-body="3 zones are currently flagged high-risk, down from 5 yesterday — Main Gate, Darshan Queue Zone 2 and East Entry."
+    tabindex="0"
+  >
+
+    <div
+      class="ic"
+      style="background:var(--amber)"
+    >
+
+      <i class="fa-solid fa-triangle-exclamation"></i>
+
+    </div>
+
+    <div>
+
+      <div class="lbl" data-i18n="admin.riskZones">
+        High-Risk Zones
+      </div>
+
+      <div class="val">
+        3
+      </div>
+
+      <div class="delta neutral">
+        vs 5 yesterday
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="stat-card"
+    data-modal
+    data-feature="alerts-admin"
+    data-icon="fa-solid fa-bell"
+    data-color="var(--red)"
+    tabindex="0"
+  >
+
+    <div
+      class="ic"
+      style="background:var(--red)"
+    >
+
+      <i class="fa-solid fa-bell"></i>
+
+    </div>
+
+    <div>
+
+      <div class="lbl" data-i18n="admin.activeAlerts">
+        Active Alerts
+      </div>
+
+      <div class="val">
+        12
+      </div>
+
+      <div class="delta up">
+        +3 new
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="stat-card"
+    data-modal
+    data-feature="volunteer-dispatch"
+    data-icon="fa-solid fa-people-group"
+    data-color="var(--green)"
+    tabindex="0"
+  >
+
+    <div
+      class="ic"
+      style="background:var(--green)"
+    >
+
+      <i class="fa-solid fa-people-group"></i>
+
+    </div>
+
+    <div>
+
+      <div class="lbl" data-i18n="admin.volunteers">
+        Available Volunteers
+      </div>
+
+      <div class="val">
+        248
+      </div>
+
+      <div class="delta neutral">
+        Online & Ready
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="stat-card"
+    data-modal
+    data-feature="healthcare-centers"
+    data-icon="fa-solid fa-kit-medical"
+    data-color="var(--red)"
+    tabindex="0"
+  >
+
+    <div
+      class="ic"
+      style="background:var(--red)"
+    >
+
+      <i class="fa-solid fa-kit-medical"></i>
+
+    </div>
+
+    <div>
+
+      <div class="lbl" data-i18n="admin.medicalCases">
+        Medical Cases
+      </div>
+
+      <div class="val">
+        18
+      </div>
+
+      <div class="delta up">
+        +4 in last 2 hrs
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="stat-card"
+    data-modal
+    data-icon="fa-regular fa-clock"
+    data-color="var(--blue)"
+    data-tag="Command Dashboard"
+    data-title="Avg. Wait Time (Darshan)"
+    data-body="Average darshan queue wait time is 68 minutes, down 10 minutes from yesterday."
+    tabindex="0"
+  >
+
+    <div
+      class="ic"
+      style="background:var(--blue)"
+    >
+
+      <i class="fa-regular fa-clock"></i>
+
+    </div>
+
+    <div>
+
+      <div class="lbl" data-i18n="admin.avgWait">
+        Avg. Wait Time (Darshan)
+      </div>
+
+      <div class="val">
+        68 min
+      </div>
+
+      <div class="delta upgood">
+        −10 min vs yesterday
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     CCTV + MAP + ALERTS
+     THIS IS THE MAIN UPDATED AREA
+========================================================= -->
+
+<div class="main-grid">
+
+
+<!-- =========================================================
+     LIVE CCTV MONITORING
+========================================================= -->
+
+<div class="panel cctv-panel">
+
+  <div class="panel-head">
+
+    <h3>
+
+      Live CCTV Monitoring
+
+      <span class="tag-live" data-i18n="common.live">
+        LIVE
+      </span>
+
+    </h3>
+
+    <a
+      href="#"
+      data-modal
+      data-feature="live-cctv"
+      tabindex="0"
+    >
+
+      View All Cameras
+
+      <i
+        class="fa-solid fa-up-right-from-square"
+        style="font-size:9px"
+      ></i>
+
+    </a>
+
+  </div>
+
+
+  <div class="cctv-grid">
+
+
+    <!-- MAIN GATE -->
+
+    <div
+      class="cctv-tile"
+
+      data-modal
+
+      data-icon="fa-solid fa-video"
+
+      data-color="#5C1010"
+
+      data-tag="Camera Feed · Live"
+
+      data-title="Main Gate"
+
+      data-body="Density reading: 92% — High Congestion. AI has flagged this feed for crowd control response."
+
+      tabindex="0"
+
+      style="
+        background:
+          linear-gradient(
+            160deg,
+            #8b5a3c,
+            #3a2416
+          );
+
+        grid-column:1;
+        grid-row:1;
+      "
+    >
+
+      <div class="tag">
+
+        <span class="dot"></span>
+
+        Main Gate
+
+        <i
+          class="fa-solid fa-circle"
+          style="font-size:6px"
+        ></i>
+
+        Live
+
+      </div>
+
+
+      <div>
+
+        <span
+          class="badge"
+          style="background:var(--red);"
+        >
+          High Congestion
+        </span>
+
+        <div class="density">
+          Density: 92%
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- DARSHAN QUEUE SMALL -->
+
+    <div
+      class="cctv-tile"
+
+      data-modal
+
+      data-icon="fa-solid fa-video"
+
+      data-color="#7a4a2b"
+
+      data-tag="Camera Feed · Live"
+
+      data-title="Darshan Queue"
+
+      data-body="Density reading: 76%. Queue is moving steadily; monitored continuously by the crowd AI model."
+
+      tabindex="0"
+
+      style="
+        background:
+          linear-gradient(
+            160deg,
+            #d0a66a,
+            #76502f
+          );
+
+        grid-column:2;
+        grid-row:1;
+      "
+    >
+
+      <div class="tag">
+
+        <span class="dot"></span>
+
+        Darshan Queue
+
+      </div>
+
+
+      <div>
+
+        <div
+          class="density"
+          style="
+            background:
+            rgba(224,168,37,.85);
+          "
+        >
+          Density: 76%
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- DARSHAN QUEUE LARGE -->
+
+    <div
+      class="cctv-tile"
+
+      data-modal
+
+      data-icon="fa-solid fa-video"
+
+      data-color="#8B1B1B"
+
+      data-tag="Camera Feed · Live"
+
+      data-title="Darshan Queue — Camera 03"
+
+      data-body="Density reading: 76%. Queue movement is being monitored continuously by the crowd AI model."
+
+      tabindex="0"
+
+      style="
+        background:
+          linear-gradient(
+            145deg,
+            #7f8c80,
+            #273d31
+          );
+
+        grid-column:3;
+        grid-row:1 / span 2;
+      "
+    >
+
+      <div class="tag">
+
+        <span class="dot"></span>
+
+        Darshan Queue
+
+        <i
+          class="fa-solid fa-circle"
+          style="font-size:6px"
+        ></i>
+
+        Live
+
+      </div>
+
+
+      <div>
+
+        <span
+          class="badge"
+          style="background:var(--red);"
+        >
+          High Congestion
+        </span>
+
+        <div class="density">
+          Density: 76%
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- DARSHAN QUEUE SECOND LARGE -->
+
+    <div
+      class="cctv-tile"
+
+      data-modal
+
+      data-icon="fa-solid fa-video"
+
+      data-color="#8B1B1B"
+
+      data-tag="Camera Feed · Live"
+
+      data-title="Darshan Queue — Camera 04"
+
+      data-body="Density reading: 72%. Crowd movement is under live observation; a medical event has also been flagged."
+
+      tabindex="0"
+
+      style="
+        background:
+          linear-gradient(
+            145deg,
+            #7b8f79,
+            #344c3d
+          );
+
+        grid-column:4;
+        grid-row:1 / span 2;
+      "
+    >
+
+      <div class="tag">
+
+        <span class="dot"></span>
+
+        Darshan Queue
+
+        <i
+          class="fa-solid fa-circle"
+          style="font-size:6px"
+        ></i>
+
+        Live
+
+      </div>
+
+
+      <div>
+
+        <span
+          class="badge"
+          style="background:var(--red);"
+        >
+          High Congestion
+        </span>
+
+        <div class="density">
+          Density: 72%
+        </div>
+
+        <div
+          class="density"
+          style="margin-top:4px;"
+        >
+          <i class="fa-solid fa-kit-medical"></i>
+          Medical Event
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- SABHA MANDAP -->
+
+    <div
+      class="cctv-tile"
+
+      data-modal
+
+      data-icon="fa-solid fa-video"
+
+      data-color="#1F9D55"
+
+      data-tag="Camera Feed · Live"
+
+      data-title="Sabha Mandap"
+
+      data-body="Density reading: 45% — comfortable levels, no action needed."
+
+      tabindex="0"
+
+      style="
+        background:
+          linear-gradient(
+            160deg,
+            #59785a,
+            #26392a
+          );
+
+        grid-column:1;
+        grid-row:2;
+      "
+    >
+
+      <div class="tag">
+
+        <span class="dot"></span>
+
+        Sabha Mandap
+
+      </div>
+
+
+      <div>
+
+        <div
+          class="density"
+          style="
+            background:
+            rgba(31,157,85,.8);
+          "
+        >
+          Density: 45%
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- EAST ENTRY -->
+
+    <div
+      class="cctv-tile"
+
+      data-modal
+
+      data-icon="fa-solid fa-video"
+
+      data-color="#2b2118"
+
+      data-tag="Camera Feed · Live"
+
+      data-title="East Entry"
+
+      data-body="A medical event has been detected on this feed. Medical Team dispatched, ETA 3 minutes."
+
+      tabindex="0"
+
+      style="
+        background:
+          linear-gradient(
+            160deg,
+            #8f705b,
+            #2b2118
+          );
+
+        grid-column:2;
+        grid-row:2;
+      "
+    >
+
+      <div class="tag">
+
+        <span class="dot"></span>
+
+        East Entry
+
+      </div>
+
+
+      <div>
+
+        <span
+          class="badge"
+          style="background:var(--red);"
+        >
+
+          <i class="fa-solid fa-kit-medical"></i>
+
+          Medical Event
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <div class="cctv-dots">
+
+    <span class="on"></span>
+
+    <span></span>
+
+    <span></span>
+
+    <span></span>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     TEMPLE MAP
+========================================================= -->
+
+<div class="panel map-panel">
+
+  <div class="panel-head">
+
+    <h3>
+      Temple Map & Live Congestion Heatmap
+    </h3>
+
+    <a
+      href="#"
+      data-modal
+      data-feature="temple-map"
+      tabindex="0"
+    >
+
+      <i
+        class="fa-solid fa-circle"
+        style="
+          color:var(--green);
+          font-size:8px
+        "
+      ></i>
+
+      Live
+
+      <i
+        class="fa-solid fa-chevron-down"
+        style="font-size:9px"
+      ></i>
+
+    </a>
+
+  </div>
+
+
+  <!-- MAP LEGEND -->
+
+  <div class="map-legend-top">
+
+    <span>
+
+      <i
+        class="dot"
+        style="background:var(--green)"
+      ></i>
+
+      Low
+
+    </span>
+
+
+    <span>
+
+      <i
+        class="dot"
+        style="background:var(--amber)"
+      ></i>
+
+      Moderate
+
+    </span>
+
+
+    <span>
+
+      <i
+        class="dot"
+        style="background:#F97316"
+      ></i>
+
+      High
+
+    </span>
+
+
+    <span>
+
+      <i
+        class="dot"
+        style="background:var(--red)"
+      ></i>
+
+      Critical
+
+    </span>
+
+
+    <span>
+
+      <i
+        class="fa-solid fa-circle-exclamation"
+        style="
+          color:var(--red);
+          font-size:10px
+        "
+      ></i>
+
+      Incidents
+
+    </span>
+
+  </div>
+
+
+  <!-- MAP -->
+
+  <div class="map-panel-wrap">
+
+
+    <!-- LOCATION LABELS -->
+
+    <span
+      class="map-node"
+      style="
+        top:8px;
+        left:44%;
+      "
+    >
+      North Gate
+    </span>
+
+
+    <span
+      class="map-node"
+      style="
+        top:60px;
+        left:38%;
+      "
+    >
+      Sabha
+      <br>
+      Mandap
+    </span>
+
+
+    <span
+      class="map-node"
+      style="
+        top:100px;
+        left:46%;
+      "
+    >
+      Main
+      <br>
+      Temple
+    </span>
+
+
+    <span
+      class="map-node"
+      style="
+        top:8px;
+        left:10%;
+      "
+    >
+      Annadan
+      <br>
+      Center
+    </span>
+
+
+    <span
+      class="map-node"
+      style="
+        top:100px;
+        left:78%;
+      "
+    >
+      East Entry
+    </span>
+
+
+    <span
+      class="map-node"
+      style="
+        bottom:10px;
+        left:5%;
+      "
+    >
+      Parking Area
+    </span>
+
+
+    <span
+      class="map-node"
+      style="
+        bottom:6px;
+        left:55%;
+      "
+    >
+      Main Gate
+    </span>
+
+
+    <!-- INCIDENT MARKERS -->
+
+    <div
+      class="map-pin"
+      style="
+        background:var(--red);
+        top:82px;
+        left:30%;
+      "
+    >
+      <i class="fa-solid fa-exclamation"></i>
+    </div>
+
+
+    <div
+      class="map-pin"
+      style="
+        background:var(--red);
+        top:44px;
+        left:63%;
+      "
+    >
+      <i class="fa-solid fa-exclamation"></i>
+    </div>
+
+
+    <div
+      class="map-pin"
+      style="
+        background:var(--red);
+        top:135px;
+        left:8%;
+      "
+    >
+      <i class="fa-solid fa-exclamation"></i>
+    </div>
+
+
+    <!-- VOLUNTEER -->
+
+    <div
+      class="map-pin"
+      style="
+        background:var(--green);
+        width:20px;
+        height:20px;
+        top:20px;
+        left:70%;
+        font-size:9px;
+      "
+    >
+
+      <i class="fa-solid fa-user"></i>
+
+    </div>
+
+
+    <div
+      class="map-pin"
+      style="
+        background:var(--green);
+        width:20px;
+        height:20px;
+        top:70px;
+        left:20%;
+        font-size:9px;
+      "
+    >
+
+      <i class="fa-solid fa-user"></i>
+
+    </div>
+
+
+    <!-- MEDICAL -->
+
+    <div
+      class="map-pin"
+      style="
+        background:var(--blue);
+        width:20px;
+        height:20px;
+        top:100px;
+        left:88%;
+        font-size:9px;
+      "
+    >
+
+      <i class="fa-solid fa-kit-medical"></i>
+
+    </div>
+
+
+    <!-- LOST PERSON -->
+
+    <div
+      class="map-pin"
+      style="
+        background:#7C3AED;
+        width:20px;
+        height:20px;
+        top:130px;
+        left:70%;
+        font-size:9px;
+      "
+    >
+
+      <i class="fa-solid fa-user"></i>
+
+    </div>
+
+
+    <!-- CCTV EVENT -->
+
+    <div
+      style="
+        position:absolute;
+        top:105px;
+        left:60%;
+
+        background:#fff;
+
+        border:1px solid var(--card-border);
+
+        border-radius:8px;
+
+        padding:6px 10px;
+
+        font-size:9.5px;
+
+        font-weight:700;
+
+        box-shadow:
+          0 4px 10px
+          rgba(0,0,0,.08);
+      "
+    >
+
+      Event Detected
+      <br>
+
+      by CCTV 10:26 AM
+
+    </div>
+
+
+  </div>
+
+
+  <!-- BOTTOM LEGEND -->
+
+  <div class="map-legend-bottom">
+
+    <span>
+
+      <i
+        class="fa-solid fa-circle-exclamation"
+        style="color:var(--red)"
+      ></i>
+
+      Incident
+
+    </span>
+
+
+    <span>
+
+      <i
+        class="fa-solid fa-triangle-exclamation"
+        style="color:var(--amber)"
+      ></i>
+
+      High Congestion
+
+    </span>
+
+
+    <span>
+
+      <i
+        class="fa-solid fa-user"
+        style="color:var(--red)"
+      ></i>
+
+      Lost Person
+
+    </span>
+
+
+    <span>
+
+      <i
+        class="fa-solid fa-kit-medical"
+        style="color:var(--blue)"
+      ></i>
+
+      Medical Aid
+
+    </span>
+
+
+    <span>
+
+      <i
+        class="fa-solid fa-user-group"
+        style="color:var(--green)"
+      ></i>
+
+      Volunteer
+
+    </span>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     PRIORITY ALERTS
+========================================================= -->
+
+<div
+  style="
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  "
+>
+
+  <div class="panel">
+
+    <div class="panel-head">
+
+      <h3>
+        Priority Alerts
+      </h3>
+
+      <a
+        href="#"
+        data-modal
+        data-feature="alerts-admin"
+        tabindex="0"
+      >
+        View All (12)
+      </a>
+
+    </div>
+
+
+    <div
+      class="pa-item"
+      data-modal
+      data-icon="fa-solid fa-users"
+      data-color="var(--red)"
+      data-tag="High Severity · Just now"
+      data-title="High Congestion — Main Gate"
+      data-body="Density at Main Gate has reached 92%. Team Alpha (12 members) dispatched, ETA 2 minutes."
+      tabindex="0"
+    >
+
+      <div
+        class="ic"
+        style="background:var(--red)"
+      >
+        <i class="fa-solid fa-users"></i>
+      </div>
+
+      <div>
+
+        <b>
+          High Congestion
+        </b>
+
+        <span class="loc">
+          Main Gate
+        </span>
+
+        <br>
+
+        <span class="tm">
+          10:30 AM • Just now
+        </span>
+
+      </div>
+
+      <span class="sev-tag high">
+        High
+      </span>
+
+    </div>
+
+
+    <div
+      class="pa-item"
+      data-modal
+      data-icon="fa-solid fa-kit-medical"
+      data-color="var(--red)"
+      data-tag="High Severity · 2 min ago"
+      data-title="Medical Event — Darshan Queue Zone 2"
+      data-body="A medical event was flagged in Darshan Queue Zone 2. Medical Team (2 members) dispatched, ETA 3 minutes."
+      tabindex="0"
+    >
+
+      <div
+        class="ic"
+        style="background:var(--red)"
+      >
+        <i class="fa-solid fa-kit-medical"></i>
+      </div>
+
+      <div>
+
+        <b>
+          Medical Event
+        </b>
+
+        <span class="loc">
+          Darshan Queue Zone 2
+        </span>
+
+        <br>
+
+        <span class="tm">
+          10:28 AM • 2 min ago
+        </span>
+
+      </div>
+
+      <span class="sev-tag high">
+        High
+      </span>
+
+    </div>
+
+
+    <div
+      class="pa-item"
+      data-modal
+      data-icon="fa-solid fa-magnifying-glass"
+      data-color="var(--amber)"
+      data-tag="Medium Severity · 5 min ago"
+      data-title="Lost Person Report — Near Sabha Mandap"
+      data-body="A lost-person report was filed near Sabha Mandap. Team Bravo (6 members) is en route, ETA 4 minutes."
+      tabindex="0"
+    >
+
+      <div
+        class="ic"
+        style="background:var(--amber)"
+      >
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+
+      <div>
+
+        <b>
+          Lost Person Report
+        </b>
+
+        <span class="loc">
+          Near Sabha Mandap
+        </span>
+
+        <br>
+
+        <span class="tm">
+          10:25 AM • 5 min ago
+        </span>
+
+      </div>
+
+      <span class="sev-tag medium">
+        Medium
+      </span>
+
+    </div>
+
+
+    <div
+      class="pa-item"
+      data-modal
+      data-icon="fa-solid fa-users"
+      data-color="var(--amber)"
+      data-tag="Medium Severity · 10 min ago"
+      data-title="High Congestion — East Entry"
+      data-body="Density at East Entry is elevated. Team Charlie (8 members) dispatched, ETA 5 minutes."
+      tabindex="0"
+    >
+
+      <div
+        class="ic"
+        style="background:var(--amber)"
+      >
+        <i class="fa-solid fa-users"></i>
+      </div>
+
+      <div>
+
+        <b>
+          High Congestion
+        </b>
+
+        <span class="loc">
+          East Entry
+        </span>
+
+        <br>
+
+        <span class="tm">
+          10:20 AM • 10 min ago
+        </span>
+
+      </div>
+
+      <span class="sev-tag medium">
+        Medium
+      </span>
+
+    </div>
+
+  </div>
+
+
+<!-- =========================================================
+     QUICK ACTIONS
+========================================================= -->
+
+<div class="panel">
+
+  <div
+    class="panel-head"
+    style="margin-bottom:8px;"
+  >
+
+    <h3>
+      Quick Actions
+    </h3>
+
+  </div>
+
+
+  <div class="qa-grid">
+
+    <div
+      class="qa-btn"
+      data-modal
+      data-feature="force-dispatch"
+      tabindex="0"
+    >
+
+      <i
+        class="fa-solid fa-truck-fast"
+        style="color:var(--blue)"
+      ></i>
+
+      Force Dispatch
+
+    </div>
+
+
+    <div
+      class="qa-btn"
+      data-modal
+      data-feature="broadcast"
+      tabindex="0"
+    >
+
+      <i
+        class="fa-solid fa-bullhorn"
+        style="color:var(--amber)"
+      ></i>
+
+      Broadcast Message
+
+    </div>
+
+
+    <div
+      class="qa-btn"
+      data-modal
+      data-feature="open-incident"
+      tabindex="0"
+    >
+
+      <i
+        class="fa-solid fa-triangle-exclamation"
+        style="color:var(--red)"
+      ></i>
+
+      Open Incident
+
+    </div>
+
+
+    <div
+      class="qa-btn"
+      data-modal
+      data-feature="medical-alert"
+      tabindex="0"
+    >
+
+      <i
+        class="fa-solid fa-kit-medical"
+        style="color:var(--red)"
+      ></i>
+
+      Medical Alert
+
+    </div>
+
+
+    <div
+      class="qa-btn"
+      data-modal
+      data-feature="crowd-control"
+      tabindex="0"
+    >
+
+      <i
+        class="fa-solid fa-people-group"
+        style="color:var(--orange)"
+      ></i>
+
+      Crowd Control
+
+    </div>
+
+
+    <div
+      class="qa-btn"
+      data-modal
+      data-feature="emergency-call"
+      tabindex="0"
+    >
+
+      <i
+        class="fa-solid fa-phone-volume"
+        style="color:var(--maroon)"
+      ></i>
+
+      Emergency Call
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     TEMPLE STATUS
+========================================================= -->
+
+<div class="panel">
+
+  <div
+    class="panel-head"
+    style="margin-bottom:8px;"
+  >
+
+    <h3>
+      Temple Status Overview
+    </h3>
+
+  </div>
+
+
+  <div
+    class="tso-row"
+    data-modal
+    data-icon="fa-solid fa-place-of-worship"
+    data-color="#1F9D55"
+    data-tag="Temple Status"
+    data-title="Temple Operational Status"
+    data-body="The temple complex is fully operational with no disruptions to services or darshan."
+    tabindex="0"
+  >
+
+    Temple Operational Status
+
+    <span class="tso-tag ok">
+      Operational
+    </span>
+
+  </div>
+
+
+  <div
+    class="tso-row"
+    data-modal
+    data-icon="fa-solid fa-cloud-sun"
+    data-color="#E0A825"
+    data-tag="Temple Status"
+    data-title="Weather Condition"
+    data-body="Currently 28°C and partly cloudy at the temple complex, with light rain possible later today."
+    tabindex="0"
+  >
+
+    Weather Condition
+
+    <span>
+
+      28°C
+
+      <i
+        class="fa-solid fa-cloud-sun"
+        style="color:var(--amber)"
+      ></i>
+
+      Partly Cloudy
+
+    </span>
+
+  </div>
+
+
+  <div
+    class="tso-row"
+    data-modal
+    data-icon="fa-solid fa-shield-halved"
+    data-color="#2563EB"
+    data-tag="Temple Status"
+    data-title="Security Status"
+    data-body="Security posture is Normal — all checkpoints staffed and no active threats."
+    tabindex="0"
+  >
+
+    Security Status
+
+    <span class="tso-tag ok">
+      Normal
+    </span>
+
+  </div>
+
+
+  <div
+    class="tso-row"
+    data-modal
+    data-icon="fa-solid fa-bolt"
+    data-color="#2563EB"
+    data-tag="Temple Status"
+    data-title="Power Backup"
+    data-body="Backup power is Online and ready, in case of any grid disruption during peak hours."
+    tabindex="0"
+  >
+
+    Power Backup
+
+    <span class="tso-tag info">
+      Online
+    </span>
+
+  </div>
+
+
+  <div
+    class="tso-row"
+    data-modal
+    data-icon="fa-solid fa-bullhorn"
+    data-color="#1F9D55"
+    data-tag="Temple Status"
+    data-title="Public Announcement"
+    data-body="The public announcement system is Active and being used for live crowd guidance."
+    tabindex="0"
+  >
+
+    Public Announcement
+
+    <span class="tso-tag ok">
+      Active
+    </span>
+
+  </div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     ACTIVE INCIDENTS
+========================================================= -->
+
+<div class="incidents-row">
+
+  <div class="panel">
+
+    <div class="panel-head">
+
+      <h3>
+        Active Incidents & Dispatch
+      </h3>
+
+    </div>
+
+
+    <table class="inc-table">
+
+      <thead>
+
+        <tr>
+
+          <th>Severity</th>
+          <th>Incident</th>
+          <th>Location</th>
+          <th>Time</th>
+          <th>Assigned Team</th>
+          <th>Status</th>
+          <th>ETA</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+
+        <tr
+          data-modal
+          data-icon="fa-solid fa-users"
+          data-color="var(--red)"
+          data-tag="High · Dispatched"
+          data-title="High Congestion — Main Gate"
+          data-body="Reported 10:30 AM. Team Alpha (12 members) dispatched, ETA 2 minutes."
+          tabindex="0"
+        >
+
+          <td>
+            <span class="sev-pill High">
+              High
+            </span>
+          </td>
+
+          <td>
+            High Congestion
+          </td>
+
+          <td>
+            Main Gate
+          </td>
+
+          <td>
+            10:30 AM
+          </td>
+
+          <td>
+            Team Alpha (12)
+          </td>
+
+          <td>
+            <span class="status-pill Dispatched">
+              Dispatched
+            </span>
+          </td>
+
+          <td>
+            2 min
+          </td>
+
+        </tr>
+
+
+        <tr
+          data-modal
+          data-icon="fa-solid fa-kit-medical"
+          data-color="var(--red)"
+          data-tag="High · Dispatched"
+          data-title="Medical Event — Darshan Queue Zone 2"
+          data-body="Reported 10:28 AM. Medical Team (2 members) dispatched, ETA 3 minutes."
+          tabindex="0"
+        >
+
+          <td>
+            <span class="sev-pill High">
+              High
+            </span>
+          </td>
+
+          <td>
+            Medical Event
+          </td>
+
+          <td>
+            Darshan Queue Zone 2
+          </td>
+
+          <td>
+            10:28 AM
+          </td>
+
+          <td>
+            Medical Team (2)
+          </td>
+
+          <td>
+            <span class="status-pill Dispatched">
+              Dispatched
+            </span>
+          </td>
+
+          <td>
+            3 min
+          </td>
+
+        </tr>
+
+
+        <tr
+          data-modal
+          data-icon="fa-solid fa-magnifying-glass"
+          data-color="var(--amber)"
+          data-tag="Medium · En Route"
+          data-title="Lost Person Report — Near Sabha Mandap"
+          data-body="Reported 10:25 AM. Team Bravo (6 members) en route, ETA 4 minutes."
+          tabindex="0"
+        >
+
+          <td>
+            <span class="sev-pill Medium">
+              Medium
+            </span>
+          </td>
+
+          <td>
+            Lost Person Report
+          </td>
+
+          <td>
+            Near Sabha Mandap
+          </td>
+
+          <td>
+            10:25 AM
+          </td>
+
+          <td>
+            Team Bravo (6)
+          </td>
+
+          <td>
+            <span class="status-pill EnRoute">
+              En Route
+            </span>
+          </td>
+
+          <td>
+            4 min
+          </td>
+
+        </tr>
+
+
+        <tr
+          data-modal
+          data-icon="fa-solid fa-users"
+          data-color="var(--amber)"
+          data-tag="Medium · Dispatched"
+          data-title="High Congestion — East Entry"
+          data-body="Reported 10:20 AM. Team Charlie (8 members) dispatched, ETA 5 minutes."
+          tabindex="0"
+        >
+
+          <td>
+            <span class="sev-pill Medium">
+              Medium
+            </span>
+          </td>
+
+          <td>
+            High Congestion
+          </td>
+
+          <td>
+            East Entry
+          </td>
+
+          <td>
+            10:20 AM
+          </td>
+
+          <td>
+            Team Charlie (8)
+          </td>
+
+          <td>
+            <span class="status-pill Dispatched">
+              Dispatched
+            </span>
+          </td>
+
+          <td>
+            5 min
+          </td>
+
+        </tr>
+
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- DISPATCH CARDS -->
+
+  <div>
+
+
+    <div
+      class="dispatch-card"
+      data-modal
+      data-icon="fa-solid fa-vest"
+      data-color="var(--green)"
+      data-tag="Dispatch · ETA 2 min"
+      data-title="Team Alpha Dispatched"
+      data-body="12 volunteers en route to Main Gate to respond to High Congestion."
+      tabindex="0"
+    >
+
+      <div class="dispatch-top">
+
+        <div
+          class="ic"
+          style="background:var(--green)"
+        >
+          <i class="fa-solid fa-vest"></i>
+        </div>
+
+        <div>
+
+          <b>
+            Team Alpha Dispatched
+          </b>
+
+          <span>
+            To: Main Gate (High Congestion)
+          </span>
+
+        </div>
+
+        <i
+          class="chev fa-solid fa-chevron-right"
+        ></i>
+
+      </div>
+
+
+      <div class="dispatch-bottom">
+
+        <div class="avatars">
+
+          <img
+            src="https://i.pravatar.cc/40?img=11"
+          >
+
+          <img
+            src="https://i.pravatar.cc/40?img=12"
+          >
+
+          <img
+            src="https://i.pravatar.cc/40?img=14"
+          >
+
+          <img
+            src="https://i.pravatar.cc/40?img=15"
+          >
+
+          <div class="more">
+            +7
+          </div>
+
+        </div>
+
+
+        <span
+          class="eta-pill"
+          style="background:var(--green)"
+        >
+          ETA 2 min
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="dispatch-card"
+      data-modal
+      data-icon="fa-solid fa-truck-medical"
+      data-color="var(--red)"
+      data-tag="Dispatch · ETA 3 min"
+      data-title="Medical Team Dispatched"
+      data-body="A dedicated medical team is en route to Darshan Queue Zone 2."
+      tabindex="0"
+    >
+
+      <div class="dispatch-top">
+
+        <div
+          class="ic"
+          style="background:var(--red)"
+        >
+
+          <i class="fa-solid fa-truck-medical"></i>
+
+        </div>
+
+        <div>
+
+          <b>
+            Medical Team Dispatched
+          </b>
+
+          <span>
+            To: Darshan Queue Zone 2
+          </span>
+
+        </div>
+
+        <i
+          class="chev fa-solid fa-chevron-right"
+        ></i>
+
+      </div>
+
+
+      <div class="dispatch-bottom">
+
+        <div class="avatars">
+
+          <img
+            src="https://i.pravatar.cc/40?img=16"
+          >
+
+          <img
+            src="https://i.pravatar.cc/40?img=17"
+          >
+
+          <div class="more">
+            +0
+          </div>
+
+        </div>
+
+        <span
+          class="eta-pill"
+          style="background:var(--red)"
+        >
+          ETA 3 min
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="dispatch-card"
+      data-modal
+      data-icon="fa-solid fa-person-running"
+      data-color="var(--amber)"
+      data-tag="Dispatch · ETA 4 min"
+      data-title="Team Bravo En Route"
+      data-body="6 volunteers are searching near Sabha Mandap for the reported lost person."
+      tabindex="0"
+    >
+
+      <div class="dispatch-top">
+
+        <div
+          class="ic"
+          style="background:var(--amber)"
+        >
+
+          <i class="fa-solid fa-person-running"></i>
+
+        </div>
+
+        <div>
+
+          <b>
+            Team Bravo En Route
+          </b>
+
+          <span>
+            Near Sabha Mandap
+          </span>
+
+        </div>
+
+        <i
+          class="chev fa-solid fa-chevron-right"
+        ></i>
+
+      </div>
+
+
+      <div class="dispatch-bottom">
+
+        <div class="avatars">
+
+          <img
+            src="https://i.pravatar.cc/40?img=18"
+          >
+
+          <img
+            src="https://i.pravatar.cc/40?img=19"
+          >
+
+          <div class="more">
+            +4
+          </div>
+
+        </div>
+
+        <span
+          class="eta-pill"
+          style="background:var(--amber)"
+        >
+          ETA 4 min
+        </span>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     BOTTOM STATISTICS
+========================================================= -->
+
+<div class="bottom-grid">
+
+
+  <div class="bstat-strip">
+
+
+    <div
+      class="bstat-card"
+      data-modal
+      data-icon="fa-solid fa-triangle-exclamation"
+      data-color="var(--amber)"
+      data-tag="Command Dashboard"
+      data-title="Active Incidents"
+      data-body="There are currently 12 active incidents being monitored and handled by response teams."
+      tabindex="0"
+    >
+
+      <div class="top">
+
+        <div class="lbl">
+
+          <i
+            class="fa-solid fa-triangle-exclamation"
+          ></i>
+
+          Active Incidents
+
+        </div>
+
+      </div>
+
+      <div class="val">
+        12
+      </div>
+
+      <div class="delta up">
+        ↑ 3 vs last 1 hr
+      </div>
+
+
+      <svg
+        class="mini-chart"
+        viewBox="0 0 100 26"
+        preserveAspectRatio="none"
+      >
+
+        <polyline
+          points="
+            0,20
+            15,18
+            30,14
+            45,16
+            60,10
+            75,12
+            100,4
+          "
+          fill="none"
+          stroke="var(--amber)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+      </svg>
+
+    </div>
+
+
+    <div
+      class="bstat-card"
+      data-modal
+      data-icon="fa-regular fa-clock"
+      data-color="var(--orange)"
+      data-tag="Command Dashboard"
+      data-title="Avg. Queue Wait Time"
+      data-body="Average darshan queue wait time is 68 minutes, down 10 minutes from yesterday."
+      tabindex="0"
+    >
+
+      <div class="top">
+
+        <div class="lbl">
+
+          <i
+            class="fa-regular fa-clock"
+          ></i>
+
+          Avg. Queue Wait Time
+
+        </div>
+
+      </div>
+
+      <div class="val">
+        68 min
+      </div>
+
+      <div class="delta upgood">
+        ↓ 10 vs yesterday
+      </div>
+
+
+      <svg
+        class="mini-chart"
+        viewBox="0 0 100 26"
+        preserveAspectRatio="none"
+      >
+
+        <polyline
+          points="
+            0,6
+            15,10
+            30,8
+            45,16
+            60,14
+            75,20
+            100,18
+          "
+          fill="none"
+          stroke="var(--orange)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+      </svg>
+
+    </div>
+
+
+    <div
+      class="bstat-card"
+      data-modal
+      data-feature="healthcare-centers"
+      data-icon="fa-solid fa-hospital"
+      data-color="var(--green)"
+      tabindex="0"
+      style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+      "
+    >
+
+      <div
+        class="ring-sm"
+        style="
+          background:
+          conic-gradient(
+            var(--green) 0% 62%,
+            #EFE9DF 62% 100%
+          );
+        "
+      >
+
+        <div class="hole">
+          62%
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <div class="lbl">
+
+          <i
+            class="fa-solid fa-hospital"
+          ></i>
+
+          Healthcare Occupancy
+
+        </div>
+
+        <div
+          class="delta up"
+          style="margin-top:4px;"
+        >
+          ↑ 8% vs yesterday
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="bstat-card"
+      data-modal
+      data-icon="fa-solid fa-kit-medical"
+      data-color="var(--red)"
+      data-tag="Command Dashboard"
+      data-title="Emergency Cases (Today)"
+      data-body="18 emergency cases handled today, up 4 from yesterday. All currently assigned to a response team."
+      tabindex="0"
+    >
+
+      <div class="top">
+
+        <div class="lbl">
+
+          <i
+            class="fa-solid fa-kit-medical"
+          ></i>
+
+          Emergency Cases (Today)
+
+        </div>
+
+      </div>
+
+      <div class="val">
+        18
+      </div>
+
+      <div class="delta up">
+        ↑ 4 vs yesterday
+      </div>
+
+    </div>
+
+
+    <div
+      class="bstat-card"
+      data-modal
+      data-icon="fa-solid fa-square-check"
+      data-color="#4A423C"
+      data-tag="Command Dashboard"
+      data-title="Service Counters"
+      data-body="24 of 32 service counters are currently operational across ticketing, information and registration desks."
+      tabindex="0"
+    >
+
+      <div class="top">
+
+        <div class="lbl">
+
+          <i
+            class="fa-solid fa-square-check"
+          ></i>
+
+          Service Counters
+
+        </div>
+
+      </div>
+
+      <div class="val">
+        24 / 32
+      </div>
+
+      <div class="delta neutral">
+        Operational
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+<!-- HEALTHCARE STATUS -->
+
+<div class="panel">
+
+  <div class="panel-head">
+
+    <h3>
+      Healthcare Centers Status
+    </h3>
+
+    <a
+      href="#"
+      data-modal
+      data-feature="healthcare-centers"
+      tabindex="0"
+    >
+      View All
+    </a>
+
+  </div>
+
+
+  <table class="hc-table">
+
+    <thead>
+
+      <tr>
+
+        <th>
+          Center
+        </th>
+
+        <th>
+          Occupancy
+        </th>
+
+        <th>
+          Status
+        </th>
+
+      </tr>
+
+    </thead>
+
+
+    <tbody>
+
+
+      <tr
+        data-modal
+        data-icon="fa-solid fa-hospital"
+        data-color="var(--red)"
+        data-tag="62% Occupied · Operational"
+        data-title="Main Medical Center"
+        data-body="The Main Medical Center is running at 62% occupancy and fully operational."
+        tabindex="0"
+      >
+
+        <td>
+
+          <div class="hc-name">
+
+            <i
+              style="background:var(--red)"
+              class="fa-solid fa-hospital"
+            ></i>
+
+            Main Medical Center
+
+          </div>
+
+        </td>
+
+
+        <td>
+
+          <span class="occ-bar">
+
+            <span
+              style="width:62%"
+            ></span>
+
+          </span>
+
+          62%
+
+        </td>
+
+
+        <td>
+
+          <span class="op-tag">
+
+            <i
+              class="fa-solid fa-circle"
+            ></i>
+
+            Operational
+
+          </span>
+
+        </td>
+
+      </tr>
+
+
+      <tr
+        data-modal
+        data-icon="fa-solid fa-hospital"
+        data-color="var(--green)"
+        data-tag="48% Occupied · Operational"
+        data-title="East Side Clinic"
+        data-body="East Side Clinic is running at 48% occupancy and fully operational."
+        tabindex="0"
+      >
+
+        <td>
+
+          <div class="hc-name">
+
+            <i
+              style="background:var(--green)"
+              class="fa-solid fa-hospital"
+            ></i>
+
+            East Side Clinic
+
+          </div>
+
+        </td>
+
+
+        <td>
+
+          <span class="occ-bar">
+
+            <span
+              style="width:48%"
+            ></span>
+
+          </span>
+
+          48%
+
+        </td>
+
+
+        <td>
+
+          <span class="op-tag">
+
+            <i
+              class="fa-solid fa-circle"
+            ></i>
+
+            Operational
+
+          </span>
+
+        </td>
+
+      </tr>
+
+
+      <tr
+        data-modal
+        data-icon="fa-solid fa-hospital"
+        data-color="var(--red)"
+        data-tag="35% Occupied · Operational"
+        data-title="North Gate Aid Post"
+        data-body="North Gate Aid Post is running at 35% occupancy and fully operational."
+        tabindex="0"
+      >
+
+        <td>
+
+          <div class="hc-name">
+
+            <i
+              style="background:var(--red)"
+              class="fa-solid fa-hospital"
+            ></i>
+
+            North Gate Aid Post
+
+          </div>
+
+        </td>
+
+
+        <td>
+
+          <span class="occ-bar">
+
+            <span
+              style="width:35%"
+            ></span>
+
+          </span>
+
+          35%
+
+        </td>
+
+
+        <td>
+
+          <span class="op-tag">
+
+            <i
+              class="fa-solid fa-circle"
+            ></i>
+
+            Operational
+
+          </span>
+
+        </td>
+
+      </tr>
+
+
+      <tr
+        data-modal
+        data-icon="fa-solid fa-truck-medical"
+        data-color="var(--orange)"
+        data-tag="22% Occupied · Operational"
+        data-title="Mobile Medical Unit 1"
+        data-body="Mobile Medical Unit 1 is running at 22% occupancy and fully operational, currently positioned near the main route."
+        tabindex="0"
+      >
+
+        <td>
+
+          <div class="hc-name">
+
+            <i
+              style="background:var(--orange)"
+              class="fa-solid fa-truck-medical"
+            ></i>
+
+            Mobile Medical Unit 1
+
+          </div>
+
+        </td>
+
+
+        <td>
+
+          <span class="occ-bar">
+
+            <span
+              style="width:22%"
+            ></span>
+
+          </span>
+
+          22%
+
+        </td>
+
+
+        <td>
+
+          <span class="op-tag">
+
+            <i
+              class="fa-solid fa-circle"
+            ></i>
+
+            Operational
+
+          </span>
+
+        </td>
+
+      </tr>
+
+
+    </tbody>
+
+  </table>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     CHARTS
+========================================================= -->
+
+<div class="charts-row">
+
+
+  <!-- CROWD TREND -->
+
+  <div
+    class="panel"
+    data-modal
+    data-feature="crowd-heatmap"
+    data-icon="fa-solid fa-chart-line"
+    data-color="#C94F06"
+    tabindex="0"
+  >
+
+    <div
+      class="panel-head"
+      style="margin-bottom:4px;"
+    >
+
+      <h3 style="font-size:13px;">
+        Crowd Trend (Today)
+      </h3>
+
+    </div>
+
+
+    <div class="chart-legend">
+
+      <span>
+
+        <i
+          style="background:var(--orange)"
+        ></i>
+
+        Total Footfall
+
+      </span>
+
+
+      <span>
+
+        <i class="dashed"></i>
+
+        Expected Trend
+
+      </span>
+
+    </div>
+
+
+    <svg
+      viewBox="0 0 300 140"
+      width="100%"
+      height="140"
+      preserveAspectRatio="none"
+    >
+
+      <defs>
+
+        <linearGradient
+          id="gradA"
+          x1="0"
+          y1="0"
+          x2="0"
+          y2="1"
+        >
+
+          <stop
+            offset="0%"
+            stop-color="#E8630C"
+            stop-opacity=".4"
+          />
+
+          <stop
+            offset="100%"
+            stop-color="#E8630C"
+            stop-opacity="0"
+          />
+
+        </linearGradient>
+
+      </defs>
+
+
+      <line
+        x1="0"
+        y1="10"
+        x2="300"
+        y2="10"
+        stroke="#F1EAE0"
+      />
+
+      <line
+        x1="0"
+        y1="42"
+        x2="300"
+        y2="42"
+        stroke="#F1EAE0"
+      />
+
+      <line
+        x1="0"
+        y1="74"
+        x2="300"
+        y2="74"
+        stroke="#F1EAE0"
+      />
+
+      <line
+        x1="0"
+        y1="106"
+        x2="300"
+        y2="106"
+        stroke="#F1EAE0"
+      />
+
+
+      <path
+        d="
+          M0,130
+          C30,127 55,124 80,95
+          C100,73 105,58 120,55
+          C138,51 148,32 160,30
+          C172,28 182,24 190,25
+          C202,26.5 210,30 220,35
+          C238,44 248,52 260,60
+          C273,68.5 288,71.5 300,75
+        "
+        fill="none"
+        stroke="#B3AAA0"
+        stroke-width="1.5"
+        stroke-dasharray="4 4"
+      />
+
+
+      <path
+        d="
+          M0,130
+          C30,127 55,120 80,90
+          C100,66 105,50 120,45
+          C138,39 148,25 160,22
+          C172,19.5 182,16.5 190,18
+          C202,20 210,26 220,32
+          C238,42.5 248,50 260,58
+          C273,67 288,69.5 300,72
+          L300,140
+          L0,140
+          Z
+        "
+        fill="url(#gradA)"
+      />
+
+
+      <path
+        d="
+          M0,130
+          C30,127 55,120 80,90
+          C100,66 105,50 120,45
+          C138,39 148,25 160,22
+          C172,19.5 182,16.5 190,18
+          C202,20 210,26 220,32
+          C238,42.5 248,50 260,58
+          C273,67 288,69.5 300,72
+        "
+        fill="none"
+        stroke="var(--orange)"
+        stroke-width="2.75"
+        stroke-linecap="round"
+        style="
+          filter:
+          drop-shadow(
+            0 3px 5px
+            rgba(232,99,12,.3)
+          );
+        "
+      />
+
+
+      <circle
+        cx="190"
+        cy="18"
+        r="5"
+        fill="var(--orange)"
+        stroke="#fff"
+        stroke-width="2"
+      />
+
+    </svg>
+
+
+    <div class="axis-labels">
+
+      <span>12 AM</span>
+      <span>4 AM</span>
+      <span>8 AM</span>
+      <span>12 PM</span>
+      <span>4 PM</span>
+      <span>8 PM</span>
+      <span>12 AM</span>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESPONSE TIME -->
+
+  <div
+    class="panel"
+    data-modal
+    data-feature="incident-mgmt"
+    data-icon="fa-solid fa-chart-column"
+    data-color="#1F3A5F"
+    tabindex="0"
+  >
+
+    <div
+      class="panel-head"
+      style="margin-bottom:4px;"
+    >
+
+      <h3 style="font-size:13px;">
+        Average Response Time
+      </h3>
+
+    </div>
+
+
+    <div class="chart-legend">
+
+      <span>
+
+        <i
+          class="dashed"
+          style="background:var(--green)"
+        ></i>
+
+        Target (&lt; 5 min)
+
+      </span>
+
+    </div>
+
+
+    <div class="bar-values">
+
+      <span>4.2 min</span>
+      <span>4.6 min</span>
+      <span>3.8 min</span>
+      <span>4.1 min</span>
+      <span>4.7 min</span>
+      <span>4.3 min</span>
+      <span>4.0 min</span>
+
+    </div>
+
+
+    <svg
+      viewBox="0 0 300 130"
+      width="100%"
+      height="120"
+    >
+
+      <defs>
+
+        <linearGradient
+          id="gradBar"
+          x1="0"
+          y1="0"
+          x2="0"
+          y2="1"
+        >
+
+          <stop
+            offset="0%"
+            stop-color="#2563EB"
+          />
+
+          <stop
+            offset="100%"
+            stop-color="#1F3A5F"
+          />
+
+        </linearGradient>
+
+      </defs>
+
+
+      <line
+        x1="0"
+        y1="20"
+        x2="300"
+        y2="20"
+        stroke="var(--green)"
+        stroke-width="1.5"
+        stroke-dasharray="5 4"
+      />
+
+
+      <g fill="url(#gradBar)">
+
+        <rect
+          x="6"
+          y="46"
+          width="28"
+          height="74"
+          rx="5"
+        ></rect>
+
+        <rect
+          x="48"
+          y="34"
+          width="28"
+          height="86"
+          rx="5"
+        ></rect>
+
+        <rect
+          x="90"
+          y="58"
+          width="28"
+          height="62"
+          rx="5"
+        ></rect>
+
+        <rect
+          x="132"
+          y="42"
+          width="28"
+          height="78"
+          rx="5"
+        ></rect>
+
+        <rect
+          x="174"
+          y="26"
+          width="28"
+          height="94"
+          rx="5"
+          fill="var(--orange)"
+        ></rect>
+
+        <rect
+          x="216"
+          y="38"
+          width="28"
+          height="82"
+          rx="5"
+        ></rect>
+
+        <rect
+          x="258"
+          y="48"
+          width="28"
+          height="72"
+          rx="5"
+        ></rect>
+
+      </g>
+
+    </svg>
+
+
+    <div class="axis-labels">
+
+      <span>12 AM</span>
+      <span>4 AM</span>
+      <span>8 AM</span>
+      <span>12 PM</span>
+      <span>4 PM</span>
+      <span>8 PM</span>
+      <span>12 AM</span>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+</main>
+
+</div>
+
+
+<!-- =========================================================
+     PROJECT JAVASCRIPT
+========================================================= -->
+
+<script src="assets/translations.js"></script>
+<script src="assets/feature-translations.js"></script>
+<script src="assets/features-data.js"></script>
+<script src="assets/i18n.js"></script>
+<script src="assets/features.js"></script>
+
+
+<script>
+
+(function(){
+
+  try{
+
+    var saved =
+      localStorage.getItem(
+        'varimitra_user'
+      );
+
+    if(!saved){
+
+      window.location.href =
+        'index.html';
+
+      return;
+
+    }
+
+    var user =
+      JSON.parse(saved);
+
+
+    if(user.role === 'user'){
+
+      window.location.href =
+        'varimitra.html';
+
+      return;
+
+    }
+
+
+    var whoEl =
+      document.getElementById(
+        'adminChipName'
+      );
+
+
+    if(
+      whoEl &&
+      user.name
+    ){
+
+      whoEl.innerHTML =
+        '<span>' + (window.VariMitraT ? window.VariMitraT('common.admin') : 'Admin') + '</span>' +
+        '<b>' +
+        user.name +
+        '</b>';
+
+    }
+
+  }
+
+  catch(e){}
+
+})();
+
+
+/* ===== SIDEBAR TOGGLE ===== */
+(function(){
+
+  var toggle =
+    document.getElementById('sidebarToggle');
+
+  var sidebar =
+    document.getElementById('sidebar');
+
+  var overlay =
+    document.getElementById('sidebarOverlay');
+
+  if(!toggle || !sidebar || !overlay){
+    return;
+  }
+
+  function setOpen(open){
+
+    sidebar.classList.toggle('open', open);
+    overlay.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute(
+      'aria-label',
+      open
+        ? (window.VariMitraT ? window.VariMitraT('common.closeMenu') : 'Close navigation menu')
+        : (window.VariMitraT ? window.VariMitraT('common.openMenu') : 'Open navigation menu')
+    );
+
+    var icon = toggle.querySelector('i');
+
+    if(icon){
+      icon.className = open
+        ? 'fa-solid fa-xmark'
+        : 'fa-solid fa-bars';
+    }
+
+  }
+
+  toggle.addEventListener('click', function(){
+    setOpen(!sidebar.classList.contains('open'));
+  });
+
+  overlay.addEventListener('click', function(){
+    setOpen(false);
+  });
+
+  sidebar.querySelectorAll('.side-link').forEach(function(link){
+    link.addEventListener('click', function(){
+      setOpen(false);
+    });
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      setOpen(false);
+    }
+  });
+
+})();
+
+</script>
+
+
+</body>
+</html>

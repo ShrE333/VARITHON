@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('varimitra_user');
+      if (!saved) {
+        window.location.href = 'index.html';
+        return;
+      }
+      var user = JSON.parse(saved);
+      if (user.role === 'admin') {
+        window.location.href = 'command-dashboard.html';
+        return;
+      }
+    } catch(e){
+      window.location.href = 'index.html';
+    }
+  })();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VariMitra — One Platform. Safer Pilgrimage. Preserved Heritage.</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="assets/modal.css">
+<style>
+  :root{
+    --maroon:#8B1B1B;
+    --maroon-dark:#5C1010;
+    --orange:#E8630C;
+    --orange-dark:#C94F06;
+    --cream:#FBF6EE;
+    --card-border:#ECE4D8;
+    --text-dark:#2B2320;
+    --text-muted:#7A7068;
+    --green:#1F9D55;
+    --amber:#E0A825;
+    --red:#D64545;
+    --blue:#2563EB;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cream);
+    color:var(--text-dark);
+  }
+  a{text-decoration:none;color:inherit;}
+  button{font-family:inherit;cursor:pointer;border:none;}
+
+  /* ===== TOP HEADER ===== */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border-bottom:1px solid var(--card-border);
+    padding:10px 24px;
+    position:sticky;top:0;z-index:50;
+    gap:20px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;min-width:230px;}
+  .sidebar-toggle{
+    display:flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:9px;
+    background:var(--cream);border:1px solid var(--card-border);
+    font-size:16px;color:var(--maroon);flex-shrink:0;
+  }
+  .sidebar-toggle:hover{background:#FBF1E7;}
+  .sidebar-overlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(43,35,32,.4);z-index:90;
+  }
+  .sidebar-overlay.open{display:block;}
+  .brand .logo{
+    width:42px;height:42px;border-radius:50%;
+    background:linear-gradient(135deg,var(--orange),var(--maroon));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;
+    flex-shrink:0;
+  }
+  .brand .name{font-weight:800;font-size:19px;color:var(--maroon);line-height:1;}
+  .brand .tagline{font-size:10px;color:var(--text-muted);line-height:1.3;}
+
+  .search-box{
+    flex:1;max-width:420px;
+    display:flex;align-items:center;gap:8px;
+    background:var(--cream);
+    border:1px solid var(--card-border);
+    border-radius:10px;
+    padding:8px 14px;
+    color:var(--text-muted);
+    font-size:13.5px;
+  }
+  .search-box input{
+    border:none;background:transparent;outline:none;flex:1;font-size:13.5px;color:var(--text-dark);
+  }
+  .search-box kbd{font-size:11px;color:#B3AAA0;border:1px solid #E4DCD0;padding:1px 5px;border-radius:4px;}
+
+  .main-nav{display:flex;align-items:center;gap:26px;font-size:14.5px;font-weight:600;color:#4A423C;}
+  .main-nav a{display:flex;align-items:center;gap:4px;padding:4px 2px;}
+  .main-nav a.active{color:var(--orange);border-bottom:2px solid var(--orange);padding-bottom:6px;}
+  .main-nav a:hover{color:var(--orange);}
+
+  .topbar-right{display:flex;align-items:center;gap:18px;flex-shrink:0;}
+  .lang-pick{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:#4A423C;}
+  .bell{position:relative;font-size:18px;color:#4A423C;}
+  .bell .dot{
+    position:absolute;top:-6px;right:-8px;background:var(--red);color:#fff;
+    font-size:9.5px;font-weight:700;border-radius:8px;padding:1px 5px;
+  }
+  .user-chip{display:flex;align-items:center;gap:8px;}
+  .user-chip img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--orange);}
+  .user-chip .who{font-size:12.5px;line-height:1.3;}
+  .user-chip .who b{font-size:13.5px;display:block;}
+
+  /* ===== LAYOUT ===== */
+  .layout{display:flex;align-items:flex-start;}
+  .sidebar{
+    width:250px;flex-shrink:0;background:#fff;
+    border-right:1px solid var(--card-border);
+    min-height:calc(100vh - 60px);
+    padding:14px 12px;
+    position:fixed;top:60px;left:0;bottom:0;
+    z-index:100;
+    display:flex;flex-direction:column;gap:2px;
+    overflow-y:auto;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    box-shadow:4px 0 20px rgba(0,0,0,.08);
+  }
+  .sidebar.open{transform:translateX(0);}
+  .side-link{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 12px;border-radius:9px;font-size:14px;font-weight:600;color:#4A423C;
+  }
+  .side-link .l{display:flex;align-items:center;gap:11px;}
+  .side-link i.icn{width:18px;text-align:center;color:#8A8078;}
+  .side-link:hover{background:#FBF1E7;}
+  .side-link.active{background:linear-gradient(90deg,var(--orange),var(--orange-dark));color:#fff;}
+  .side-link.active i.icn{color:#fff;}
+  .side-link .badge{background:var(--red);color:#fff;font-size:10.5px;font-weight:700;border-radius:8px;padding:1px 7px;}
+  .side-link.emergency{color:var(--red);}
+  .side-link.emergency i.icn{color:var(--red);}
+  .side-link .chev{font-size:11px;color:#C7BEB4;}
+
+  .side-assistant{
+    margin:16px 6px 8px;background:#FBF1E7;border-radius:12px;padding:14px;
+  }
+  .side-assistant .a-top{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+  .side-assistant .a-top .av{width:34px;height:34px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;color:#fff;}
+  .side-assistant .a-top b{font-size:13px;display:block;}
+  .side-assistant .a-top span{font-size:11px;color:var(--text-muted);}
+  .btn-maroon{width:100%;background:var(--maroon);color:#fff;padding:9px;border-radius:8px;font-weight:700;font-size:13px;}
+
+  .side-promo{
+    margin:4px 6px;border-radius:12px;overflow:hidden;position:relative;height:140px;
+    background:linear-gradient(180deg,rgba(30,10,10,.15),rgba(20,5,5,.85)),
+      radial-gradient(circle at 30% 20%, #b5651d, #3b1c0d 75%);
+    display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff;
+  }
+  .side-promo b{font-size:13.5px;}
+  .side-promo span{font-size:11px;opacity:.9;display:block;margin-bottom:8px;}
+  .side-promo button{background:var(--orange);color:#fff;font-size:12px;font-weight:700;padding:7px 10px;border-radius:7px;}
+
+  .content{flex:1;padding:20px 20px 0;min-width:0;}
+  .right-rail{width:320px;flex-shrink:0;padding:20px 20px 0 0;display:flex;flex-direction:column;gap:16px;}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;border-radius:16px;overflow:hidden;min-height:290px;
+    display:flex;align-items:center;padding:36px 40px;
+    background:#2B1810;
+    color:#fff;
+  }
+  .hero-slider{position:absolute;inset:0;overflow:hidden;z-index:0;}
+  .hero-track{display:flex;height:100%;width:300%;transition:transform .9s cubic-bezier(.65,0,.35,1);}
+  .hero-slide{width:33.3333%;height:100%;flex-shrink:0;background-size:cover;background-position:center;}
+  .hero::after{
+    content:"";position:absolute;inset:0;z-index:1;
+    background-image:
+      linear-gradient(100deg, rgba(40,12,8,.90) 20%, rgba(40,12,8,.58) 52%, rgba(20,8,5,.18) 88%),
+      radial-gradient(circle at 85% 30%, rgba(255,200,120,.22), transparent 42%),
+      repeating-linear-gradient(120deg, rgba(0,0,0,0.05) 0 2px, transparent 2px 40px);
+    pointer-events:none;
+  }
+  .hero-dots{position:absolute;right:20px;bottom:16px;z-index:3;display:flex;gap:7px;}
+  .hero-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .2s, transform .2s;display:block;}
+  .hero-dots span.active{background:#fff;transform:scale(1.25);}
+  .hero-inner{position:relative;z-index:2;max-width:560px;}
+  .hero h1{font-size:44px;margin:0 0 6px;font-weight:800;letter-spacing:.5px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.3);}
+  .hero h2{font-size:22px;margin:0 0 10px;font-weight:700;}
+  .hero p.sub{font-size:14px;opacity:.95;margin:0 0 22px;font-weight:500;}
+  .hero-badges{display:flex;gap:22px;flex-wrap:wrap;}
+  .hero-badges .b{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;}
+  .hero-badges .b i{background:rgba(255,255,255,.18);width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+
+  /* ===== QUICK ACTIONS ===== */
+  .section-title{font-size:17px;font-weight:800;margin:26px 0 12px;color:#2B2320;display:flex;align-items:center;gap:10px;}
+  .section-title .sic{
+    width:32px;height:32px;border-radius:9px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;
+    background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+  }
+  .rail-head b i.ric{color:var(--orange);font-size:13px;width:16px;text-align:center;}
+  .quick-actions{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;}
+  .qa-card{
+    background:#fff;border:1px solid var(--card-border);border-radius:12px;
+    padding:16px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;
+    transition:transform .15s, box-shadow .15s;
+  }
+  .qa-card:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(0,0,0,.06);}
+  .qa-card .ic{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;}
+  .qa-card span{font-size:12px;font-weight:700;line-height:1.3;color:#4A423C;}
+
+  /* ===== SERVICE CARDS ===== */
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:8px;}
+  .svc-card{
+    background:#fff;border:1px solid var(--card-border);border-radius:14px;
+    padding:18px;display:flex;flex-direction:column;gap:10px;
+  }
+  .svc-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .svc-card h3{margin:0;font-size:15.5px;font-weight:800;}
+  .svc-card p{margin:0;font-size:12.5px;color:var(--text-muted);line-height:1.4;}
+  .svc-thumb{
+    height:110px;border-radius:10px;background-size:cover;background-position:center;
+    display:flex;align-items:flex-start;justify-content:flex-end;padding:8px;
+  }
+  .live-tag{background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:5px;letter-spacing:.5px;}
+  .svc-btn{align-self:flex-start;color:#fff;font-weight:700;font-size:12.5px;padding:8px 16px;border-radius:8px;}
+  .icon-chip{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0;}
+  .gauge-wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .lang-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+  .lang-chips span{background:var(--cream);border:1px solid var(--card-border);font-size:11px;font-weight:700;padding:4px 9px;border-radius:6px;}
+
+  /* ===== ALERTS STRIP ===== */
+  .alerts-head{display:flex;justify-content:space-between;align-items:center;margin:26px 0 12px;}
+  .alerts-head a{color:var(--orange);font-size:12.5px;font-weight:700;}
+  .alerts-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px;}
+  .alert-card{background:#fff;border:1px solid var(--card-border);border-radius:12px;padding:14px;display:flex;gap:10px;align-items:flex-start;}
+  .alert-card .ic{width:34px;height:34px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;}
+  .alert-card b{font-size:12.5px;display:block;}
+  .alert-card p{font-size:11.5px;color:var(--text-muted);margin:2px 0 4px;}
+  .alert-card .t{font-size:10.5px;color:#B3AAA0;}
+
+  /* ===== RIGHT RAIL ===== */
+  .rail-card{background:#fff;border:1px solid var(--card-border);border-radius:14px;padding:16px;}
+  .rail-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+  .rail-head b{font-size:14.5px;display:flex;align-items:center;gap:7px;}
+  .rail-head span{font-size:11px;color:var(--text-muted);}
+  .rail-head a{font-size:11.5px;color:var(--orange);font-weight:700;}
+
+  .yatri-box{display:flex;align-items:center;gap:10px;background:var(--cream);border-radius:10px;padding:10px;margin-bottom:12px;}
+  .yatri-box img{width:38px;height:38px;border-radius:50%;object-fit:cover;}
+  .yatri-box .nm{font-size:13px;font-weight:700;}
+  .yatri-box .id{font-size:11px;color:var(--text-muted);}
+  .verified{margin-left:auto;background:#E7F6EC;color:var(--green);font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:6px;}
+
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .stat-box{background:var(--cream);border-radius:10px;padding:10px;text-align:left;}
+  .stat-box i{color:var(--orange);margin-bottom:6px;display:block;font-size:15px;}
+  .stat-box b{font-size:16px;display:block;}
+  .stat-box span{font-size:11px;color:var(--text-muted);}
+
+  .crowd-status .place{font-size:13px;font-weight:700;}
+  .crowd-status .queue{font-size:11px;color:var(--text-muted);margin-bottom:10px;}
+  .gauge-svg{display:block;margin:0 auto;}
+  .gauge-center{text-align:center;margin-top:-46px;}
+  .gauge-center b{font-size:22px;display:block;color:var(--red);}
+  .gauge-center span{font-size:10.5px;font-weight:700;color:var(--red);background:#FDECEC;padding:2px 10px;border-radius:6px;}
+  .wait-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:11.5px;}
+  .wait-row b{display:block;font-size:14px;}
+  .view-btn{background:var(--cream);border:1px solid var(--card-border);padding:6px 12px;border-radius:7px;font-size:11.5px;font-weight:700;}
+
+  .booking-item{background:var(--cream);border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .booking-item b{font-size:12.5px;display:block;}
+  .booking-item span{font-size:11px;color:var(--text-muted);}
+  .qr-chip{background:#fff;border:1px solid var(--card-border);font-size:10.5px;font-weight:700;padding:5px 8px;border-radius:6px;white-space:nowrap;}
+
+  .alert-row{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #F1EAE0;}
+  .alert-row:last-of-type{border-bottom:none;}
+  .alert-row i{margin-top:2px;font-size:12px;}
+  .alert-row b{font-size:12px;font-weight:700;display:block;}
+  .alert-row .tm{font-size:10.5px;color:#B3AAA0;margin-left:auto;white-space:nowrap;}
+
+  .avail-row{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:12.5px;font-weight:600;}
+  .avail-row i{color:var(--orange);width:16px;text-align:center;}
+  .avail-tag{margin-left:auto;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:6px;}
+  .avail-tag.ok{background:#E7F6EC;color:var(--green);}
+  .avail-tag.low{background:#FDF3E0;color:var(--amber);}
+
+  /* ===== FOOTER ===== */
+  .footer{
+    margin-top:30px;background:var(--maroon-dark);color:#fff;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 40px;gap:20px;flex-wrap:wrap;
+  }
+  .foot-stats{display:flex;gap:34px;flex-wrap:wrap;}
+  .foot-stats .fs{display:flex;align-items:center;gap:10px;}
+  .foot-stats .fs i{font-size:18px;color:#F5C26B;}
+  .foot-stats .fs b{font-size:15px;display:block;}
+  .foot-stats .fs span{font-size:10.5px;opacity:.8;}
+  .foot-tagline{text-align:center;flex:1;min-width:260px;}
+  .foot-tagline .marathi{font-size:15px;font-weight:700;color:#F5C26B;margin-bottom:2px;}
+  .foot-tagline .eng{font-size:11px;opacity:.85;}
+  .foot-app{display:flex;align-items:center;gap:12px;}
+  .foot-app .qr{width:50px;height:50px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#111;font-size:22px;}
+  .foot-app .badges{display:flex;flex-direction:column;gap:6px;}
+  .foot-app .badges div{background:#000;border:1px solid #444;color:#fff;font-size:10.5px;font-weight:600;padding:5px 10px;border-radius:6px;display:flex;align-items:center;gap:6px;}
+
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:#E4D9C9;border-radius:8px;}
+
+  /* ===== WHATSAPP ASSISTANT + HERITAGE SECTION ===== */
+  .split-section{display:grid;grid-template-columns:300px 1fr;gap:22px;margin-bottom:8px;}
+  .phone-mock{
+    background:#111;border-radius:32px;padding:10px;width:280px;box-shadow:0 20px 40px rgba(0,0,0,.15);
+  }
+  .phone-screen{background:#ECE5DD;border-radius:22px;overflow:hidden;min-height:420px;display:flex;flex-direction:column;}
+  .phone-head{background:var(--green);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+  .phone-head .av{width:30px;height:30px;border-radius:50%;background:#fff;color:var(--green);display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .phone-head b{font-size:13px;display:block;}
+  .phone-head span{font-size:10px;opacity:.85;}
+  .phone-body{padding:12px;flex:1;display:flex;flex-direction:column;gap:8px;}
+  .bubble{background:#fff;border-radius:10px;padding:9px 11px;font-size:11.5px;max-width:88%;box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  .bubble.me{align-self:flex-end;background:#DCF8C6;}
+  .menu-chip{display:flex;align-items:center;gap:8px;background:#fff;border-radius:9px;padding:8px 10px;font-size:11.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .menu-chip i{width:20px;text-align:center;color:var(--orange);}
+
+  .heritage-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .heritage-card{background:#fff;border:1px solid var(--card-border);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;}
+  .heritage-card .ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;}
+  .heritage-card h4{margin:0;font-size:14.5px;font-weight:800;}
+  .heritage-card p{margin:0;font-size:12px;color:var(--text-muted);line-height:1.4;}
+
+  /* ===== WELFARE DASHBOARD ===== */
+  .welfare-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
+  .w-card{background:#fff;border:1px solid var(--card-border);border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;}
+  .w-card b.lbl{font-size:11.5px;font-weight:800;letter-spacing:.2px;color:#4A423C;text-transform:uppercase;display:flex;align-items:center;gap:6px;justify-content:center;}
+  .w-card b.lbl i{color:var(--orange);font-size:12px;}
+  .ring{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;}
+  .ring .hole{width:70px;height:70px;background:#fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring .hole b{font-size:19px;color:var(--text-dark);}
+  .ring .hole span{font-size:9px;color:var(--text-muted);}
+  .w-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;}
+  .w-tag.green{background:#E7F6EC;color:var(--green);}
+  .w-tag.amber{background:#FDF3E0;color:var(--amber);}
+
+  .w-wide{grid-column:span 2;}
+  .trend-chart{width:100%;height:110px;}
+  .trend-head{display:flex;justify-content:space-between;width:100%;align-items:center;margin-bottom:4px;}
+  .peak-badge{background:var(--red);color:#fff;font-size:10px;font-weight:800;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;}
+
+  .map-card{grid-column:span 2;}
+  .map-fake{
+    width:100%;height:130px;border-radius:10px;position:relative;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(230,80,40,.35), transparent 45%),
+      radial-gradient(circle at 70% 30%, rgba(230,180,40,.35), transparent 45%),
+      linear-gradient(135deg,#EAF4EC,#DCEAE0);
+    margin-bottom:6px;
+  }
+  .map-fake .pin{position:absolute;font-size:13px;}
+  .map-legend{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;font-size:10px;color:var(--text-muted);font-weight:600;}
+  .map-legend span{display:flex;align-items:center;gap:4px;}
+  .map-legend i{font-size:10px;}
+
+  .resource-list{width:100%;text-align:left;display:flex;flex-direction:column;gap:9px;}
+  .resource-list .r-row{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;}
+  .resource-list .r-row span.num{color:var(--orange);font-weight:800;}
+
+  .donut{width:110px;height:110px;border-radius:50%;position:relative;
+    background:conic-gradient(
+      var(--green) 0% 26%,
+      var(--blue) 26% 54%,
+      var(--amber) 54% 72%,
+      #7C3AED 72% 86%,
+      #B3AAA0 86% 100%);
+  }
+  .donut .hole{width:66px;height:66px;background:#fff;border-radius:50%;position:absolute;top:22px;left:22px;display:flex;align-items:center;justify-content:center;}
+  .donut-legend{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:9.5px;font-weight:700;margin-top:6px;}
+  .donut-legend span{display:flex;align-items:center;gap:4px;}
+  .donut-legend i{width:8px;height:8px;border-radius:50%;display:inline-block;}
+
+  .ai-insight{grid-column:span 2;align-items:flex-start;text-align:left;background:linear-gradient(135deg,#FFF7EC,#FDEFE0);}
+  .ai-insight p{font-size:12px;color:#5A4A38;line-height:1.5;margin:0 0 10px;}
+  .ai-insight button{background:var(--orange);color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP HEADER ===== -->
+<header class="topbar">
+  <div class="brand">
+    <button
+      class="sidebar-toggle"
+      id="sidebarToggle"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+    >
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="logo"><i class="fa-solid fa-place-of-worship"></i></div>
+    <div>
+      <div class="name">VariMitra</div>
+      <div class="tagline" data-i18n-html="common.taglineHtml">One Platform. Safer Pilgrimage.<br>Preserved Heritage.</div>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" data-i18n-placeholder="pilgrim.searchPlaceholder" placeholder="Search services, temples, help...">
+    <kbd>⌘K</kbd>
+  </div>
+
+  <nav class="main-nav">
+    <a href="#" class="active" data-i18n="pilgrim.navHome">Home</a>
+    <a href="#" data-modal data-feature="services-menu" tabindex="0"><span data-i18n="pilgrim.navServices">Services</span> <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></a>
+    <a href="#" data-modal data-feature="yatra-menu" tabindex="0"><span data-i18n="pilgrim.navYatra">Yatra</span> <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></a>
+    <a href="#" data-modal data-feature="heritage-menu" tabindex="0"><span data-i18n="pilgrim.navHeritage">Heritage</span> <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></a>
+    <a href="#" data-modal data-feature="help-support" tabindex="0"><span data-i18n="pilgrim.navHelp">Help & Support</span> <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></a>
+  </nav>
+
+  <div class="topbar-right">
+    <div class="lang-pick" tabindex="0"><i class="fa-solid fa-globe"></i> <span class="lang-pick-label">English</span> <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></div>
+    <div class="bell" data-modal data-feature="notifications" tabindex="0"><i class="fa-regular fa-bell"></i><span class="dot">9+</span></div>
+    <div class="user-chip" data-modal data-feature="profile" tabindex="0">
+      <img src="https://i.pravatar.cc/64?img=13" alt="user">
+      <div class="who" id="userChipName">Namaskar, <b>Vitthal Bhakt</b></div>
+      <i class="fa-solid fa-chevron-down" style="font-size:10px;color:#B3AAA0"></i>
+    </div>
+    <a href="index.html" data-i18n-title="common.signOutTitle" title="Sign Out / Switch Role" style="color:var(--maroon);font-size:15px;padding:6px 10px;border-radius:8px;background:var(--cream);border:1px solid var(--card-border);display:flex;align-items:center;gap:6px;font-weight:600;"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span style="font-size:12px;" data-i18n="common.signOut">Sign Out</span></a>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <a class="side-link active"><span class="l"><i class="icn fa-solid fa-house"></i><span data-i18n="pilgrim.sidebarHome">Home</span></span></a>
+    <a class="side-link" data-modal data-feature="eticketing" tabindex="0"><span class="l"><i class="icn fa-solid fa-calendar-check"></i><span data-i18n="pilgrim.sidebarDarshan">Darshan & Booking</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-feature="live-darshan" tabindex="0"><span class="l"><i class="icn fa-solid fa-video"></i><span data-i18n="pilgrim.sidebarLiveDarshan">Live Darshan</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-feature="crowd-safety" tabindex="0"><span class="l"><i class="icn fa-solid fa-users"></i><span data-i18n="pilgrim.sidebarCrowd">Crowd & Safety</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-feature="route-weather" tabindex="0"><span class="l"><i class="icn fa-solid fa-route"></i><span data-i18n="pilgrim.sidebarRoute">Route & Travel</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-feature="group-location" tabindex="0"><span class="l"><i class="icn fa-solid fa-people-group"></i><span data-i18n="pilgrim.sidebarGroup">Group Yatra</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-feature="lost-found" tabindex="0"><span class="l"><i class="icn fa-solid fa-magnifying-glass"></i><span data-i18n="pilgrim.sidebarLostFound">Lost & Found</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-feature="medical-help" tabindex="0"><span class="l"><i class="icn fa-solid fa-briefcase-medical"></i><span data-i18n="pilgrim.sidebarMedical">Medical Help</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link emergency" data-modal data-feature="emergency-call" tabindex="0"><span class="l"><i class="icn fa-solid fa-triangle-exclamation"></i><span data-i18n="pilgrim.sidebarEmergency">Emergency</span></span><span class="badge">112</span></a>
+    <a class="side-link" data-modal data-feature="heritage-hub" tabindex="0"><span class="l"><i class="icn fa-solid fa-landmark-dome"></i><span data-i18n="pilgrim.sidebarHeritage">AI Heritage Guide</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-feature="heritage-hub" tabindex="0"><span class="l"><i class="icn fa-solid fa-book-open"></i><span data-i18n="pilgrim.sidebarAbhang">Abhang & Stories</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-feature="notifications" tabindex="0"><span class="l"><i class="icn fa-regular fa-bell"></i><span data-i18n="pilgrim.sidebarAlerts">Alerts & Updates</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+    <a class="side-link" data-modal data-title="Feedback & Report" data-icon="fa-regular fa-comment-dots" data-color="#0EA5A5" data-tag="Support" data-body="Tell us what worked and what didn't — your feedback goes straight to the Wari operations team." tabindex="0"><span class="l"><i class="icn fa-regular fa-comment-dots"></i><span data-i18n="pilgrim.sidebarFeedback">Feedback & Report</span></span><i class="chev fa-solid fa-chevron-right"></i></a>
+
+    <div class="side-assistant">
+      <div class="a-top">
+        <div class="av"><i class="fa-solid fa-om"></i></div>
+        <div>
+          <b data-i18n="pilgrim.assistantTitle">VariMitra Assistant</b>
+          <span data-i18n="pilgrim.assistantDesc">Ask anything about your yatra</span>
+        </div>
+      </div>
+      <button class="btn-maroon" data-modal data-feature="whatsapp" data-i18n="pilgrim.chatNow">Chat Now</button>
+    </div>
+
+    <div class="side-promo">
+      <b data-i18n="pilgrim.wariTitle">Pandharpur Wari (Vari)</b>
+      <span data-i18n="pilgrim.wariDates">Dates: 12 Jun – 10 Jul 2025</span>
+      <button data-modal data-title="Wari Calendar" data-icon="fa-regular fa-calendar" data-color="#C94F06" data-tag="Pandharpur Wari 2025" data-body="The full Wari runs 12 Jun – 10 Jul 2025. Key darshan dates, route halts and festival days are all listed on the full calendar." data-i18n="pilgrim.viewCalendar">View Full Calendar</button>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-slider">
+        <div class="hero-track" id="heroTrack">
+          <div class="hero-slide" style="background-image:url('assets/img/wari-1.png')"></div>
+          <div class="hero-slide" style="background-image:url('assets/img/wari-2.png')"></div>
+          <div class="hero-slide" style="background-image:url('assets/img/wari-3.png')"></div>
+        </div>
+      </div>
+      <div class="hero-dots" id="heroDots">
+        <span class="active" data-i="0" aria-label="Slide 1"></span>
+        <span data-i="1" aria-label="Slide 2"></span>
+        <span data-i="2" aria-label="Slide 3"></span>
+      </div>
+      <div class="hero-inner">
+        <h1>VariMitra</h1>
+        <h2 data-i18n-html="pilgrim.heroSubtitle">Your Pilgrim Companion for<br>Pandharpur Wari (Vari)</h2>
+        <p class="sub" data-i18n="pilgrim.heroTagline">Seva, Suraksha, Sanskriti — All in One Platform</p>
+        <div class="hero-badges">
+          <div class="b" data-modal data-feature="crowd-safety" tabindex="0"><i class="fa-solid fa-microchip"></i>AI-Powered<br>Smart Assistance</div>
+          <div class="b" data-modal data-feature="notifications" tabindex="0"><i class="fa-solid fa-signal"></i>Real-time<br>Crowd & Alerts</div>
+          <div class="b" data-modal data-feature="multilingual" tabindex="0"><i class="fa-solid fa-language"></i>Multilingual<br>All Pilgrims Welcome</div>
+          <div class="b" data-modal data-title="Secure & Trusted" data-icon="fa-solid fa-shield-halved" data-color="#1F9D55" data-tag="Enterprise-Grade Security" data-body="Every service on VariMitra runs on enterprise-grade security — your data and identity stay protected, always." tabindex="0"><i class="fa-solid fa-shield-halved"></i>Secure & Trusted<br>By Devotees, For Devotees</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK ACTIONS -->
+    <h3 class="section-title"><span class="sic" style="background:linear-gradient(135deg,#E8630C,#C94F06);"><i class="fa-solid fa-list-check"></i></span><span data-i18n="pilgrim.quickActions">What would you like to do today?</span></h3>
+    <div class="quick-actions">
+      <div class="qa-card" data-modal data-feature="eticketing" tabindex="0"><div class="ic" style="background:#E8630C"><i class="fa-solid fa-calendar-days"></i></div><span data-i18n="pilgrim.qaDarshan">Darshan Slot Booking</span></div>
+      <div class="qa-card" data-modal data-feature="live-darshan" tabindex="0"><div class="ic" style="background:#D64545"><i class="fa-solid fa-play"></i></div><span data-i18n="pilgrim.qaLive">Live Darshan Stream</span></div>
+      <div class="qa-card" data-modal data-feature="crowd-safety" tabindex="0"><div class="ic" style="background:#2563EB"><i class="fa-solid fa-chart-simple"></i></div><span data-i18n="pilgrim.qaCrowd">Crowd Status & Safety</span></div>
+      <div class="qa-card" data-modal data-feature="route-weather" tabindex="0"><div class="ic" style="background:#1F9D55"><i class="fa-solid fa-map-location-dot"></i></div><span data-i18n="pilgrim.qaRoute">Route & Weather Updates</span></div>
+      <div class="qa-card" data-modal data-feature="group-location" tabindex="0"><div class="ic" style="background:#7C3AED"><i class="fa-solid fa-people-group"></i></div><span data-i18n="pilgrim.qaGroup">Create / Join Group Yatra</span></div>
+      <div class="qa-card" data-modal data-feature="lost-found" tabindex="0"><div class="ic" style="background:#8B1B1B"><i class="fa-solid fa-briefcase"></i></div><span data-i18n="pilgrim.qaLostFound">Lost & Found Services</span></div>
+      <div class="qa-card" data-modal data-feature="medical-help" tabindex="0"><div class="ic" style="background:#D64545"><i class="fa-solid fa-truck-medical"></i></div><span data-i18n="pilgrim.qaMedical">Medical Help & Emergency</span></div>
+      <div class="qa-card" data-modal data-feature="heritage-hub" tabindex="0"><div class="ic" style="background:#6B4A2E"><i class="fa-solid fa-landmark-dome"></i></div><span data-i18n="pilgrim.qaHeritage">AI Heritage Guide</span></div>
+    </div>
+
+    <!-- SERVICE CARDS -->
+    <h3 class="section-title"><span class="sic" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);"><i class="fa-solid fa-grip"></i></span><span data-i18n="pilgrim.exploreServices">Explore Key Services</span></h3>
+    <div class="services-grid">
+
+      <div class="svc-card" data-modal data-feature="eticketing" tabindex="0">
+        <h3>Darshan Slot Booking</h3>
+        <p>Book darshan slots at major temples in advance.</p>
+        <div class="svc-thumb" style="background:linear-gradient(135deg,#FCEBD8,#F5C99A)"></div>
+        <button class="svc-btn" style="background:var(--orange)">Book Now</button>
+      </div>
+
+      <div class="svc-card" data-modal data-feature="crowd-safety" tabindex="0">
+        <h3>Live Crowd Status</h3>
+        <p>Real-time crowd density and safety updates.</p>
+        <div class="gauge-wrap">
+          <div>
+            <b style="color:var(--red);font-size:22px;">82%</b>
+            <div style="font-size:11px;color:var(--text-muted)">High Density</div>
+          </div>
+          <div style="font-size:22px;color:var(--amber)"><i class="fa-solid fa-users"></i></div>
+        </div>
+        <button class="svc-btn" style="background:var(--green)">View Live</button>
+      </div>
+
+      <div class="svc-card" data-modal data-feature="route-weather" tabindex="0">
+        <h3>Route & Weather Updates</h3>
+        <p>Check yatra routes, distance, facilities & weather.</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <i class="fa-solid fa-location-dot" style="color:var(--red);font-size:22px;"></i>
+          <div style="text-align:right;font-size:12px;font-weight:700;"><i class="fa-solid fa-cloud-sun" style="color:var(--amber)"></i> 28°C<br><span style="font-weight:500;color:var(--text-muted);font-size:11px;">Partly Cloudy</span></div>
+        </div>
+        <button class="svc-btn" style="background:#0EA5A5">View Map</button>
+      </div>
+
+      <div class="svc-card" data-modal data-feature="group-location" tabindex="0">
+        <h3>Create / Join Group Yatra</h3>
+        <p>Travel together, stay connected and share location.</p>
+        <div class="svc-thumb" style="background:linear-gradient(135deg,#F3E6D8,#C99A6B)"></div>
+        <button class="svc-btn" style="background:#7C3AED">Get Started</button>
+      </div>
+
+      <div class="svc-card" data-modal data-feature="live-darshan" tabindex="0">
+        <h3>Live Darshan Stream</h3>
+        <p>Watch darshan live from Pandharpur & other temples.</p>
+        <div class="svc-thumb" style="background:linear-gradient(135deg,#3A2416,#7a4a2b);position:relative;">
+          <span class="live-tag">LIVE</span>
+        </div>
+        <button class="svc-btn" style="background:var(--red)">Watch Now</button>
+      </div>
+
+      <div class="svc-card" data-modal data-feature="lost-found" tabindex="0">
+        <h3>Lost & Found Services</h3>
+        <p>Report or search for lost items & persons.</p>
+        <div class="svc-thumb" style="background:linear-gradient(135deg,#EFE1CC,#C6A87A)"></div>
+        <button class="svc-btn" style="background:#8B1B1B">Report Now</button>
+      </div>
+
+      <div class="svc-card" data-modal data-feature="medical-help" tabindex="0">
+        <h3>Emergency / Medical Help</h3>
+        <p>24x7 medical assistance & emergency support.</p>
+        <div class="svc-thumb" style="background:linear-gradient(135deg,#FDEAEA,#F5B8B8);display:flex;align-items:center;justify-content:center;">
+          <i class="fa-solid fa-truck-medical" style="font-size:34px;color:var(--red)"></i>
+        </div>
+        <button class="svc-btn" style="background:var(--red)">Call 112</button>
+      </div>
+
+      <div class="svc-card" data-modal data-feature="heritage-hub" tabindex="0">
+        <h3>AI Heritage Guide</h3>
+        <p>Discover temples, stories, abhang, history & rituals.</p>
+        <div class="svc-thumb" style="background:linear-gradient(135deg,#2b2118,#5a4632);display:flex;align-items:center;justify-content:center;">
+          <i class="fa-solid fa-landmark-dome" style="font-size:34px;color:#F5C26B"></i>
+        </div>
+        <button class="svc-btn" style="background:var(--amber)">Explore Now</button>
+      </div>
+
+      <div class="svc-card" data-modal data-feature="multilingual" tabindex="0">
+        <h3>Multilingual Access</h3>
+        <p>Use VariMitra in your preferred language.</p>
+        <div class="lang-chips">
+          <span>मराठी</span><span>हिंदी</span><span>English</span><span>தமிழ்</span><span>తెలుగు</span><span>+3</span>
+        </div>
+        <button class="svc-btn" style="background:var(--blue)">Choose Language</button>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="alerts-head">
+      <h3 class="section-title" style="margin:0;"><span class="sic" style="background:linear-gradient(135deg,#D64545,#8B1B1B);"><i class="fa-solid fa-triangle-exclamation"></i></span><span data-i18n="pilgrim.latestAlerts">Latest Alerts & Notifications</span></h3>
+      <a href="#" data-modal data-feature="notifications" tabindex="0" data-i18n="pilgrim.viewAllAlerts">View All Alerts</a>
+    </div>
+    <div class="alerts-strip">
+      <div class="alert-card" data-modal data-icon="fa-solid fa-fire" data-color="var(--amber)" data-tag="Crowd Alert · Just now" data-title="High Footfall at Main Chowk" data-body="Crowd density has crossed 80% near Main Chowk. Consider the East Entry route or wait 15–20 minutes for the queue to ease." tabindex="0">
+        <div class="ic" style="background:var(--amber)"><i class="fa-solid fa-fire"></i></div>
+        <div><b>Crowd Alert</b><p>High footfall at Main Chowk</p></div>
+      </div>
+      <div class="alert-card" data-modal data-icon="fa-solid fa-cloud-rain" data-color="var(--blue)" data-tag="Weather Update · 1 hr ago" data-title="Light Rain Expected" data-body="Light rain is expected in Pandharpur over the next few hours. Carry rain cover and watch for slippery ghats near the river." tabindex="0">
+        <div class="ic" style="background:var(--blue)"><i class="fa-solid fa-cloud-rain"></i></div>
+        <div><b>Weather Update</b><p>Light rain expected in Pandharpur</p><span class="t">1 hr ago</span></div>
+      </div>
+      <div class="alert-card" data-modal data-icon="fa-solid fa-road-circle-exclamation" data-color="var(--red)" data-tag="Route Diversion · 2 hrs ago" data-title="Solapur Road Closed" data-body="Solapur Road is closed for the Wari procession. Please use the alternative route via Gopalpur — VariMitra's route guidance will reroute you automatically." tabindex="0">
+        <div class="ic" style="background:var(--red)"><i class="fa-solid fa-road-circle-exclamation"></i></div>
+        <div><b>Route Diversion</b><p>Solapur Road closed. Use alternative route.</p><span class="t">2 hrs ago</span></div>
+      </div>
+      <div class="alert-card" data-modal data-icon="fa-solid fa-heart-pulse" data-color="var(--green)" data-tag="Seva Update · 3 hrs ago" data-title="Free Medical Camp" data-body="A free medical camp is now active at Gopalpur Maidan, offering first aid, basic checkups and rest facilities for pilgrims." tabindex="0">
+        <div class="ic" style="background:var(--green)"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div><b>Seva Update</b><p>Free medical camp at Gopalpur Maidan</p><span class="t">3 hrs ago</span></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== RIGHT RAIL ===== -->
+  <aside class="right-rail">
+
+    <div class="rail-card">
+      <div class="rail-head">
+        <div><b><i class="fa-solid fa-id-card ric"></i>Pilgrim Profile</b><span>Manage your yatra at a glance</span></div>
+        <span style="font-size:11px;color:var(--orange);font-weight:600;"><i class="fa-solid fa-circle-check"></i> Verified</span>
+      </div>
+      <div class="yatri-box" data-modal data-feature="profile" tabindex="0">
+        <img src="https://i.pravatar.cc/64?img=13" alt="">
+        <div><div class="nm">Vitthal Bhakt</div><div class="id">Yatri ID: VM2506120815</div></div>
+        <span class="verified"><i class="fa-solid fa-circle-check"></i> Verified</span>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-box" data-modal data-feature="eticketing" data-icon="fa-solid fa-calendar-check" data-color="#E8630C" tabindex="0"><i class="fa-solid fa-calendar-check"></i><b>2</b><span>Bookings Active</span></div>
+        <div class="stat-box" data-modal data-feature="group-location" data-icon="fa-solid fa-users" data-color="#7C3AED" tabindex="0"><i class="fa-solid fa-users"></i><b>4</b><span>Family Members</span></div>
+        <div class="stat-box" data-modal data-feature="group-location" data-icon="fa-solid fa-people-group" data-color="#7C3AED" tabindex="0"><i class="fa-solid fa-people-group"></i><b>1</b><span>Groups</span></div>
+        <div class="stat-box" data-modal data-title="Your Reports" data-icon="fa-solid fa-file-lines" data-color="#4A423C" data-tag="Feedback & Report" data-body="You haven't filed any reports yet. Lost & found reports, complaints and feedback you submit will show up here with live status." tabindex="0"><i class="fa-solid fa-file-lines"></i><b>0</b><span>Reports</span></div>
+      </div>
+    </div>
+
+    <div class="rail-card crowd-status">
+      <div class="rail-head">
+        <div><b><i class="fa-solid fa-users-line ric"></i>Current Crowd Status</b></div>
+        <span style="font-size:10.5px;color:var(--text-muted);">10:30 AM, 12 Jun 2025</span>
+      </div>
+      <div class="place">Pandharpur Temple</div>
+      <div class="queue">Main Darshan Queue</div>
+
+      <svg class="gauge-svg" width="220" height="120" viewBox="0 0 220 120">
+        <path d="M20,110 A90,90 0 0,1 200,110" fill="none" stroke="#EDEDED" stroke-width="16" stroke-linecap="round"/>
+        <path d="M20,110 A90,90 0 0,1 200,110" fill="none" stroke="url(#g1)" stroke-width="16" stroke-linecap="round"
+              stroke-dasharray="230" stroke-dashoffset="20"/>
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1F9D55"/>
+            <stop offset="50%" stop-color="#E0A825"/>
+            <stop offset="100%" stop-color="#D64545"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="gauge-center">
+        <b>82%</b>
+        <span>High Density</span>
+      </div>
+      <div class="wait-row">
+        <div><span style="color:var(--text-muted)">Estimated Wait Time</span><b>90 - 120 min</b></div>
+        <button class="view-btn" data-modal data-feature="crowd-safety">View Details</button>
+      </div>
+    </div>
+
+    <div class="rail-card">
+      <div class="rail-head"><b><i class="fa-solid fa-ticket ric"></i>My Bookings</b></div>
+      <div class="booking-item" data-modal data-feature="eticketing" tabindex="0">
+        <div><b>Pandharpur Temple</b><span>12 Jun 2025 • 08:00 AM - 10:00 AM</span><br><span>Booking ID: VM2506120815</span></div>
+        <span class="qr-chip"><i class="fa-solid fa-qrcode"></i> QR Code</span>
+      </div>
+    </div>
+
+    <div class="rail-card">
+      <div class="rail-head"><b><i class="fa-solid fa-bell ric"></i>Recent Alerts</b></div>
+      <div class="alert-row" data-modal data-icon="fa-solid fa-triangle-exclamation" data-color="var(--amber)" data-tag="30 min ago" data-title="High Crowd at Main Gate" data-body="Density at Main Gate has crossed 80%. Estimated wait time is 90–120 minutes; consider the East Entry as an alternative." tabindex="0"><i class="fa-solid fa-triangle-exclamation" style="color:var(--amber)"></i><b>High crowd at Main Gate</b><span class="tm">30 min ago</span></div>
+      <div class="alert-row" data-modal data-icon="fa-solid fa-cloud-rain" data-color="var(--blue)" data-tag="1 hr ago" data-title="Light Rain Expected" data-body="Light rain is expected in Pandharpur over the next few hours. Carry a rain cover and watch for slippery ghats." tabindex="0"><i class="fa-solid fa-cloud-rain" style="color:var(--blue)"></i><b>Light rain expected</b><span class="tm">1 hr ago</span></div>
+      <div class="alert-row" data-modal data-icon="fa-solid fa-road" data-color="var(--red)" data-tag="2 hrs ago" data-title="Traffic Diversion — Solapur Road" data-body="Solapur Road is closed for the Wari procession. VariMitra's route guidance has an alternative path ready for you." tabindex="0"><i class="fa-solid fa-road" style="color:var(--red)"></i><b>Traffic diversion on Solapur Road</b><span class="tm">2 hrs ago</span></div>
+      <a href="#" data-modal data-feature="notifications" tabindex="0" style="font-size:11.5px;color:var(--orange);font-weight:700;display:block;margin-top:8px;">View All Alerts</a>
+    </div>
+
+    <div class="rail-card">
+      <div class="rail-head"><b><i class="fa-solid fa-list-check ric"></i>Services Availability</b></div>
+      <div class="avail-row" data-modal data-icon="fa-solid fa-kit-medical" data-color="var(--red)" data-tag="Services Availability" data-title="Medical Camps" data-body="Medical camps are currently available across the route, including the 24×7 Main Medical Center and mobile units." tabindex="0"><i class="fa-solid fa-kit-medical"></i>Medical Camps<span class="avail-tag ok">Available</span></div>
+      <div class="avail-row" data-modal data-icon="fa-solid fa-droplet" data-color="var(--blue)" data-tag="Services Availability" data-title="Water Points" data-body="32 water points are active along the Wari route, marked on the live map." tabindex="0"><i class="fa-solid fa-droplet"></i>Water Points<span class="avail-tag ok">Available</span></div>
+      <div class="avail-row" data-modal data-icon="fa-solid fa-bed" data-color="#E0A825" data-tag="Services Availability" data-title="Rest Shelters" data-body="24 shelter units are currently open, with high availability along the main route." tabindex="0"><i class="fa-solid fa-bed"></i>Rest Shelters<span class="avail-tag low">High Availability</span></div>
+      <div class="avail-row" data-modal data-icon="fa-solid fa-bowl-food" data-color="#E8630C" data-tag="Services Availability" data-title="Food Seva" data-body="Food seva points run continuously through the day, run by partner Seva organisations." tabindex="0"><i class="fa-solid fa-bowl-food"></i>Food Seva<span class="avail-tag ok">Available</span></div>
+      <div class="avail-row" data-modal data-icon="fa-solid fa-restroom" data-color="#6B4A2E" data-tag="Services Availability" data-title="Toilets" data-body="Public sanitation facilities are available and monitored across all major halts." tabindex="0"><i class="fa-solid fa-restroom"></i>Toilets<span class="avail-tag ok">Available</span></div>
+      <a href="#" data-modal data-feature="crowd-safety" tabindex="0" style="font-size:11.5px;color:var(--orange);font-weight:700;display:block;margin-top:6px;">View All Services</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ===== WHATSAPP ASSISTANT + HERITAGE ===== -->
+<div class="content" style="padding-top:0;">
+  <div class="alerts-head" style="margin-top:6px;">
+    <h3 class="section-title" style="margin:0;"><span class="sic" style="background:linear-gradient(135deg,#1F9D55,#0EA5A5);"><i class="fa-brands fa-whatsapp"></i></span>Your Multilingual Digital Companion</h3>
+  </div>
+  <div class="split-section">
+    <div class="phone-mock">
+      <div class="phone-screen">
+        <div class="phone-head">
+          <div class="av"><i class="fa-brands fa-whatsapp"></i></div>
+          <div><b>VariMitra Assistant</b><span>● Online</span></div>
+        </div>
+        <div class="phone-body">
+          <div class="bubble">Hi! How can I assist you today with your yatra needs? 🙏</div>
+          <div class="menu-chip" data-modal data-feature="eticketing" tabindex="0"><i class="fa-solid fa-ticket"></i> e-Ticket / Darshan</div>
+          <div class="menu-chip" data-modal data-feature="notifications" tabindex="0"><i class="fa-solid fa-bell"></i> Info (News / Alerts)</div>
+          <div class="menu-chip" data-modal data-feature="help-support" tabindex="0"><i class="fa-solid fa-hand"></i> Help / I need Help</div>
+          <div class="menu-chip" data-modal data-feature="medical-help" tabindex="0"><i class="fa-solid fa-briefcase-medical"></i> Medical Help</div>
+          <div class="menu-chip" data-modal data-feature="profile" tabindex="0"><i class="fa-solid fa-user"></i> My Profile</div>
+          <div class="bubble me">Book darshan slot for tomorrow 7 AM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="heritage-cards" style="align-content:start;">
+      <div class="heritage-card" data-modal data-feature="whatsapp" tabindex="0">
+        <div class="ic" style="background:var(--orange)"><i class="fa-brands fa-whatsapp"></i></div>
+        <h4>WhatsApp & Voice Access</h4>
+        <p>Easy, multilingual interaction for every pilgrim — no app download needed.</p>
+      </div>
+      <div class="heritage-card" data-modal data-feature="eticketing" tabindex="0">
+        <div class="ic" style="background:#7C3AED"><i class="fa-solid fa-ticket"></i></div>
+        <h4>e-Ticketing & Darshan Updates</h4>
+        <p>Live slot booking and queue information straight to your phone.</p>
+      </div>
+      <div class="heritage-card" data-modal data-feature="crowd-safety" tabindex="0">
+        <div class="ic" style="background:var(--red)"><i class="fa-solid fa-chart-line"></i></div>
+        <h4>Crowd & Safety Analytics</h4>
+        <p>AI insights and real-time monitoring across every ghat and gate.</p>
+      </div>
+      <div class="heritage-card" data-modal data-feature="group-location" tabindex="0">
+        <div class="ic" style="background:var(--blue)"><i class="fa-solid fa-location-dot"></i></div>
+        <h4>Group Location Sharing</h4>
+        <p>Priority-first spot location sharing to keep families and groups together.</p>
+      </div>
+      <div class="heritage-card" data-modal data-feature="cameras-monitoring" tabindex="0">
+        <div class="ic" style="background:#0EA5A5"><i class="fa-solid fa-camera"></i></div>
+        <h4>Cameras & System Monitoring</h4>
+        <p>Uptime checks and health monitoring across the camera network.</p>
+      </div>
+      <div class="heritage-card" data-modal data-feature="heritage-hub" tabindex="0">
+        <div class="ic" style="background:#6B4A2E"><i class="fa-solid fa-book-open"></i></div>
+        <h4>Heritage & Archive Hub</h4>
+        <p>Abhang, stories and digital preservation of Vari's living heritage.</p>
+      </div>
+    </div>
+  </div>
+
+
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="foot-stats">
+    <div class="fs" data-modal data-icon="fa-solid fa-users" data-color="var(--orange)" data-tag="VariMitra Reach" data-title="10L+ Pilgrims Connected" data-body="Over 1 million pilgrims are reachable through VariMitra's WhatsApp, web and voice channels during the Wari." tabindex="0"><i class="fa-solid fa-users"></i><div><b>10L+</b><span>Pilgrims Connected</span></div></div>
+    <div class="fs" data-modal data-icon="fa-solid fa-landmark" data-color="var(--orange)" data-tag="VariMitra Reach" data-title="200+ Temples & Locations" data-body="VariMitra covers 200+ temples and key locations along the Pandharpur Wari route." tabindex="0"><i class="fa-solid fa-landmark"></i><div><b>200+</b><span>Temples & Locations</span></div></div>
+    <div class="fs" data-modal data-feature="help-support" data-icon="fa-solid fa-headset" data-color="var(--orange)" tabindex="0"><i class="fa-solid fa-headset"></i><div><b>24/7</b><span>Support & Assistance</span></div></div>
+    <div class="fs" data-modal data-icon="fa-solid fa-handshake" data-color="var(--orange)" data-tag="VariMitra Reach" data-title="50+ Seva & Partner Orgs" data-body="50+ Seva organisations and partner NGOs work with VariMitra to run medical camps, shelters and food seva." tabindex="0"><i class="fa-solid fa-handshake"></i><div><b>50+</b><span>Seva & Partner Orgs</span></div></div>
+  </div>
+  <div class="foot-tagline">
+    <div class="marathi">॥ माऊलीच्या पायी, तेच आमुची साथ ॥</div>
+    <div class="eng">One Platform. Safer Pilgrimage. Preserved Heritage.</div>
+  </div>
+  <div class="foot-app">
+    <div style="text-align:right;font-size:11px;">
+      <div>Download the App</div>
+      <div style="opacity:.7;font-size:10px;">Scan QR to download</div>
+    </div>
+    <div class="qr" data-modal data-icon="fa-solid fa-qrcode" data-color="#5C1010" data-tag="Download the App" data-title="Scan to Download" data-body="Scan this QR code with your phone camera to download the VariMitra app from your device's app store." tabindex="0"><i class="fa-solid fa-qrcode"></i></div>
+    <div class="badges">
+      <div data-modal data-icon="fa-brands fa-google-play" data-color="#1F9D55" data-tag="Download the App" data-title="Get it on Google Play" data-body="The VariMitra Android app will be available on Google Play ahead of the Wari — check back soon." tabindex="0"><i class="fa-brands fa-google-play"></i> Google Play</div>
+      <div data-modal data-icon="fa-brands fa-apple" data-color="#2B2320" data-tag="Download the App" data-title="Download on the App Store" data-body="The VariMitra iOS app will be available on the App Store ahead of the Wari — check back soon." tabindex="0"><i class="fa-brands fa-apple"></i> App Store</div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/translations.js"></script>
+<script src="assets/feature-translations.js"></script>
+<script src="assets/features-data.js"></script>
+<script src="assets/i18n.js"></script>
+<script src="assets/features.js"></script>
+<script src="assets/hero-slider.js"></script>
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('varimitra_user');
+      if (!saved) return;
+      var user = JSON.parse(saved);
+      if (user.role === 'admin') {
+        window.location.href = 'command-dashboard.html';
+        return;
+      }
+      var name = user.name || 'Pilgrim Devotee';
+      var phone = user.phone || '';
+      var age = user.age || '';
+      var yatriId = phone ? ('VM' + phone.slice(-6)) : 'VM2506120815';
+
+      var whoEl = document.getElementById('userChipName');
+      if (whoEl) {
+        var greet = window.VariMitraT ? window.VariMitraT('common.namaskar') : 'Namaskar,';
+        whoEl.innerHTML = greet + ' <b>' + name + '</b>';
+      }
+      var nmEls = document.querySelectorAll('.yatri-box .nm');
+      nmEls.forEach(function(el){
+        el.textContent = name;
+      });
+      var idEls = document.querySelectorAll('.yatri-box .id');
+      idEls.forEach(function(el){
+        var info = 'Yatri ID: ' + yatriId;
+        if (phone) info += ' | Mobile: +91 ' + phone;
+        if (age && age !== 'N/A') info += ' | Age: ' + age;
+        el.textContent = info;
+      });
+    } catch(e){}
+  })();
+
+  document.addEventListener('varimitra:langchange', function(){
+    try {
+      var saved = localStorage.getItem('varimitra_user');
+      if (!saved) return;
+      var user = JSON.parse(saved);
+      var name = user.name || 'Pilgrim Devotee';
+      var whoEl = document.getElementById('userChipName');
+      if (whoEl) {
+        var greet = window.VariMitraT ? window.VariMitraT('common.namaskar') : 'Namaskar,';
+        whoEl.innerHTML = greet + ' <b>' + name + '</b>';
+      }
+    } catch(e){}
+  });
+
+  /* ===== SIDEBAR TOGGLE ===== */
+  (function(){
+    var toggle = document.getElementById('sidebarToggle');
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    if (!toggle || !sidebar || !overlay) return;
+
+    function setOpen(open){
+      sidebar.classList.toggle('open', open);
+      overlay.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open
+        ? (window.VariMitraT ? window.VariMitraT('common.closeMenu') : 'Close navigation menu')
+        : (window.VariMitraT ? window.VariMitraT('common.openMenu') : 'Open navigation menu'));
+      var icon = toggle.querySelector('i');
+      if (icon) icon.className = open ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+    }
+
+    toggle.addEventListener('click', function(){
+      setOpen(!sidebar.classList.contains('open'));
+    });
+    overlay.addEventListener('click', function(){ setOpen(false); });
+    sidebar.querySelectorAll('.side-link').forEach(function(link){
+      link.addEventListener('click', function(){ setOpen(false); });
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') setOpen(false);
+    });
+  })();
+</script>
+</body>
+</html>

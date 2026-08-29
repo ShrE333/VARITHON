@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VariMitra — Portal Sign In</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/login.css">
+  <link rel="stylesheet" href="assets/modal.css">
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-lang-switcher" id="loginLangSwitcher"></div>
+
+    <!-- Brand Header -->
+    <div class="brand-section">
+      <div class="brand-logo">
+        <i class="fa-solid fa-om"></i>
+      </div>
+      <h1 class="brand-name">VariMitra</h1>
+      <p class="brand-tagline" data-i18n="common.tagline">One Platform. Safer Pilgrimage. Preserved Heritage.</p>
+    </div>
+
+    <!-- Pilgrim sign-in (default) -->
+    <div class="login-role-hint">
+      <i class="fa-solid fa-user-pray"></i>
+      <span data-i18n="login.pilgrimRole">Pilgrim / Devotee</span>
+    </div>
+
+    <!-- Sign In Form -->
+    <form id="signInForm" onsubmit="handleSignIn(event)">
+      <div class="form-group">
+        <label for="fullName" data-i18n="login.fullName">Full Name</label>
+        <div class="input-wrapper">
+          <i class="fa-regular fa-user"></i>
+          <input type="text" id="fullName" class="form-control" data-i18n-placeholder="login.fullNamePlaceholder" placeholder="Enter your full name" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone" data-i18n="login.mobile">Mobile Number</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-phone"></i>
+          <input type="tel" id="phone" class="form-control" data-i18n-placeholder="login.mobilePlaceholder" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" required>
+        </div>
+      </div>
+
+      <div class="form-group age-group" id="ageGroup">
+        <label for="age" data-i18n="login.age">Age</label>
+        <div class="input-wrapper">
+          <i class="fa-regular fa-calendar"></i>
+          <input type="number" id="age" class="form-control" data-i18n-placeholder="login.agePlaceholder" placeholder="Enter your age" min="5" max="120">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="otp" data-i18n="login.otp">One-Time Password (OTP)</label>
+        <div class="otp-group">
+          <div class="input-wrapper" style="flex:1;">
+            <i class="fa-solid fa-key"></i>
+            <input type="text" id="otp" class="form-control" data-i18n-placeholder="login.otpPlaceholder" placeholder="6-digit OTP" pattern="[0-9]{6}" maxlength="6" required>
+          </div>
+          <button type="button" class="btn-send-otp" id="sendOtpBtn" onclick="sendOtp()" data-i18n="login.sendOtp">Send OTP</button>
+        </div>
+        <div class="otp-status" id="otpStatus"><i class="fa-solid fa-circle-check"></i> <span data-i18n="login.otpSent">OTP sent to mobile! (Demo Code:</span> <b>123456</b>)</div>
+        <div class="error-message" id="errorMessage"></div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span data-i18n="login.signIn">Sign In to Portal</span> <i class="fa-solid fa-arrow-right-to-bracket" style="margin-left:6px;"></i>
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <button type="button" class="btn-admin-access" id="roleAdminBtn" onclick="toggleAdmin()">
+        <i class="fa-solid fa-user-shield"></i>
+        <span data-i18n="login.adminRole">Temple Admin</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="assets/translations.js"></script>
+  <script src="assets/i18n.js"></script>
+  <script>
+    let currentRole = 'user';
+
+    function t(key) {
+      return window.VariMitraT ? window.VariMitraT(key) : key;
+    }
+
+    function selectRole(role) {
+      currentRole = role;
+      const adminBtn = document.getElementById('roleAdminBtn');
+      const ageGroup = document.getElementById('ageGroup');
+
+      if (role === 'user') {
+        adminBtn.classList.remove('active');
+        ageGroup.classList.remove('hidden');
+        document.getElementById('age').required = true;
+      } else {
+        adminBtn.classList.add('active');
+        ageGroup.classList.add('hidden');
+        document.getElementById('age').required = false;
+      }
+    }
+
+    function toggleAdmin() {
+      selectRole(currentRole === 'admin' ? 'user' : 'admin');
+    }
+
+    function sendOtp() {
+      const phoneInput = document.getElementById('phone');
+      const errorMsg = document.getElementById('errorMessage');
+      const otpStatus = document.getElementById('otpStatus');
+      const sendBtn = document.getElementById('sendOtpBtn');
+
+      if (!phoneInput.value || phoneInput.value.length !== 10) {
+        errorMsg.textContent = t('login.invalidPhone');
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      errorMsg.style.display = 'none';
+      otpStatus.style.display = 'block';
+      document.getElementById('otp').value = '123456';
+
+      sendBtn.disabled = true;
+      let countdown = 30;
+      sendBtn.textContent = t('login.resendOtp') + ' (' + countdown + 's)';
+
+      const timer = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+          clearInterval(timer);
+          sendBtn.textContent = t('login.resendOtp');
+          sendBtn.disabled = false;
+        } else {
+          sendBtn.textContent = t('login.resendOtp') + ' (' + countdown + 's)';
+        }
+      }, 1000);
+    }
+
+    function handleSignIn(e) {
+      e.preventDefault();
+      const otpVal = document.getElementById('otp').value;
+      const errorMsg = document.getElementById('errorMessage');
+
+      if (otpVal !== '123456') {
+        errorMsg.textContent = t('login.invalidOtp');
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      const userData = {
+        name: document.getElementById('fullName').value,
+        phone: document.getElementById('phone').value,
+        age: document.getElementById('age').value || 'N/A',
+        role: currentRole
+      };
+      localStorage.setItem('varimitra_user', JSON.stringify(userData));
+
+      if (currentRole === 'user') {
+        window.location.href = 'varimitra.html';
+      } else {
+        window.location.href = 'command-dashboard.html';
+      }
+    }
+
+    document.addEventListener('varimitra:langchange', function() {
+      document.title = t('login.title');
+    });
+    document.title = t('login.title');
+  </script>
+</body>
+</html>
