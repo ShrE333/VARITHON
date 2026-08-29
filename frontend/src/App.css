@@ -1,0 +1,182 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f7efe2;
+  color: #3e2b20;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.container {
+  width: min(900px, 100%);
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: #b65f26;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 30px;
+  color: #3e2b20;
+}
+
+.header p {
+  margin: 4px 0 0;
+  color: #806b5c;
+}
+
+.hero {
+  margin-bottom: 28px;
+}
+
+.hero h2 {
+  margin: 0 0 12px;
+  font-size: 38px;
+  line-height: 1.15;
+  color: #3e2b20;
+}
+
+.hero p {
+  max-width: 680px;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #6f5b4d;
+}
+
+.chat-card,
+.response-card {
+  background: #fffaf2;
+  border: 1px solid #e7d7c5;
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 12px 35px rgba(80, 50, 30, 0.08);
+}
+
+.chat-card textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  border: 1px solid #dcc8b4;
+  border-radius: 16px;
+  padding: 16px;
+  outline: none;
+  background: #fffdf9;
+  color: #3e2b20;
+  font-size: 16px;
+}
+
+.chat-card textarea::placeholder {
+  color: #a08d7e;
+}
+
+.chat-card textarea:focus {
+  border-color: #b65f26;
+  box-shadow: 0 0 0 3px rgba(182, 95, 38, 0.1);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  gap: 12px;
+}
+
+button {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.voice-button {
+  background: #ead8c5;
+  color: #5a402d;
+}
+
+.ask-button {
+  background: #b65f26;
+  color: #ffffff;
+}
+
+.response-card {
+  margin-top: 22px;
+  min-height: 150px;
+}
+
+.response-card span {
+  font-size: 13px;
+  font-weight: bold;
+  color: #b65f26;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.response-card p {
+  margin-top: 12px;
+  line-height: 1.7;
+  color: #574438;
+  white-space: pre-wrap;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 13px;
+  color: #927d6e;
+}
+
+@media (max-width: 600px) {
+  .app {
+    padding: 24px 16px;
+  }
+
+  .hero h2 {
+    font-size: 30px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+  }
+}
