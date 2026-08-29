@@ -30,7 +30,7 @@ export default function SuperAdminLocationsPage() {
       return;
     }
     try {
-      if (JSON.parse(saved).role !== 'admin') router.replace('/varimitra');
+      if (JSON.parse(saved).role !== 'admin') router.replace('/');
     } catch {
       router.replace('/');
     }

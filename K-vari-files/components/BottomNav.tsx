@@ -19,7 +19,16 @@ export function BottomNav() {
   const pathname = usePathname();
   const { t } = useLang();
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/demo')) return null;
+  if (
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/demo') ||
+    pathname.startsWith('/route') ||
+    pathname.startsWith('/palki') ||
+    pathname.startsWith('/help') ||
+    pathname.startsWith('/live')
+  ) {
+    return null;
+  }
 
   return (
     <nav

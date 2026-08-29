@@ -24,7 +24,7 @@ export default function WariLayout({ children }: { children: React.ReactNode }) 
         <PortalReturnBar />
         <SimBadge />
         <OfflineBanner />
-        <main className="flex-1 pb-20">{children}</main>
+        <main className="flex-1 relative pb-20">{children}</main>
         <BottomNav />
       </Providers>
     </div>

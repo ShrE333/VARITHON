@@ -7,6 +7,8 @@
 
 import { Suspense } from 'react';
 import { PageScripts } from '@/components/portal/PortalScripts';
+import { LangToggle } from '@/components/LangToggle';
+import { LangProvider } from '@/lib/i18n/context';
 
 const PAGE_SCRIPTS = ['/assets/jspdf.umd.min.js', '/assets/darshan-booking.js'];
 
@@ -15,27 +17,12 @@ function DarshanBody() {
     <div className="vm-darshan">
       <PageScripts sources={PAGE_SCRIPTS} />
 <div className="db-top">
-  <a className="db-back" id="dbBack" href="varimitra.html"><i className="fa-solid fa-arrow-left"></i> Back to Portal</a>
-  <div className="db-brand"><i className="fa-solid fa-compass"></i> VariMitra</div>
-</div>
-
-<section className="db-hero">
-  <div className="db-hero-inner">
-    <div className="db-hero-top">
-      <div className="db-hero-ic"><i className="fa-solid fa-ticket"></i></div>
-      <div>
-        <h1>Vari Darshan — Online Ticket Booking</h1>
-        <p>Book your darshan slot at Pandharpur temples. Fill in pilgrim details, choose your date & time, and get an instant QR ticket.</p>
-      </div>
-    </div>
-    <div className="db-steps">
-      <div className="db-step-pill active" data-step="1"><span className="num">1</span> Temple & Slot</div>
-      <div className="db-step-pill" data-step="2"><span className="num">2</span> Contact Details</div>
-      <div className="db-step-pill" data-step="3"><span className="num">3</span> Pilgrim Info</div>
-      <div className="db-step-pill" data-step="4"><span className="num">4</span> Confirm</div>
-    </div>
+  <a className="db-back" id="dbBack" href="/"><i className="fa-solid fa-arrow-left"></i> Back to Portal</a>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+    <div className="db-brand"><i className="fa-solid fa-compass"></i> VariMitra</div>
+    <LangToggle />
   </div>
-</section>
+</div>
 
 <div className="db-body">
 
@@ -102,7 +89,7 @@ function DarshanBody() {
   </div>
 
   
-  <form id="bookingForm" onsubmit="return false;">
+  <form id="bookingForm" onsubmit="return false;" className="space-y-6">
     
     <div className="db-step active" data-step="1">
       <div className="db-panel">
@@ -143,7 +130,7 @@ function DarshanBody() {
     </div>
 
     
-    <div className="db-step" data-step="2">
+    <div className="db-step active" data-step="2">
       <div className="db-panel">
         <h2><i className="fa-solid fa-address-card"></i> Contact & ID Details</h2>
         <p className="sub">Primary contact information for booking confirmation and temple entry verification.</p>
@@ -190,7 +177,7 @@ function DarshanBody() {
     </div>
 
     
-    <div className="db-step" data-step="3">
+    <div className="db-step active" data-step="3">
       <div className="db-panel">
         <h2><i className="fa-solid fa-users"></i> Pilgrim Details</h2>
         <p className="sub">Enter the full name and details of each person attending the darshan.</p>
@@ -204,19 +191,10 @@ function DarshanBody() {
       </div>
     </div>
 
-    
-    <div className="db-step" data-step="4">
-      <div className="db-panel">
-        <h2><i className="fa-solid fa-clipboard-check"></i> Review & Confirm</h2>
-        <p className="sub">Please verify all details before confirming your darshan booking.</p>
-        <div id="dbReview"></div>
-      </div>
-    </div>
-
     <div className="db-actions">
-      <button type="button" className="db-btn db-btn-ghost" id="btnPrev" style={{"display":"none"}}><i className="fa-solid fa-arrow-left"></i> Previous</button>
-      <button type="button" className="db-btn db-btn-primary" id="btnNext">Next <i className="fa-solid fa-arrow-right"></i></button>
-      <button type="button" className="db-btn db-btn-primary" id="btnConfirm" style={{"display":"none"}}><i className="fa-solid fa-ticket"></i> Confirm & Generate Ticket</button>
+      <button type="button" className="db-btn db-btn-primary w-full justify-center" id="btnConfirmSingle">
+        <i className="fa-solid fa-ticket"></i> Confirm & Generate Ticket
+      </button>
     </div>
   </form>
 
@@ -227,8 +205,10 @@ function DarshanBody() {
 
 export default function DarshanBookingPage() {
   return (
-    <Suspense fallback={null}>
-      <DarshanBody />
-    </Suspense>
+    <LangProvider>
+      <Suspense fallback={null}>
+        <DarshanBody />
+      </Suspense>
+    </LangProvider>
   );
 }

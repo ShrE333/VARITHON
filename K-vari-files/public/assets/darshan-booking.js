@@ -230,7 +230,6 @@
   }
 
   function validateStep(step) {
-    clearErrors();
     var ok = true;
 
     if (step === 1) {
@@ -269,20 +268,7 @@
   }
 
   function updateStepUI() {
-    document.querySelectorAll('.db-step').forEach(function (el) {
-      el.classList.toggle('active', +el.getAttribute('data-step') === state.step);
-    });
-    document.querySelectorAll('.db-step-pill').forEach(function (el) {
-      var s = +el.getAttribute('data-step');
-      el.classList.remove('active', 'done');
-      if (s === state.step) el.classList.add('active');
-      else if (s < state.step) el.classList.add('done');
-    });
-    document.getElementById('btnPrev').style.display = state.step > 1 ? 'inline-flex' : 'none';
-    document.getElementById('btnNext').style.display = state.step < 4 ? 'inline-flex' : 'none';
-    document.getElementById('btnConfirm').style.display = state.step === 4 ? 'inline-flex' : 'none';
-
-    if (state.step === 4) renderReview();
+    // Single-screen layout, no need to toggle active classes or buttons
   }
 
   function renderReview() {
@@ -686,7 +672,8 @@
     saveBooking(booking);
 
     document.getElementById('bookingForm').style.display = 'none';
-    document.querySelector('.db-steps').style.display = 'none';
+    var stepsEl = document.querySelector('.db-steps');
+    if (stepsEl) stepsEl.style.display = 'none';
     var ticketWrap = document.getElementById('ticketWrap');
     ticketWrap.classList.add('show');
 
@@ -721,7 +708,7 @@
   }
 
   function init() {
-    var back = qs('back') || '/varimitra';
+    var back = qs('back') || '/';
     var backEl = document.getElementById('dbBack');
     if (backEl) backEl.href = back;
 
@@ -736,26 +723,24 @@
     document.getElementById('dbNumPeople').addEventListener('change', renderPilgrimFields);
     document.getElementById('dbNumPeople').addEventListener('input', renderPilgrimFields);
 
-    document.getElementById('btnNext').addEventListener('click', function () {
-      if (!validateStep(state.step)) return;
-      state.step++;
-      if (state.step === 3) renderPilgrimFields();
-      updateStepUI();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    document.getElementById('btnPrev').addEventListener('click', function () {
-      if (state.step > 1) {
-        state.step--;
-        updateStepUI();
+    var btnConfirmSingle = document.getElementById('btnConfirmSingle');
+    if (btnConfirmSingle) {
+      btnConfirmSingle.addEventListener('click', function () {
+        clearErrors();
+        var v1 = validateStep(1);
+        var v2 = validateStep(2);
+        var v3 = validateStep(3);
+        if (!v1 || !v2 || !v3) {
+          var firstErr = document.querySelector('.err-msg.show');
+          if (firstErr) {
+            firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return;
+        }
+        generateTicket();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    });
-
-    document.getElementById('btnConfirm').addEventListener('click', function () {
-      generateTicket();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+      });
+    }
 
     document.getElementById('btnPrint').addEventListener('click', function () {
       window.print();

@@ -15,9 +15,11 @@ import { useEffect, useState } from 'react';
  * Where "back" points depends on who is signed in: an admin arrived from the
  * command dashboard, a pilgrim from the VariMitra home.
  */
+import { LangToggle } from '@/components/LangToggle';
+
 export function PortalReturnBar() {
   const pathname = usePathname();
-  const [href, setHref] = useState('/varimitra');
+  const [href, setHref] = useState('/');
   const [label, setLabel] = useState('VariMitra');
 
   useEffect(() => {
@@ -37,6 +39,9 @@ export function PortalReturnBar() {
   // would undercut the "this is the live system" framing of the demo script.
   if (pathname.startsWith('/demo')) return null;
 
+  const isPalki = pathname === '/palki';
+  const isDarshan = pathname === '/darshan-booking';
+
   return (
     <div className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-neutral-200 bg-white/95 px-4 py-2 backdrop-blur">
       <Link
@@ -46,9 +51,18 @@ export function PortalReturnBar() {
         <span aria-hidden>←</span>
         <span>{label}</span>
       </Link>
-      <span className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
-        Live Wari Services
-      </span>
+      {isPalki || isDarshan ? (
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-bold text-neutral-800">
+            {isPalki ? 'Where is the Palki?' : 'Vari Darshan Slot Booking'}
+          </span>
+          <LangToggle />
+        </div>
+      ) : (
+        <span className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
+          Live Wari Services
+        </span>
+      )}
     </div>
   );
 }

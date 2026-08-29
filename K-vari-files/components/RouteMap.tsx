@@ -72,11 +72,12 @@ interface Props {
   route: RouteIndex;
   fix: LocationFix | null;
   routePos: RoutePosition | null;
-  /** Map height in px. The home glance wants a shorter map than /route does. */
-  height?: number;
+  /** Map height in px or string. The home glance wants a shorter map than /route does. */
+  height?: number | string;
+  className?: string;
 }
 
-export function RouteMap({ route, fix, routePos, height = 420 }: Props) {
+export function RouteMap({ route, fix, routePos, height = 420, className = "relative rounded-2xl overflow-hidden border border-neutral-200" }: Props) {
   const { t } = useLang();
   const [autoFollow, setAutoFollow] = useState(true);
   const initialBoundsRef = useRef<LatLngBoundsExpression>(
@@ -87,7 +88,7 @@ export function RouteMap({ route, fix, routePos, height = 420 }: Props) {
   const dest: LatLngTuple = [route.bundle.destination.lat, route.bundle.destination.lng];
 
   return (
-    <div className="relative rounded-2xl overflow-hidden border border-neutral-200" style={{ height }}>
+    <div className={className} style={{ height }}>
       <style>{`
         @keyframes wari-pulse {
           0% { box-shadow: 0 0 0 0 rgba(234,88,12,.5); }
@@ -143,9 +144,8 @@ export function RouteMap({ route, fix, routePos, height = 420 }: Props) {
 
       <button
         onClick={() => setAutoFollow(true)}
-        className={`absolute bottom-3 right-3 z-[1000] tap-target px-4 rounded-full font-semibold text-sm shadow-md ${
-          autoFollow ? 'bg-saffron-600 text-white' : 'bg-white text-neutral-700 border border-neutral-300'
-        }`}
+        className={`absolute bottom-3 right-3 z-[1000] tap-target px-4 rounded-full font-semibold text-sm shadow-md ${autoFollow ? 'bg-saffron-600 text-white' : 'bg-white text-neutral-700 border border-neutral-300'
+          }`}
       >
         📍 {autoFollow ? t('map.following') : t('map.follow')}
       </button>

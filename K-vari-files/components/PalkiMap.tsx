@@ -54,7 +54,7 @@ interface Props {
   you: { lat: number; lng: number } | null;
 }
 
-export function PalkiMap({ coordinates, view, you }: Props) {
+export function PalkiMap({ coordinates, view, you, height = '100%' }: Props & { height?: string | number }) {
   const { t } = useLang();
   const geometry = useMemo(() => new RouteGeometry(coordinates), [coordinates]);
 
@@ -79,8 +79,8 @@ export function PalkiMap({ coordinates, view, you }: Props) {
 
   return (
     <div
-      className="overflow-hidden rounded-2xl border border-neutral-200"
-      style={{ height: 320 }}
+      className="overflow-hidden rounded-2xl border border-neutral-200 w-full h-full"
+      style={{ height }}
     >
       <MapContainer
         center={center ?? [18.2, 74.6]}

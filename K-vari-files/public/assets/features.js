@@ -22,7 +22,7 @@
      "varimitra.html" — the last path segment alone would resolve relative to
      whatever page is asking. */
   function currentPage(){
-    return location.pathname || "/varimitra";
+    return location.pathname || "/";
   }
 
   function goToFeature(key){

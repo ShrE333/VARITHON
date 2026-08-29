@@ -61,26 +61,25 @@ export function PalkiStatusCard({ packet, view, next, segmentNames, totalKm }: P
   return (
     <div className="space-y-3">
       <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
-          <span className="text-sm font-medium text-neutral-500">{t('palki.title')}</span>
+        <div className="mb-2 flex items-center justify-end">
           <Badge view={view} />
         </div>
 
         {/* --- The lead line: a landmark and a time, never coordinates. --- */}
         {view.freshness === 'expired' ? (
-          <div className="py-3 text-center">
+          <div className="py-2 text-center space-y-1.5">
             <p className="text-lg font-semibold text-neutral-700">{t('palki.unavailable')}</p>
-            <p className="mt-2 text-sm text-neutral-500">
+            <p className="text-sm text-neutral-500">
               {t('palki.lastKnown', { time: formatClock(packet.current.observedAt) })}
             </p>
-            <p className="mt-1 text-sm text-neutral-500">
+            <p className="text-sm text-neutral-500">
               {formatDistance(packet.current.sKm)} · {t('palki.kmToGo', {
                 km: Math.round(totalKm - packet.current.sKm),
               })}
             </p>
           </div>
         ) : view.freshness === 'segment' ? (
-          <div className="py-2 text-center">
+          <div className="py-2 text-center space-y-1.5">
             {/* Deliberately no single position: at this age a dot would be a
                 lie. A stretch of road is the honest unit. */}
             <div className="text-2xl font-bold leading-tight text-saffron-700">
@@ -88,31 +87,28 @@ export function PalkiStatusCard({ packet, view, next, segmentNames, totalKm }: P
                 ? t('palki.between', { from: segmentNames.from, to: segmentNames.to })
                 : `${formatDistance(view.segment?.fromKm ?? 0)} – ${formatDistance(view.segment?.toKm ?? 0)}`}
             </div>
-            <p className="mt-2 text-sm text-neutral-500">
+            <p className="text-sm text-neutral-500">
               {t('palki.age', { age: formatAge(view.observationAgeMs) })}
             </p>
           </div>
         ) : next && next.eta ? (
-          <div className="py-2 text-center">
+          <div className="py-2 text-center space-y-1.5">
             <div className="text-2xl font-bold leading-snug text-saffron-700">
-              {t('palki.reaches', {
-                place: placeName(next),
-                time: `${next.beyondForecast ? '~' : ''}${formatClock(next.eta)}`,
-              })}
+              {placeName(next)} reaches Pune around {next.beyondForecast ? '~' : ''}{formatClock(next.eta)}
             </div>
             {next.beyondForecast && (
               // Past the 8h forecast window this is an extrapolation of the
               // schedule, not a forecast we stand behind to the minute.
-              <p className="mt-1 text-xs text-amber-700">{t('palki.roughEta')}</p>
+              <p className="text-xs text-amber-700">{t('palki.roughEta')}</p>
             )}
-            <p className="mt-2 text-sm text-neutral-500">
+            <p className="text-sm text-neutral-500">
               {t('palki.kmToGo', { km: Math.round(totalKm - (view.sKm ?? 0)) })}
             </p>
           </div>
         ) : (
-          <div className="py-2 text-center">
+          <div className="py-2 text-center space-y-1.5">
             <div className="text-hero text-saffron-600">{formatDistance(view.sKm ?? 0)}</div>
-            <p className="mt-1 text-sm text-neutral-500">
+            <p className="text-sm text-neutral-500">
               {t('palki.kmToGo', { km: Math.round(totalKm - (view.sKm ?? 0)) })}
             </p>
           </div>

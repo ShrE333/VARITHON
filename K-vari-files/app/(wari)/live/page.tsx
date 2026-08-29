@@ -13,7 +13,7 @@ export default function HomePage() {
   const { t } = useLang();
 
   return (
-    <div className="max-w-md mx-auto px-4 pt-4 pb-6 space-y-5">
+    <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 md:px-8 pt-6 pb-8 space-y-6">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-neutral-900">{t('app.name')}</h1>
         <LangToggle />
@@ -44,28 +44,7 @@ export default function HomePage() {
             onRetry={retryGps}
           />
 
-          {/* The two things a pilgrim reaches for in a hurry, above the fold
-              and thumb-sized, so neither needs the bottom nav to be found. */}
-          <div className="grid grid-cols-2 gap-3">
-            <Link
-              href="/help"
-              className="tap-target rounded-2xl bg-red-600 text-white font-bold text-xl flex flex-col items-center justify-center gap-1 py-4 shadow-sm active:bg-red-700"
-            >
-              <span className="text-3xl leading-none" aria-hidden>
-                🆘
-              </span>
-              {t('nav.help')}
-            </Link>
-            <Link
-              href="/palki"
-              className="tap-target rounded-2xl bg-saffron-600 text-white font-bold text-xl flex flex-col items-center justify-center gap-1 py-4 shadow-sm active:bg-saffron-700"
-            >
-              <span className="text-3xl leading-none" aria-hidden>
-                🛕
-              </span>
-              {t('palki.nav')}
-            </Link>
-          </div>
+
 
           <RouteGlance route={route} fix={fix} routePos={routePos} />
         </>

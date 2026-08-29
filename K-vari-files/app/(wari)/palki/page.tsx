@@ -22,7 +22,7 @@ import { useAirplaneMode } from '@/lib/palki/airplane';
 
 const PalkiMap = dynamic(() => import('@/components/PalkiMap').then((m) => m.PalkiMap), {
   ssr: false,
-  loading: () => <div className="animate-pulse rounded-2xl bg-neutral-100" style={{ height: 320 }} />,
+  loading: () => <div className="animate-pulse rounded-2xl bg-neutral-100 w-full h-full min-h-[300px]" />,
 });
 
 export default function PalkiPage() {
@@ -79,15 +79,7 @@ export default function PalkiPage() {
   const totalKm = route?.totalKm ?? 285.574;
 
   return (
-    <div className="mx-auto max-w-md space-y-4 px-4 pb-6 pt-4">
-      <header className="flex items-center justify-between">
-        <h1 className="text-lg font-bold text-neutral-800">{t('palki.title')}</h1>
-        <div className="flex items-center gap-2">
-          {refreshing && <span className="text-sm text-neutral-600">{t('palki.refreshing')}</span>}
-          <LangToggle />
-        </div>
-      </header>
-
+    <div className="mx-auto max-w-5xl space-y-4 px-4 pb-6 pt-4 h-full flex flex-col">
       {(!online || airplane) && (
         // Amber, not red. Being offline on the Wari is expected, not a fault.
         <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm text-amber-800">
@@ -109,44 +101,51 @@ export default function PalkiPage() {
       )}
 
       {packet && view && (
-        <>
-          <PalkiStatusCard
-            packet={packet}
-            view={view}
-            next={next}
-            segmentNames={segmentNames}
-            totalKm={totalKm}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0">
+          {/* Left Column: Details */}
+          <div className="space-y-4 flex flex-col justify-start">
+            <PalkiStatusCard
+              packet={packet}
+              view={view}
+              next={next}
+              segmentNames={segmentNames}
+              totalKm={totalKm}
+            />
 
-          {/* --- Distance from the pilgrim, computed on-device. --- */}
-          <div className="rounded-2xl border border-neutral-200 bg-white p-4">
-            {relative ? (
-              <div className="text-center">
-                <p className="text-sm text-neutral-500">{t('palki.yourDistance')}</p>
-                <p className="mt-1 text-2xl font-bold text-neutral-800">
-                  {formatDistance(Math.abs(relative.deltaKm))}{' '}
-                  <span className="text-base font-medium text-neutral-500">
-                    {relative.ahead ? t('palki.ahead') : t('palki.behind')}
-                  </span>
-                </p>
-                {relative.ahead && (
-                  <p className="mt-1 text-sm text-neutral-500">
-                    🚶 {formatEta(Math.abs(relative.deltaKm))}
+            {/* --- Distance from the pilgrim, computed on-device. --- */}
+            <div className="rounded-2xl border border-neutral-200 bg-white p-4">
+              {relative ? (
+                <div className="text-center">
+                  <p className="text-sm text-neutral-500">{t('palki.yourDistance')}</p>
+                  <p className="mt-1 text-2xl font-bold text-neutral-800">
+                    {formatDistance(Math.abs(relative.deltaKm))}{' '}
+                    <span className="text-base font-medium text-neutral-500">
+                      {relative.ahead ? t('palki.ahead') : t('palki.behind')}
+                    </span>
                   </p>
-                )}
-                <p className="mt-2 text-sm text-neutral-600">🔒 {t('palki.privacy')}</p>
-              </div>
-            ) : (
-              <p className="text-center text-sm text-neutral-500">{t('palki.needLocation')}</p>
-            )}
+                  {relative.ahead && (
+                    <p className="mt-1 text-sm text-neutral-500">
+                      🚶 {formatEta(Math.abs(relative.deltaKm))}
+                    </p>
+                  )}
+                  <p className="mt-2 text-sm text-neutral-600">🔒 {t('palki.privacy')}</p>
+                </div>
+              ) : (
+                <p className="text-center text-sm text-neutral-500">{t('palki.needLocation')}</p>
+              )}
+            </div>
           </div>
 
-          {coordinates && <PalkiMap coordinates={coordinates} view={view} you={null} />}
-
-          <p className="text-center text-sm text-neutral-600">
-            {t('palki.age', { age: formatAge(view.observationAgeMs) })}
-          </p>
-        </>
+          {/* Right Column: Map */}
+          <div className="relative flex flex-col gap-2 min-h-[300px]">
+            <div className="flex-1 min-h-[250px] relative">
+              {coordinates && <PalkiMap coordinates={coordinates} view={view} you={null} />}
+            </div>
+            <p className="text-center text-sm text-neutral-600">
+              {t('palki.age', { age: formatAge(view.observationAgeMs) })}
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );

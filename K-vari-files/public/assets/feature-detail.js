@@ -26,10 +26,10 @@
   var userRole = (savedUser && savedUser.role) ? savedUser.role : 'user';
 
   var key = qs("key");
-  var back = qs("back") || (userRole === 'admin' ? "/command-dashboard" : "/varimitra");
+  var back = qs("back") || (userRole === 'admin' ? "/command-dashboard" : "/");
 
   if (userRole === 'user' || (back.indexOf("command-dashboard") !== -1 && userRole !== 'admin')) {
-    back = "/varimitra";
+    back = "/";
   }
 
   function render(){
@@ -120,7 +120,7 @@
         ctaBtn.textContent = t('pilgrim.backDashboard');
       } else {
         ctaText.textContent = t('pilgrim.exploreCta').replace('{title}', data.title);
-        ctaBtn.href = "/varimitra";
+        ctaBtn.href = "/";
         ctaBtn.textContent = t('pilgrim.backPortal');
       }
     }
@@ -162,7 +162,7 @@
 
   var data = getFeature(key);
   if (data && data.audience === 'admin' && userRole === 'user') {
-    location.href = "/varimitra";
+    location.href = "/";
     return;
   }
 
