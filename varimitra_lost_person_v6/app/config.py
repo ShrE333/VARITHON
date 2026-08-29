@@ -1,0 +1,23 @@
+from pathlib import Path
+import os
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+CASES_DIR = DATA_DIR / "cases"
+ALERTS_DIR = DATA_DIR / "alerts"
+
+CANDIDATE_THRESHOLD = float(os.getenv("CANDIDATE_THRESHOLD", "0.45"))
+HIGH_CONFIDENCE_THRESHOLD = float(os.getenv("HIGH_CONFIDENCE_THRESHOLD", "0.55"))
+MATCH_WINDOW_SECONDS = float(os.getenv("MATCH_WINDOW_SECONDS", "8.0"))
+MIN_MATCHES_IN_WINDOW = int(os.getenv("MIN_MATCHES_IN_WINDOW", "4"))
+
+DETECTION_SIZE = (512, 512)
+PROCESS_EVERY_N_FRAMES = int(os.getenv("PROCESS_EVERY_N_FRAMES", "2"))
+MAX_INFERENCE_WIDTH = int(os.getenv("MAX_INFERENCE_WIDTH", "960"))
+FPS_SMOOTHING = 20
+
+TRITON_URL = os.getenv("TRITON_URL", "127.0.0.1:8100")
+TRITON_DETECTOR_MODEL = os.getenv("TRITON_DETECTOR_MODEL", "scrfd")
+TRITON_RECOGNITION_MODEL = os.getenv("TRITON_RECOGNITION_MODEL", "arcface")
+DETECTION_THRESHOLD = float(os.getenv("DETECTION_THRESHOLD", "0.50"))
+NMS_THRESHOLD = float(os.getenv("NMS_THRESHOLD", "0.40"))
