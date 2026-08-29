@@ -1,0 +1,14 @@
+[
+  {
+    "camera_id": "CAM-NORTH-01",
+    "location": "North Gate",
+    "source": "C:\\Users\\acer\\Downloads\\WhatsApp Video 2026-08-26 at 10.21.40 AM.mp4",
+    "enabled": true
+  },
+  {
+    "camera_id": "CAM-EAST-02",
+    "location": "East Queue",
+    "source": 0,
+    "enabled": true
+  }
+]

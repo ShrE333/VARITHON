@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+*.db
+data/alerts/
+data/live/
+model_repository/*/1/model.onnx

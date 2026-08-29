@@ -1,0 +1,19 @@
+{
+  "case_id": "VM-LF-AA18C897",
+  "name": "stringkshitij shinde ",
+  "age": "string21",
+  "last_seen": "stringfront gate ",
+  "reporter_contact": "string9112213564",
+  "status": "ACTIVE",
+  "created_at": "2026-08-26T09:01:22.209315+00:00",
+  "enrollment_info": {
+    "bbox": [
+      174,
+      89,
+      367,
+      345
+    ],
+    "det_score": 0.8779104948043823,
+    "blur_variance": 46.60914386963408
+  }
+}

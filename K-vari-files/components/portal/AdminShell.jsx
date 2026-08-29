@@ -233,17 +233,17 @@ export function AdminShell({
 
 
         <a
-          className="side-link"
-          data-modal
-          data-feature="live-cctv"
+          className={active === 'crowd' ? 'side-link active' : 'side-link'}
+          href="/superadmin/crowd"
+          onClick={goTo('/superadmin/crowd')}
           tabIndex="0"
         >
 
           <span className="l">
 
-            <i className="icn fa-solid fa-video"></i>
+            <i className="icn fa-solid fa-users"></i>
 
-            <span data-i18n="admin.sidebarCctv">Live CCTV</span>
+            <span>Crowd Congestion</span>
 
           </span>
 
@@ -410,6 +410,24 @@ export function AdminShell({
             <i className="icn fa-solid fa-map-location-dot"></i>
 
             <span>Location Management</span>
+
+          </span>
+
+          <i className="chev fa-solid fa-chevron-right"></i>
+
+        </a>
+
+        <a
+          className={active === 'lost-found' ? 'side-link active' : 'side-link'}
+          href="/superadmin/lost-found"
+          onClick={goTo('/superadmin/lost-found')}
+        >
+
+          <span className="l">
+
+            <i className="icn fa-solid fa-magnifying-glass-location"></i>
+
+            <span>Lost &amp; Found</span>
 
           </span>
 
