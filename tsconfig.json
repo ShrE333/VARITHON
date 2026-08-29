@@ -1,0 +1,32 @@
+{
+  "//": [
+    "`include` covers the portable core only. server/nextjs/ and",
+    "server/express/ are ALTERNATIVE adapters: each needs a framework this",
+    "package does not depend on (next, express). They compile inside the host",
+    "panel, which has one or the other installed. Ship one, delete the other.",
+    "",
+    "So `npm run typecheck` passing here proves the part you are handing over",
+    "compiles with no framework at all."
+  ],
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "src/**/*",
+    "examples/**/*",
+    "server/handlers.ts",
+    "server/store.supabase.ts"
+  ]
+}
