@@ -1,0 +1,6 @@
+[
+  {"zone_id":"ZONE_A","name":"North Gate","capacity":40,"polygon":[[70,80],[460,80],[460,300],[70,300]]},
+  {"zone_id":"ZONE_B","name":"Queue A","capacity":50,"polygon":[[460,80],[930,80],[930,300],[460,300]]},
+  {"zone_id":"ZONE_C","name":"Queue B","capacity":60,"polygon":[[70,300],[500,300],[500,620],[70,620]]},
+  {"zone_id":"ZONE_D","name":"Darshan Area","capacity":45,"polygon":[[500,300],[930,300],[930,620],[500,620]]}
+]

@@ -1,0 +1,292 @@
+[
+  {
+    "id": "fixture-001",
+    "kind": "hospital",
+    "name": "Civil Hospital (रुग्णालय)",
+    "lat": 18.634257,
+    "lng": 73.875297,
+    "chainageKm": 5.7,
+    "offsetM": 20,
+    "status": "full"
+  },
+  {
+    "id": "fixture-002",
+    "kind": "phc",
+    "name": "PHC Sub-centre (आरोग्य केंद्र)",
+    "lat": 18.541212,
+    "lng": 73.86746,
+    "chainageKm": 17.5,
+    "offsetM": 72.9,
+    "status": "open",
+    "contactPhone": "+918669966070"
+  },
+  {
+    "id": "fixture-003",
+    "kind": "pharmacy",
+    "name": "Medical Store (औषध दुकान)",
+    "lat": 18.507706,
+    "lng": 73.903152,
+    "chainageKm": 29.4,
+    "offsetM": 125.9,
+    "status": "open",
+    "contactPhone": "+919112213506"
+  },
+  {
+    "id": "fixture-004",
+    "kind": "health_camp",
+    "name": "Arogya Shibir (आरोग्य शिबिर)",
+    "lat": 18.498274,
+    "lng": 74.000203,
+    "chainageKm": 36.291,
+    "offsetM": 5132.1,
+    "status": "open",
+    "capacity": 89
+  },
+  {
+    "id": "fixture-005",
+    "kind": "refreshment_camp",
+    "name": "Panpoi Water Camp (अन्नछत्र)",
+    "lat": 18.375475,
+    "lng": 74.020062,
+    "chainageKm": 51.8,
+    "offsetM": 231.7,
+    "status": "open",
+    "contactPhone": "+917822850386",
+    "capacity": 102,
+    "amenities": {
+      "water": true,
+      "food": true
+    }
+  },
+  {
+    "id": "fixture-006",
+    "kind": "rest_stop",
+    "name": "Shade Rest Point (विश्रांती कट्टा)",
+    "lat": 18.309244,
+    "lng": 74.086242,
+    "chainageKm": 63.6,
+    "offsetM": 284.7,
+    "status": "closed",
+    "contactPhone": "+918669966070",
+    "capacity": 115
+  },
+  {
+    "id": "fixture-007",
+    "kind": "night_stay",
+    "name": "Mukkam Dharamshala (मुक्काम धर्मशाळा)",
+    "lat": 18.26732,
+    "lng": 74.172859,
+    "chainageKm": 74.2,
+    "offsetM": 337.6,
+    "status": "open",
+    "capacity": 128
+  },
+  {
+    "id": "fixture-008",
+    "kind": "hotel",
+    "name": "Wari Lodge (हॉटेल)",
+    "lat": 18.175377,
+    "lng": 74.160824,
+    "chainageKm": 86.1,
+    "offsetM": 390.6,
+    "status": "open",
+    "contactPhone": "+919112213506"
+  },
+  {
+    "id": "fixture-009",
+    "kind": "hospital",
+    "name": "Civil Hospital (रुग्णालय)",
+    "lat": 18.084272,
+    "lng": 74.214459,
+    "chainageKm": 97.919,
+    "offsetM": 443.4,
+    "status": "open",
+    "contactPhone": "+917822850386"
+  },
+  {
+    "id": "fixture-010",
+    "kind": "phc",
+    "name": "PHC Sub-centre (आरोग्य केंद्र)",
+    "lat": 18.028792,
+    "lng": 74.216535,
+    "chainageKm": 108.5,
+    "offsetM": 496.4,
+    "status": "open"
+  },
+  {
+    "id": "fixture-011",
+    "kind": "pharmacy",
+    "name": "Medical Store (औषध दुकान)",
+    "lat": 18.02242,
+    "lng": 74.306984,
+    "chainageKm": 120.3,
+    "offsetM": 549.4,
+    "status": "open",
+    "contactPhone": "+918669966070"
+  },
+  {
+    "id": "fixture-012",
+    "kind": "health_camp",
+    "name": "Wari Aid Post (आरोग्य शिबिर)",
+    "lat": 17.996175,
+    "lng": 74.417089,
+    "chainageKm": 132.2,
+    "offsetM": 602.3,
+    "status": "full",
+    "contactPhone": "+919112213506",
+    "capacity": 193
+  },
+  {
+    "id": "fixture-013",
+    "kind": "refreshment_camp",
+    "name": "Anna Chhatra (अन्नछत्र)",
+    "lat": 18.050808,
+    "lng": 74.42847,
+    "chainageKm": 132.769,
+    "offsetM": 5564.7,
+    "status": "closed",
+    "capacity": 206,
+    "amenities": {
+      "water": true,
+      "food": true
+    }
+  },
+  {
+    "id": "fixture-014",
+    "kind": "rest_stop",
+    "name": "Shade Rest Point (विश्रांती कट्टा)",
+    "lat": 17.974783,
+    "lng": 74.526204,
+    "chainageKm": 154.6,
+    "offsetM": 708.2,
+    "status": "open",
+    "contactPhone": "+917822850386",
+    "capacity": 219
+  },
+  {
+    "id": "fixture-015",
+    "kind": "night_stay",
+    "name": "Mukkam Dharamshala (मुक्काम धर्मशाळा)",
+    "lat": 17.944462,
+    "lng": 74.626156,
+    "chainageKm": 166.348,
+    "offsetM": 759.8,
+    "status": "open",
+    "contactPhone": "+918669966070",
+    "capacity": 232
+  },
+  {
+    "id": "fixture-016",
+    "kind": "hotel",
+    "name": "Wari Lodge (हॉटेल)",
+    "lat": 17.952584,
+    "lng": 74.605502,
+    "chainageKm": 168.661,
+    "offsetM": 192.7,
+    "status": "open"
+  },
+  {
+    "id": "fixture-017",
+    "kind": "hospital",
+    "name": "Civil Hospital (रुग्णालय)",
+    "lat": 17.919724,
+    "lng": 74.710664,
+    "chainageKm": 188.9,
+    "offsetM": 867,
+    "status": "open",
+    "contactPhone": "+919112213506"
+  },
+  {
+    "id": "fixture-018",
+    "kind": "phc",
+    "name": "PHC Sub-centre (आरोग्य केंद्र)",
+    "lat": 17.884117,
+    "lng": 74.802201,
+    "chainageKm": 200.7,
+    "offsetM": 21,
+    "status": "open",
+    "contactPhone": "+917822850386"
+  },
+  {
+    "id": "fixture-019",
+    "kind": "pharmacy",
+    "name": "Medical Store (औषध दुकान)",
+    "lat": 17.856255,
+    "lng": 74.896458,
+    "chainageKm": 211.3,
+    "offsetM": 73.9,
+    "status": "open"
+  },
+  {
+    "id": "fixture-020",
+    "kind": "health_camp",
+    "name": "Red Cross Health Camp (आरोग्य शिबिर)",
+    "lat": 17.81077,
+    "lng": 74.939696,
+    "chainageKm": 221.934,
+    "offsetM": 31.7,
+    "status": "closed",
+    "contactPhone": "+918669966070",
+    "capacity": 97
+  },
+  {
+    "id": "fixture-021",
+    "kind": "refreshment_camp",
+    "name": "Prasad Seva Kendra (अन्नछत्र)",
+    "lat": 17.806795,
+    "lng": 75.026421,
+    "chainageKm": 235,
+    "offsetM": 179.8,
+    "status": "open",
+    "contactPhone": "+919112213506",
+    "capacity": 110,
+    "amenities": {
+      "water": true,
+      "food": true
+    }
+  },
+  {
+    "id": "fixture-023",
+    "kind": "night_stay",
+    "name": "Mukkam Dharamshala (मुक्काम धर्मशाळा)",
+    "lat": 17.701709,
+    "lng": 75.087528,
+    "chainageKm": 257.168,
+    "offsetM": 282.2,
+    "status": "full",
+    "contactPhone": "+917822850386",
+    "capacity": 136
+  },
+  {
+    "id": "fixture-022",
+    "kind": "rest_stop",
+    "name": "Shade Rest Point (विश्रांती कट्टा)",
+    "lat": 17.747946,
+    "lng": 75.108051,
+    "chainageKm": 258.563,
+    "offsetM": 5419.6,
+    "status": "open",
+    "capacity": 123
+  },
+  {
+    "id": "fixture-024",
+    "kind": "hotel",
+    "name": "Wari Lodge (हॉटेल)",
+    "lat": 17.67774,
+    "lng": 75.189362,
+    "chainageKm": 269.181,
+    "offsetM": 338.3,
+    "status": "open",
+    "contactPhone": "+918669966070"
+  },
+  {
+    "id": "fixture-025",
+    "kind": "hospital",
+    "name": "Civil Hospital (रुग्णालय)",
+    "lat": 17.688815,
+    "lng": 75.286328,
+    "chainageKm": 279.9,
+    "offsetM": 391.6,
+    "status": "open"
+  }
+]

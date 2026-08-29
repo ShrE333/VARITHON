@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VariMitra Crowd Command Center</title>
+<style>
+body{margin:0;background:#0b1020;color:#eef3ff;font-family:Arial,sans-serif}.wrap{max-width:1500px;margin:auto;padding:20px}h1{margin:0 0 4px}.muted{color:#93a4c7}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:#121a2e;border:1px solid #253354;border-radius:14px;padding:12px}.feed{width:100%;aspect-ratio:16/9;object-fit:cover;background:#050914;border-radius:10px}.stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px}.ok{color:#4ade80}.bad{color:#fb7185}.maprow{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:18px}.mapcard{position:relative}.zoneList .zone{padding:10px;border-bottom:1px solid #253354}.LOW{color:#4ade80}.MODERATE{color:#facc15}.HIGH{color:#fb923c}.CRITICAL{color:#fb4b4b;font-weight:bold}canvas{width:100%;background:#0a0f1e;border-radius:12px}@media(max-width:900px){.grid,.maprow{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<h1>VariMitra Crowd Command Center</h1><div class="muted">4-camera crowd detection, tracking and temple congestion heatmap</div>
+<h2>Live Cameras</h2><div id="cams" class="grid"></div>
+<div class="maprow">
+  <div class="card mapcard"><h2>Temple Congestion Heatmap</h2><canvas id="map" width="1000" height="700"></canvas></div>
+  <div class="card"><h2>Zone Status</h2><div id="zones" class="zoneList"></div></div>
+</div>
+</div>
+<script>
+let cameraIds=[];
+function levelFill(level,occ){
+  if(level==='CRITICAL') return `rgba(255,45,45,${Math.min(.85,.28+occ*.55)})`;
+  if(level==='HIGH') return `rgba(255,145,45,${Math.min(.8,.25+occ*.5)})`;
+  if(level==='MODERATE') return `rgba(250,204,21,${Math.min(.75,.2+occ*.45)})`;
+  return `rgba(55,210,110,${Math.min(.6,.18+occ*.35)})`;
+}
+async function refresh(){
+  const [cams,zones]=await Promise.all([fetch('/cameras').then(r=>r.json()),fetch('/zones').then(r=>r.json())]);
+  const camBox=document.getElementById('cams');
+  const ids=cams.filter(c=>c.enabled).map(c=>c.camera_id);
+  if(JSON.stringify(ids)!==JSON.stringify(cameraIds)){
+    cameraIds=ids; camBox.innerHTML='';
+    cams.filter(c=>c.enabled).forEach(c=>{
+      const el=document.createElement('div');el.className='card';el.id='card-'+c.camera_id;
+      el.innerHTML=`<b>${c.camera_id}</b> — ${c.location}<br><img class="feed" id="img-${c.camera_id}"><div class="stats"><span id="on-${c.camera_id}"></span><span id="p-${c.camera_id}"></span><span id="fps-${c.camera_id}"></span></div>`;
+      camBox.appendChild(el);
+    });
+  }
+  cams.filter(c=>c.enabled).forEach(c=>{
+    const on=document.getElementById('on-'+c.camera_id); on.textContent=c.online?'● ONLINE':'● OFFLINE'; on.className=c.online?'ok':'bad';
+    document.getElementById('p-'+c.camera_id).textContent=`People: ${c.detected_people||0}`;
+    document.getElementById('fps-'+c.camera_id).textContent=`FPS: ${(c.fps||0).toFixed(1)}`;
+    if(c.latest_frame) document.getElementById('img-'+c.camera_id).src=`/cameras/${c.camera_id}/frame?t=${Date.now()}`;
+  });
+  drawMap(zones,cams);
+  document.getElementById('zones').innerHTML=zones.map(z=>`<div class="zone"><b>${z.name}</b><br><span class="${z.level||'LOW'}">${z.level||'LOW'}</span><br>People: ${z.people_count||0} / ${z.capacity}<br>Occupancy: ${Math.round((z.occupancy||0)*100)}%</div>`).join('');
+}
+function drawMap(zones,cams){
+  const cv=document.getElementById('map'),ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);ctx.fillStyle='#080d19';ctx.fillRect(0,0,cv.width,cv.height);
+  zones.forEach(z=>{const p=z.polygon,occ=z.occupancy||0,level=z.level||'LOW';ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);p.slice(1).forEach(q=>ctx.lineTo(q[0],q[1]));ctx.closePath();ctx.fillStyle=levelFill(level,occ);ctx.fill();ctx.strokeStyle='#8ba2ca';ctx.lineWidth=2;ctx.stroke();const cx=p.reduce((s,q)=>s+q[0],0)/p.length,cy=p.reduce((s,q)=>s+q[1],0)/p.length;ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 22px Arial';ctx.fillText(z.name,cx,cy-12);ctx.font='18px Arial';ctx.fillText(`${z.people_count||0}/${z.capacity} • ${level}`,cx,cy+18);});
+  cams.filter(c=>c.enabled).forEach(c=>{const q=c.map_quad||[];if(q.length!==4)return;const cx=q.reduce((s,p)=>s+p[0],0)/4,cy=q.reduce((s,p)=>s+p[1],0)/4;ctx.fillStyle='#60a5fa';ctx.beginPath();ctx.arc(cx,cy,7,0,Math.PI*2);ctx.fill();ctx.fillStyle='#cfe2ff';ctx.font='13px Arial';ctx.fillText(c.camera_id,cx,cy-12);});
+}
+refresh();setInterval(refresh,900);
+</script></body></html>

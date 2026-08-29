@@ -1,0 +1,14 @@
+.venv/
+**/.venv/
+node_modules/
+frontend/dist/
+**/__pycache__/
+*.pyc
+*.db
+**/data/live/
+**/data/alerts/
+**/data/cases/
+.env
+frontend/.env
+*.onnx
+*.pt

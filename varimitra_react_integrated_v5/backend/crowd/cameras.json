@@ -1,0 +1,6 @@
+[
+  {"camera_id":"CAM-01","location":"North Gate","source":"C:\\CHANGE_ME\\cam1.mp4","enabled":false,"map_quad":[[70,80],[460,80],[460,300],[70,300]]},
+  {"camera_id":"CAM-02","location":"Queue A","source":"C:\\CHANGE_ME\\cam2.mp4","enabled":false,"map_quad":[[460,80],[930,80],[930,300],[460,300]]},
+  {"camera_id":"CAM-03","location":"Queue B","source":"C:\\CHANGE_ME\\cam3.mp4","enabled":false,"map_quad":[[70,300],[500,300],[500,650],[70,650]]},
+  {"camera_id":"CAM-04","location":"Darshan Area","source":"C:\\CHANGE_ME\\cam4.mp4","enabled":false,"map_quad":[[500,300],[930,300],[930,650],[500,650]]}
+]
