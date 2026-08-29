@@ -1,0 +1,21 @@
+{
+  "case_id": "VM-LF-4051C2A6",
+  "name": "stringKshitij Shinde ",
+  "age": "string21",
+  "last_seen": "stringat narth gate ",
+  "reporter_contact": "string9112213506",
+  "status": "ACTIVE",
+  "created_at": "2026-08-26T06:58:29.783478+00:00",
+  "enrollment_info": {
+    "bbox": [
+      174,
+      89,
+      367,
+      345
+    ],
+    "face_width": 193,
+    "face_height": 256,
+    "det_score": 0.8779104948043823,
+    "blur_variance": 46.60914386963408
+  }
+}

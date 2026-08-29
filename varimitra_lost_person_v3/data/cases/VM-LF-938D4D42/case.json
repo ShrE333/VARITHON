@@ -1,0 +1,20 @@
+{
+  "case_id": "VM-LF-938D4D42",
+  "name": "stringkshitij shinde ",
+  "age": "string21",
+  "last_seen": "stringnorth gate ",
+  "reporter_contact": "string9112213506",
+  "status": "ACTIVE",
+  "created_at": "2026-08-29T03:27:56.103586+00:00",
+  "enrollment_info": {
+    "bbox": [
+      174,
+      89,
+      369,
+      346
+    ],
+    "det_score": 0.7747081518173218,
+    "blur_variance": 46.719894901608576
+  },
+  "reference_image": "reference.jpg"
+}

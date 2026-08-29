@@ -1,0 +1,19 @@
+{
+  "case_id": "VM-LF-88005B70",
+  "name": "Kshitij Shinde ",
+  "age": "18",
+  "last_seen": "Front gate ",
+  "reporter_contact": "9112213506",
+  "status": "ACTIVE",
+  "created_at": "2026-08-27T17:13:23.113697+00:00",
+  "enrollment_info": {
+    "bbox": [
+      174,
+      89,
+      367,
+      345
+    ],
+    "det_score": 0.8779104948043823,
+    "blur_variance": 46.60914386963408
+  }
+}

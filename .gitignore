@@ -1,0 +1,11 @@
+﻿.venv/
+**/.venv/
+venv/
+**/venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+.env
+*.db
+data/alerts/
+**/data/alerts/
