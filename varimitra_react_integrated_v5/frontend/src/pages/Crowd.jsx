@@ -115,11 +115,7 @@ export default function Crowd() {
                 <div className="video-wrap">
                   {streaming ? (
                     <img
-                      key={tick}
-                      src={`${CROWD_API}/cameras/${encodeURIComponent(c.camera_id)}/frame?t=${tick}`}
-                      onError={e => {
-                        e.currentTarget.style.opacity = 0.18;
-                      }}
+                      src={`${CROWD_API}/cameras/${encodeURIComponent(c.camera_id)}/stream`}
                       alt={c.camera_id}
                     />
                   ) : (

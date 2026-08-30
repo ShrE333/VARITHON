@@ -48,17 +48,56 @@ def map_data():
         "cameras": cameras(),
     }
 
+import asyncio
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
+
 @app.get("/cameras/{camera_id}/frame")
 def camera_frame(camera_id: str):
     with connect() as con:
         row = con.execute("SELECT latest_frame FROM camera_status WHERE camera_id=?", (camera_id,)).fetchone()
-    if not row or not row["latest_frame"]:
-        raise HTTPException(404, "No live frame yet")
-    path = LIVE_DIR / row["latest_frame"]
-    if not path.exists():
-        raise HTTPException(404, "Live frame expired")
-    return FileResponse(path, media_type="image/jpeg", headers={"Cache-Control":"no-store, no-cache, must-revalidate"})
+    path = None
+    if row and row["latest_frame"]:
+        p = LIVE_DIR / row["latest_frame"]
+        if p.exists():
+            path = p
+
+    if not path:
+        # Fallback: get the most recent frame file for this camera from LIVE_DIR
+        files = sorted(LIVE_DIR.glob(f"{camera_id}_*.jpg"), key=lambda x: x.stat().st_mtime, reverse=True)
+        if files:
+            path = files[0]
+
+    if not path or not path.exists():
+        raise HTTPException(404, "No live frame available yet")
+
+    return FileResponse(path, media_type="image/jpeg", headers={"Cache-Control": "no-store, no-cache, must-revalidate"})
+
+
+@app.get("/cameras/{camera_id}/stream")
+async def camera_stream(camera_id: str):
+    async def gen():
+        last_mtime = 0
+        while True:
+            files = sorted(LIVE_DIR.glob(f"{camera_id}_*.jpg"), key=lambda x: x.stat().st_mtime, reverse=True)
+            if files:
+                latest = files[0]
+                try:
+                    mtime = latest.stat().st_mtime
+                    if mtime > last_mtime:
+                        last_mtime = mtime
+                        buf = latest.read_bytes()
+                        yield (
+                            b"--frame\r\n"
+                            b"Content-Type: image/jpeg\r\n\r\n" + buf + b"\r\n"
+                        )
+                except Exception:
+                    pass
+            await asyncio.sleep(0.1)
+
+    return StreamingResponse(gen(), media_type="multipart/x-mixed-replace; boundary=frame")
+
 
 @app.get("/admin", response_class=HTMLResponse)
 def admin():
     return (Path(__file__).parent / "admin.html").read_text(encoding="utf-8")
+
