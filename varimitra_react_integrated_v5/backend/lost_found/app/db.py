@@ -45,45 +45,84 @@ def init_db():
 
 def insert_alert(a):
     with connect() as c:
+        case_id = a['case_id']
+        # Check if there is ALREADY an active/pending alert for this person/case
+        existing = c.execute(
+            "SELECT alert_id FROM alerts WHERE (case_id=? OR case_id LIKE ?) AND status='PENDING' LIMIT 1",
+            (case_id, f"%{case_id}%")
+        ).fetchone()
+
+        if existing:
+            # Update existing alert with latest detection info (ONE request per person)
+            alert_id = existing['alert_id']
+            c.execute("""UPDATE alerts SET similarity=?, confidence_band=?, camera_id=?, camera_location=?, timestamp=?, evidence_image=?, track_id=?
+                         WHERE alert_id=?""",
+                      (a['similarity'], a['confidence_band'], a['camera_id'], a['camera_location'], a['timestamp'], a['evidence_image'], a['track_id'], alert_id))
+            c.execute("""INSERT INTO sightings(alert_id,case_id,name,similarity,camera_id,camera_location,
+                track_id,timestamp,evidence_image) VALUES(?,?,?,?,?,?,?,?,?)""", (
+                alert_id, a['case_id'], a['name'], a['similarity'], a['camera_id'], a['camera_location'],
+                a['track_id'], a['timestamp'], a['evidence_image']))
+            return alert_id
+
+        # Check if this person/case was ALREADY resolved, confirmed, or rejected
+        already = c.execute(
+            "SELECT 1 FROM alerts WHERE (case_id=? OR case_id LIKE ?) AND status IN ('RESOLVED', 'CONFIRMED', 'REJECTED') LIMIT 1",
+            (case_id, f"%{case_id}%")
+        ).fetchone()
+        if already:
+            return None  # Do not generate new alerts for a person who was already processed/rejected/resolved
+
         cur = c.execute("""INSERT INTO alerts(case_id,name,similarity,confidence_band,camera_id,
             camera_location,timestamp,evidence_image,track_id,status)
-            VALUES(?,?,?,?,?,?,?,?,?,'PENDING')""",(
-            a['case_id'],a['name'],a['similarity'],a['confidence_band'],a['camera_id'],
-            a['camera_location'],a['timestamp'],a['evidence_image'],a['track_id']))
+            VALUES(?,?,?,?,?,?,?,?,?,'PENDING')""", (
+            a['case_id'], a['name'], a['similarity'], a['confidence_band'], a['camera_id'],
+            a['camera_location'], a['timestamp'], a['evidence_image'], a['track_id']))
         alert_id = cur.lastrowid
         c.execute("""INSERT INTO sightings(alert_id,case_id,name,similarity,camera_id,camera_location,
-            track_id,timestamp,evidence_image) VALUES(?,?,?,?,?,?,?,?,?)""",(
-            alert_id,a['case_id'],a['name'],a['similarity'],a['camera_id'],a['camera_location'],
-            a['track_id'],a['timestamp'],a['evidence_image']))
+            track_id,timestamp,evidence_image) VALUES(?,?,?,?,?,?,?,?,?)""", (
+            alert_id, a['case_id'], a['name'], a['similarity'], a['camera_id'], a['camera_location'],
+            a['track_id'], a['timestamp'], a['evidence_image']))
         return alert_id
 
 
 def list_alerts(status=None, limit=100):
     with connect() as c:
         if status:
-            rows=c.execute("SELECT * FROM alerts WHERE status=? ORDER BY timestamp DESC LIMIT ?",(status,limit)).fetchall()
+            rows = c.execute("SELECT * FROM alerts WHERE status=? ORDER BY timestamp DESC LIMIT ?", (status, limit)).fetchall()
         else:
-            rows=c.execute("SELECT * FROM alerts ORDER BY timestamp DESC LIMIT ?",(limit,)).fetchall()
+            rows = c.execute("SELECT * FROM alerts ORDER BY timestamp DESC LIMIT ?", (limit,)).fetchall()
         return [dict(r) for r in rows]
 
 
 def get_alert(alert_id):
     with connect() as c:
-        r=c.execute("SELECT * FROM alerts WHERE alert_id=?",(alert_id,)).fetchone()
+        r = c.execute("SELECT * FROM alerts WHERE alert_id=?", (alert_id,)).fetchone()
         return dict(r) if r else None
 
 
-def review_alert(alert_id,status):
+def review_alert(alert_id, status):
     with connect() as c:
-        c.execute("UPDATE alerts SET status=?,reviewed_at=? WHERE alert_id=?",(status,datetime.now(timezone.utc).isoformat(),alert_id))
-        r=c.execute("SELECT * FROM alerts WHERE alert_id=?",(alert_id,)).fetchone()
-        return dict(r) if r else None
+        r = c.execute("SELECT * FROM alerts WHERE alert_id=?", (alert_id,)).fetchone()
+        if not r:
+            return None
+        case_id = r['case_id']
+        now = datetime.now(timezone.utc).isoformat()
+        # Update ALL alerts for this person/case to the new status (CONFIRMED/REJECTED)
+        c.execute(
+            "UPDATE alerts SET status=?, reviewed_at=? WHERE case_id=? OR case_id LIKE ? OR alert_id=?",
+            (status, now, case_id, f"%{case_id}%", alert_id)
+        )
+        updated = c.execute("SELECT * FROM alerts WHERE alert_id=?", (alert_id,)).fetchone()
+        return dict(updated) if updated else dict(r)
 
 
 def resolve_alerts_for_case(case_id):
     with connect() as c:
-        c.execute("UPDATE alerts SET status='RESOLVED',reviewed_at=? WHERE case_id=? OR case_id LIKE ?",
-                  (datetime.now(timezone.utc).isoformat(), case_id, f"%{case_id}%"))
+        c.execute(
+            "UPDATE alerts SET status='RESOLVED', reviewed_at=? WHERE case_id=? OR case_id LIKE ?",
+            (datetime.now(timezone.utc).isoformat(), case_id, f"%{case_id}%")
+        )
+
 
 
 
