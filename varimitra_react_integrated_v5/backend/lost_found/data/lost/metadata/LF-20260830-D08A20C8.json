@@ -5,5 +5,7 @@
   "created_at": "2026-08-29T23:07:28.420465+00:00",
   "report_id": "LF-20260830-D08A20C8",
   "report_type": "lost",
-  "image_filename": "LF-20260830-D08A20C8.jpg"
+  "image_filename": "LF-20260830-D08A20C8.jpg",
+  "status": "RESOLVED",
+  "resolved_at": "2026-08-30T03:01:05.443740+00:00"
 }

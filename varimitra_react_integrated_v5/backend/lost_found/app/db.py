@@ -80,6 +80,13 @@ def review_alert(alert_id,status):
         return dict(r) if r else None
 
 
+def resolve_alerts_for_case(case_id):
+    with connect() as c:
+        c.execute("UPDATE alerts SET status='RESOLVED',reviewed_at=? WHERE case_id=? OR case_id LIKE ?",
+                  (datetime.now(timezone.utc).isoformat(), case_id, f"%{case_id}%"))
+
+
+
 def list_sightings(case_id=None, limit=100):
     with connect() as c:
         if case_id:

@@ -9,7 +9,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 
-from .config import CANDIDATE_THRESHOLD, DATA_DIR
+from .config import CANDIDATE_THRESHOLD, DATA_DIR, ALERTS_DIR
 from .db import (
     alert_exists,
     get_alert,
@@ -19,6 +19,7 @@ from .db import (
     list_cameras,
     list_sightings,
     review_alert,
+    resolve_alerts_for_case,
 )
 from .face_engine import FaceEngine, cosine_similarity
 from .registry import CaseRegistry
@@ -244,6 +245,7 @@ def resolve_report(report_type: str, report_id: str):
         registry.close_case(report_id)
     except Exception:
         pass
+    resolve_alerts_for_case(report_id)
     return {'success': True, 'report': res}
 
 
@@ -256,6 +258,7 @@ def delete_report(report_type: str, report_id: str):
         registry.close_case(report_id)
     except Exception:
         pass
+    resolve_alerts_for_case(report_id)
     return {'success': ok}
 
 
@@ -264,6 +267,7 @@ def close_case(case_id: str):
     try:
         record = registry.close_case(case_id)
         local_reports.resolve_report('lost', case_id)
+        resolve_alerts_for_case(case_id)
         return record
     except FileNotFoundError:
         raise HTTPException(404, 'Case not found')
@@ -278,16 +282,20 @@ def report_image(report_type: str, report_id: str):
     except ValueError as exc:
         raise HTTPException(400, str(exc))
     if not image_path.exists():
-        raise HTTPException(404, 'Report image not found')
-    return FileResponse(image_path, media_type='image/jpeg')
+        ref = registry.get_reference_path(report_id)
+        if ref and ref.exists():
+            image_path = ref
+        else:
+            raise HTTPException(404, 'Report image not found')
+    return FileResponse(image_path, media_type='image/jpeg', headers={'Cache-Control': 'no-cache'})
 
 
 @app.get('/cases/{case_id}/reference')
 def reference(case_id: str):
     path = registry.get_reference_path(case_id)
-    if not path:
+    if not path or not path.exists():
         raise HTTPException(404, 'Reference not found')
-    return FileResponse(path, media_type='image/jpeg')
+    return FileResponse(path, media_type='image/jpeg', headers={'Cache-Control': 'no-cache'})
 
 
 @app.get('/alerts')
@@ -302,8 +310,12 @@ def evidence(alert_id: int):
         raise HTTPException(404, 'Alert not found')
     path = Path(row['evidence_image'])
     if not path.exists():
-        raise HTTPException(404, 'Evidence not found')
-    return FileResponse(path, media_type='image/jpeg')
+        fallback = ALERTS_DIR / path.name
+        if fallback.exists():
+            path = fallback
+        else:
+            raise HTTPException(404, 'Evidence image not found')
+    return FileResponse(path, media_type='image/jpeg', headers={'Cache-Control': 'no-cache'})
 
 
 @app.post('/alerts/{alert_id}/confirm')
@@ -318,7 +330,9 @@ def confirm(alert_id: int):
         except Exception:
             pass
         local_reports.resolve_report('lost', case_id)
+        resolve_alerts_for_case(case_id)
     return row
+
 
 
 @app.post('/alerts/{alert_id}/reject')
