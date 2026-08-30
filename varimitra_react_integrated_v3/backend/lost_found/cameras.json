@@ -1,0 +1,14 @@
+[
+  {
+    "camera_id": "CAM-NORTH-01",
+    "location": "North Gate",
+    "source": "demo_north.mp4",
+    "enabled": true
+  },
+  {
+    "camera_id": "CAM-EAST-02",
+    "location": "East Queue",
+    "source": 0,
+    "enabled": true
+  }
+]

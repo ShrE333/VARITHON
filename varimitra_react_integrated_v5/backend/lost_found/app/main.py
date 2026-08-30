@@ -227,10 +227,46 @@ async def receive_report(
 
 
 @app.get('/reports')
-def reports(report_type: str | None = None):
+def reports(report_type: str | None = None, include_resolved: bool = True):
     if report_type is not None and report_type not in {'lost', 'found'}:
         raise HTTPException(400, "report_type must be 'lost' or 'found'")
-    return local_reports.list_reports(report_type)
+    return local_reports.list_reports(report_type, include_resolved=include_resolved)
+
+
+@app.post('/reports/{report_type}/{report_id}/resolve')
+def resolve_report(report_type: str, report_id: str):
+    if report_type not in {'lost', 'found'}:
+        raise HTTPException(400, "report_type must be 'lost' or 'found'")
+    res = local_reports.resolve_report(report_type, report_id)
+    if not res:
+        raise HTTPException(404, 'Report not found')
+    try:
+        registry.close_case(report_id)
+    except Exception:
+        pass
+    return {'success': True, 'report': res}
+
+
+@app.delete('/reports/{report_type}/{report_id}')
+def delete_report(report_type: str, report_id: str):
+    if report_type not in {'lost', 'found'}:
+        raise HTTPException(400, "report_type must be 'lost' or 'found'")
+    ok = local_reports.delete_report(report_type, report_id)
+    try:
+        registry.close_case(report_id)
+    except Exception:
+        pass
+    return {'success': ok}
+
+
+@app.post('/cases/{case_id}/close')
+def close_case(case_id: str):
+    try:
+        record = registry.close_case(case_id)
+        local_reports.resolve_report('lost', case_id)
+        return record
+    except FileNotFoundError:
+        raise HTTPException(404, 'Case not found')
 
 
 @app.get('/reports/{report_type}/{report_id}/image')
@@ -275,6 +311,13 @@ def confirm(alert_id: int):
     row = review_alert(alert_id, 'CONFIRMED')
     if not row:
         raise HTTPException(404, 'Alert not found')
+    case_id = row.get('case_id')
+    if case_id:
+        try:
+            registry.close_case(case_id)
+        except Exception:
+            pass
+        local_reports.resolve_report('lost', case_id)
     return row
 
 
@@ -284,6 +327,7 @@ def reject(alert_id: int):
     if not row:
         raise HTTPException(404, 'Alert not found')
     return row
+
 
 
 @app.get('/cameras')
