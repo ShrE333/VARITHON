@@ -2,18 +2,19 @@ import json
 import time
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import CAMERAS_PATH, ZONES_PATH, LIVE_DIR
-from .db import init_db, connect
+from .db import init_db, connect, CAMERA_STATE, ZONE_STATE
 
 app = FastAPI(title="VariMitra Crowd Congestion V1", version="1.0.1-react")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=False, allow_methods=["*"], allow_headers=["*"])
 
+
 @app.on_event("startup")
 def startup():
     init_db()
+
 
 @app.get("/health")
 def health():
@@ -22,22 +23,21 @@ def health():
 @app.get("/cameras")
 def cameras():
     configured = json.loads(Path(CAMERAS_PATH).read_text(encoding="utf-8"))
-    with connect() as con:
-        status = {r["camera_id"]: dict(r) for r in con.execute("SELECT * FROM camera_status").fetchall()}
+    status = CAMERA_STATE
     now = time.time()
     out = []
     for c in configured:
         s = status.get(c["camera_id"], {})
-        online = bool(s.get("online",0)) and now - float(s.get("updated_at",0)) < 3.0
+        online = bool(s.get("online", 0)) and (now - float(s.get("updated_at", 0)) < 4.0)
         out.append({**c, **s, "online": online})
     return out
 
 @app.get("/zones")
 def zones():
     configured = json.loads(Path(ZONES_PATH).read_text(encoding="utf-8"))
-    with connect() as con:
-        status = {r["zone_id"]: dict(r) for r in con.execute("SELECT * FROM zone_status").fetchall()}
+    status = ZONE_STATE
     return [{**z, **status.get(z["zone_id"], {})} for z in configured]
+
 
 @app.get("/map")
 def map_data():

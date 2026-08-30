@@ -2,13 +2,17 @@ import sqlite3
 import time
 from .config import DB_PATH, DATA_DIR
 
+CAMERA_STATE = {}
+ZONE_STATE = {}
+CAMERA_ZONE_COUNTS = {}
+
 
 def connect():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(DB_PATH, timeout=30)
+    con = sqlite3.connect(DB_PATH, timeout=10)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA journal_mode=WAL")
-    con.execute("PRAGMA synchronous=NORMAL")
+    con.execute("PRAGMA busy_timeout=5000")
     return con
 
 
@@ -46,41 +50,77 @@ def init_db():
 
 
 def upsert_camera(camera_id, location, online, fps, detected_people, latest_frame=None):
-    with connect() as con:
-        con.execute("""
-        INSERT INTO camera_status(camera_id,location,online,fps,detected_people,latest_frame,updated_at)
-        VALUES(?,?,?,?,?,?,?)
-        ON CONFLICT(camera_id) DO UPDATE SET
-          location=excluded.location,
-          online=excluded.online,
-          fps=excluded.fps,
-          detected_people=excluded.detected_people,
-          latest_frame=COALESCE(excluded.latest_frame,camera_status.latest_frame),
-          updated_at=excluded.updated_at
-        """, (camera_id, location, int(online), float(fps), int(detected_people), latest_frame, time.time()))
+    now = time.time()
+    existing = CAMERA_STATE.get(camera_id, {})
+    frame = latest_frame if latest_frame is not None else existing.get("latest_frame")
+    rec = {
+        "camera_id": camera_id,
+        "location": location,
+        "online": int(online),
+        "fps": float(fps),
+        "detected_people": int(detected_people),
+        "latest_frame": frame,
+        "updated_at": now
+    }
+    CAMERA_STATE[camera_id] = rec
+
+    try:
+        with connect() as con:
+            con.execute("""
+            INSERT INTO camera_status(camera_id,location,online,fps,detected_people,latest_frame,updated_at)
+            VALUES(?,?,?,?,?,?,?)
+            ON CONFLICT(camera_id) DO UPDATE SET
+              location=excluded.location,
+              online=excluded.online,
+              fps=excluded.fps,
+              detected_people=excluded.detected_people,
+              latest_frame=COALESCE(excluded.latest_frame,camera_status.latest_frame),
+              updated_at=excluded.updated_at
+            """, (camera_id, location, int(online), float(fps), int(detected_people), latest_frame, now))
+    except Exception:
+        pass
 
 
 def upsert_camera_zone(camera_id, zone_id, people_count):
-    with connect() as con:
-        con.execute("""
-        INSERT INTO camera_zone_counts(camera_id,zone_id,people_count,updated_at)
-        VALUES(?,?,?,?)
-        ON CONFLICT(camera_id,zone_id) DO UPDATE SET
-          people_count=excluded.people_count,
-          updated_at=excluded.updated_at
-        """, (camera_id, zone_id, int(people_count), time.time()))
+    now = time.time()
+    CAMERA_ZONE_COUNTS[(camera_id, zone_id)] = int(people_count)
+    try:
+        with connect() as con:
+            con.execute("""
+            INSERT INTO camera_zone_counts(camera_id,zone_id,people_count,updated_at)
+            VALUES(?,?,?,?)
+            ON CONFLICT(camera_id,zone_id) DO UPDATE SET
+              people_count=excluded.people_count,
+              updated_at=excluded.updated_at
+            """, (camera_id, zone_id, int(people_count), now))
+    except Exception:
+        pass
 
 
 def set_zone_status(zone_id, zone_name, capacity, count, occupancy, level):
-    with connect() as con:
-        con.execute("""
-        INSERT INTO zone_status(zone_id,zone_name,capacity,people_count,occupancy,level,updated_at)
-        VALUES(?,?,?,?,?,?,?)
-        ON CONFLICT(zone_id) DO UPDATE SET
-          zone_name=excluded.zone_name,
-          capacity=excluded.capacity,
-          people_count=excluded.people_count,
-          occupancy=excluded.occupancy,
-          level=excluded.level,
-          updated_at=excluded.updated_at
-        """, (zone_id, zone_name, int(capacity), int(count), float(occupancy), level, time.time()))
+    now = time.time()
+    ZONE_STATE[zone_id] = {
+        "zone_id": zone_id,
+        "zone_name": zone_name,
+        "capacity": int(capacity),
+        "people_count": int(count),
+        "occupancy": float(occupancy),
+        "level": level,
+        "updated_at": now
+    }
+    try:
+        with connect() as con:
+            con.execute("""
+            INSERT INTO zone_status(zone_id,zone_name,capacity,people_count,occupancy,level,updated_at)
+            VALUES(?,?,?,?,?,?,?)
+            ON CONFLICT(zone_id) DO UPDATE SET
+              zone_name=excluded.zone_name,
+              capacity=excluded.capacity,
+              people_count=excluded.people_count,
+              occupancy=excluded.occupancy,
+              level=excluded.level,
+              updated_at=excluded.updated_at
+            """, (zone_id, zone_name, int(capacity), int(count), float(occupancy), level, now))
+    except Exception:
+        pass
+
